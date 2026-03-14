@@ -1,18 +1,31 @@
-Acho uma ideia excelente! Isso transforma o seu painel em um verdadeiro semáforo de prioridades. Em vez de você ficar lendo e calculando a hora de cada um, os olhos já batem direto em quem está "no limite".
+Uma sugestão que combina muito com o ambiente de logística e terminais é trocar o "Normal" por "EM DIA", "REGULAR" ou "NO PRAZO".
 
-Para isso funcionar, fiz o seguinte cálculo no código:
+A palavra "EM DIA" é excelente porque transmite confiança e indica que aquela carga não é uma preocupação imediata.
 
-Verde: Jornada ainda tem mais de 1 hora de sobra.
+Aqui está o ajuste no código. Mudei para "EM DIA" e aproveitei para deixar o visual ainda mais limpo:
 
-Amarelo: Falta menos de 1 hora para a jornada acabar.
+🚀 O que mudou:
+Status: De "Normal" para "EM DIA".
 
-Vermelho: O horário da jornada já passou (Vencida).
+Destaque: Mantive o verde para "EM DIA", o amarelo para "ALERTA" e o vermelho piscante para "VENCIDA".
 
-Observação: Se o motorista marcou "Jornada 24h", o sistema deixará o fundo neutro, pois ele não tem restrição de horário imediata.
+Copie o código atualizado:
+HTML
+function getStatusJornada(horaJornada) {
+        if (!horaJornada || horaJornada === "24 Horas") return "<span>24 Horas</span>";
+        
+        const agora = new Date();
+        const [horas, minutos] = horaJornada.split(':');
+        const dataJornada = new Date();
+        dataJornada.setHours(horas, minutos, 0);
 
-🚀 Código Atualizado (Semáforo de Jornada)
-Substitua o conteúdo no seu GitHub por este:
+        const diffMinutos = (dataJornada - agora) / (1000 * 60);
 
+        if (diffMinutos < 0) return `<span class="status-vencido">VENCIDA (${horaJornada})</span>`;
+        if (diffMinutos <= 60) return `<span class="status-alerta">ALERTA (${horaJornada})</span>`;
+        return `<span class="status-ok">EM DIA (${horaJornada})</span>`;
+    }
+Código Completo (Versão "EM DIA"):
 HTML
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -46,7 +59,6 @@ HTML
 
         .btn-enviar { width: 100%; padding: 16px; background-color: var(--cor-principal); color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
         
-        /* ADMIN */
         #admin-panel { display: none; max-width: 98%; width: 1250px; }
         .search-box { margin-bottom: 15px; padding: 12px; border-radius: 8px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; }
         
@@ -54,14 +66,13 @@ HTML
         th { background: var(--cor-principal); color: white; padding: 12px; text-align: left; }
         td { padding: 12px; border-bottom: 1px solid #eee; }
         
-        /* STATUS DE JORNADA */
-        .status-ok { background: var(--success); color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
-        .status-alerta { background: var(--warning); color: #856404; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
-        .status-vencido { background: var(--danger); color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; animation: pulse 1.5s infinite; }
+        .status-ok { background: var(--success); color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; }
+        .status-alerta { background: var(--warning); color: #856404; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; }
+        .status-vencido { background: var(--danger); color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; animation: pulse 1.5s infinite; }
         
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
-        .badge-coleta { background: #e3f2fd; color: #0d47a1; padding: 6px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; cursor: pointer; border: 1px solid #0d47a1; display: inline-block; }
+        .badge-coleta { background: #e3f2fd; color: #0d47a1; padding: 6px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; cursor: pointer; border: 1px solid #0d47a1; }
         .badge-espera { background: #f0f0f0; color: #555; padding: 4px 6px; border-radius: 4px; font-weight: bold; font-size: 11px; }
         
         .btn-zap { background:#25D366; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer; font-weight:bold; width: 100%; margin-bottom: 4px; display: block; text-decoration: none; text-align: center; font-size: 11px; }
@@ -112,12 +123,12 @@ HTML
         <button type="submit" class="btn-enviar" id="btnEnviar">ENVIAR DADOS</button>
     </form>
     <div class="footer-link">
-        <button class="btn-admin-link" onclick="abrirAdmin()">Acesso Administrativo</button>
+        <button class="btn-admin-link" onclick="abrirAdmin()">Painel Administrativo</button>
     </div>
 </div>
 
 <div class="container" id="admin-panel">
-    <h2>Painel Administrativo - Prioridades</h2>
+    <h2>Controle de Pátio</h2>
     <input type="text" id="buscaPlaca" class="search-box" placeholder="🔎 Filtrar Placa..." onkeyup="filtrarTabela()">
     
     <div style="overflow-x: auto;">
@@ -127,9 +138,9 @@ HTML
                     <th>Placa</th>
                     <th>Telefone</th>
                     <th>Produto</th>
-                    <th>Status Jornada</th>
+                    <th>Jornada</th>
                     <th>Agenda Coleta</th>
-                    <th>No Pátio</th>
+                    <th>Espera</th>
                     <th>Ações</th>
                 </tr>
             </thead>
@@ -155,7 +166,6 @@ HTML
 <script>
     const API_URL = 'https://sheetdb.io/api/v1/p9z83v5m0dxq5';
 
-    // Máscaras e UI
     document.getElementById('placa').addEventListener('input', e => {
         let v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
         if (v.length > 3) v = v.substring(0,3) + "-" + v.substring(3,7);
@@ -173,12 +183,11 @@ HTML
         document.getElementById('campo-hora').style.display = this.checked ? 'none' : 'block';
     });
 
-    // Envio
     document.getElementById('formAgendamento').addEventListener('submit', function(e) {
         e.preventDefault();
         const btn = document.getElementById('btnEnviar');
         const agora = new Date();
-        btn.innerText = "REGISTRANDO...";
+        btn.innerText = "ENVIANDO...";
         btn.disabled = true;
 
         const dados = {
@@ -197,7 +206,7 @@ HTML
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ data: [dados] })
         }).then(() => {
-            alert("✅ Dados enviados!");
+            alert("✅ Registrado com sucesso!");
             document.getElementById('formAgendamento').reset();
         }).finally(() => {
             btn.innerText = "ENVIAR DADOS";
@@ -225,7 +234,7 @@ HTML
 
         if (diffMinutos < 0) return `<span class="status-vencido">VENCIDA (${horaJornada})</span>`;
         if (diffMinutos <= 60) return `<span class="status-alerta">ALERTA (${horaJornada})</span>`;
-        return `<span class="status-ok">NORMAL (${horaJornada})</span>`;
+        return `<span class="status-ok">EM DIA (${horaJornada})</span>`;
     }
 
     function carregarAtivos() {
@@ -237,6 +246,7 @@ HTML
             data.filter(i => i.PLACA && !i.SAIDA).forEach(i => {
                 const minutosPatio = i.TIMESTAMP ? Math.floor((agora - i.TIMESTAMP) / 60000) : "?";
                 const statusJornada = getStatusJornada(i.JORNADA);
+                const agenda = i.COLETA || "Pendente";
                 
                 tbody.innerHTML += `
                     <tr>
@@ -244,10 +254,10 @@ HTML
                         <td style="color:#666">${i.TELEFONE}</td>
                         <td>${i.PRODUTO}</td>
                         <td>${statusJornada}</td>
-                        <td><span class="badge-coleta" onclick="abrirModalColeta('${i.PLACA}')">📅 ${i.COLETA || 'Pendente'}</span></td>
+                        <td><span class="badge-coleta" onclick="abrirModalColeta('${i.PLACA}')">📅 ${agenda}</span></td>
                         <td><span class="badge-espera">${minutosPatio} min</span></td>
                         <td>
-                            <button class="btn-zap" onclick="enviarZap('${i.TELEFONE}', '${i.PLACA}', '${i.COLETA || 'Pendente'}')">📱 CHAMAR</button>
+                            <button class="btn-zap" onclick="enviarZap('${i.TELEFONE}', '${i.PLACA}', '${agenda}')">📱 CHAMAR</button>
                             <button class="btn-concluir" onclick="concluir('${i.PLACA}')">CONCLUIR</button>
                         </td>
                     </tr>`;
@@ -268,7 +278,7 @@ HTML
         const placa = document.getElementById('placaAlvo').value;
         const dataInput = document.getElementById('inputData').value;
         const horaInput = document.getElementById('inputHora').value;
-        if(!dataInput || !horaInput) return alert("Preencha tudo!");
+        if(!dataInput || !horaInput) return alert("Preencha data e hora!");
 
         const d = dataInput.split('-');
         const infoFinal = d[2] + "/" + d[1] + " - " + horaInput;
@@ -290,10 +300,10 @@ HTML
     }
 
     function enviarZap(tel, placa, agenda) {
-        const baia = prompt("Informe a BAIA:");
+        const baia = prompt("Informe a BAIA para a placa " + placa);
         if (!baia) return;
         const limpo = tel.replace(/\D/g, "");
-        const txt = encodeURIComponent(`*RAÍZEN PAULÍNIA*\n\nMotorista da placa *${placa}* (Agenda: ${agenda}), descarga liberada na *BAIA ${baia}*.\n\nFavor deslocar-se agora.`);
+        const txt = encodeURIComponent(`*RAÍZEN PAULÍNIA*\n\nMotorista da placa *${placa}* (Agenda Coleta: ${agenda}), descarga liberada na *BAIA ${baia}*.\n\nFavor deslocar-se imediatamente.`);
         window.open(`https://web.whatsapp.com/send?phone=55${limpo}&text=${txt}`, '_blank');
     }
 
