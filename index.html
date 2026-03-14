@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raízen - Terminal Paulínia</title>
+    <title>Raízen - DESCARGA ÁREA 2</title>
     <style>
         :root {
             --cor-principal: #4d6d5d; 
@@ -20,7 +20,7 @@
         header h1 { color: var(--branco); margin: 0; font-size: 22px; text-transform: uppercase; }
         
         .container { width: 92%; max-width: 550px; margin: 20px auto; background: var(--branco); padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-        #admin-panel { display: none; max-width: 98%; width: 1300px; }
+        #admin-panel { display: none; max-width: 98%; width: 1350px; }
 
         h2 { color: var(--cor-principal); text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         
@@ -57,7 +57,7 @@
 <header><h1>RAÍZEN - TERMINAL PAULÍNIA</h1></header>
 
 <div class="container" id="tela-motorista">
-    <h2>Entrada de Motorista</h2>
+    <h2>DESCARGA ÁREA 2</h2>
     <form id="formAgendamento">
         <label style="display:block; margin-top:10px; font-weight:bold;">Placa do Veículo</label>
         <input type="text" id="placa" placeholder="ABC-1234" maxlength="8" required>
@@ -82,7 +82,7 @@
 </div>
 
 <div class="container" id="admin-panel">
-    <h2>Controle de Pátio</h2>
+    <h2>DESCARGA ÁREA 2</h2>
     <div style="overflow-x: auto;">
         <table id="tabelaDados">
             <thead>
@@ -104,7 +104,7 @@
 
 <div id="modalColeta">
     <div class="modal-content">
-        <h3>Definir Coleta</h3>
+        <h3>Definir Agendamento</h3>
         <input type="hidden" id="placaAlvo">
         <label>Data:</label><input type="date" id="inputData">
         <label>Hora:</label><input type="time" id="inputHora">
@@ -125,7 +125,6 @@
     }
 
     function carregarAtivos() {
-        // O "?t=" força o navegador a buscar os dados mais recentes do Google Sheets
         fetch(API_URL + "?t=" + new Date().getTime())
         .then(res => res.json())
         .then(data => {
@@ -137,9 +136,8 @@
                 const tel = i.TELEFONE || "—";
                 const prod = (i.PRODUTO && i.PRODUTO !== "undefined") ? i.PRODUTO : "—";
                 
-                // PEGA A INFORMAÇÃO DA COLUNA "COLETA" DA PLANILHA
-                let infoColeta = i.COLETA || "";
-                let agendadoTxt = (infoColeta === "" || infoColeta === "undefined") ? "Pendente" : infoColeta;
+                // Recuperando o Agendamento
+                const agendadoTxt = (i.COLETA && i.COLETA !== "undefined" && i.COLETA !== "") ? i.COLETA : "Pendente";
                 
                 const estiloAgendado = agendadoTxt === "Pendente" 
                     ? "color:#999; font-style:italic;" 
@@ -165,16 +163,25 @@
         });
     }
 
+    // RECUPERADO: Status Jornada com o horário entre parênteses
+    function getStatusJornada(horaFim) {
+        if (!horaFim || horaFim === "24 Horas" || horaFim === "undefined") return "—";
+        const agora = new Date();
+        const [h, m] = horaFim.split(':');
+        const dF = new Date(); dF.setHours(h, m, 0);
+        const diff = (dF - agora) / 60000;
+        if (diff < 0) return `<span class="status-badge bg-vencido">VENCIDA (${horaFim})</span>`;
+        if (diff <= 60) return `<span class="status-badge bg-alerta">ALERTA (${horaFim})</span>`;
+        return `<span class="status-badge bg-ok">EM DIA (${horaFim})</span>`;
+    }
+
     function salvarColeta() {
         const placa = document.getElementById('placaAlvo').value;
         const d = document.getElementById('inputData').value;
         const h = document.getElementById('inputHora').value;
         if(!d || !h) return alert("Preencha data e hora!");
 
-        // Formata data para DD/MM HH:MM
-        const dataBr = d.split('-')[2] + "/" + d.split('-')[1];
-        const infoFinal = dataBr + " " + h;
-        
+        const infoFinal = d.split('-')[2] + "/" + d.split('-')[1] + " " + h;
         document.getElementById('btnSalvarAgenda').innerText = "GRAVANDO...";
 
         fetch(`${API_URL}/PLACA/${placa}`, {
@@ -184,23 +191,9 @@
         }).then(res => {
             if(res.ok) {
                 fecharModal();
-                // Aguarda 1.5s para o Google Sheets atualizar e recarrega a tabela
-                setTimeout(carregarAtivos, 1500);
+                setTimeout(carregarAtivos, 1000); // Atualiza a tabela imediatamente
             }
-        }).finally(() => {
-            document.getElementById('btnSalvarAgenda').innerText = "SALVAR NA TABELA";
         });
-    }
-
-    function getStatusJornada(horaFim) {
-        if (!horaFim || horaFim === "24 Horas" || horaFim === "undefined") return "—";
-        const agora = new Date();
-        const [h, m] = horaFim.split(':');
-        const dF = new Date(); dF.setHours(h, m, 0);
-        const diff = (dF - agora) / 60000;
-        if (diff < 0) return `<span class="status-badge bg-vencido">VENCIDA</span>`;
-        if (diff <= 60) return `<span class="status-badge bg-alerta">ALERTA</span>`;
-        return `<span class="status-badge bg-ok">EM DIA</span>`;
     }
 
     function abrirModalColeta(placa) {
@@ -210,7 +203,7 @@
 
     function fecharModal() { document.getElementById('modalColeta').style.display = 'none'; }
 
-    // Máscara e Registro (Motorista)
+    // Máscara e Registro
     document.getElementById('placa').addEventListener('input', e => {
         let v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
         if (v.length > 3) v = v.substring(0,3) + "-" + v.substring(3,7);
