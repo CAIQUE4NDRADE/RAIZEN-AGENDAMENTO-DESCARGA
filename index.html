@@ -24,20 +24,10 @@
 
         h2 { color: var(--cor-principal); text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
         
-        /* Estilos dos botões de agenda */
-        .btn-acao-agenda {
-            padding: 8px 12px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer;
-            text-align: center; display: inline-block; border: 2px solid; transition: 0.3s;
-        }
-        .agenda-vazia { background-color: #e3f2fd; color: #0d47a1; border-color: #0d47a1; }
-        .agenda-existe { background-color: #f8f9fa; color: #333; border-color: #ccc; }
-
-        /* Estilo da Tabela */
         table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; font-size: 13px; }
         th { background: var(--cor-principal); color: white; padding: 12px; text-align: left; }
         td { padding: 12px; border-bottom: 1px solid #eee; }
         
-        /* Badges de Status */
         .status-badge { padding: 6px 10px; border-radius: 4px; font-weight: bold; font-size: 11px; color: white; display: inline-block; }
         .bg-ok { background: var(--success); }
         .bg-alerta { background: var(--warning); color: #333; }
@@ -45,16 +35,19 @@
         
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
-        /* Ações */
         .btn-zap { background:#25D366; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer; font-weight:bold; width: 100%; margin-bottom: 4px; display: block; text-align: center; text-decoration: none; font-size: 11px; }
         .btn-concluir { background:#007bff; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer; font-weight:bold; width: 100%; font-size: 11px; }
         
-        /* Modal */
         #modalColeta { display:none; position:fixed; z-index:999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5); }
         .modal-content { background:white; margin:15% auto; padding:25px; border-radius:15px; width:300px; text-align: center; }
 
         input, select { width: 100%; padding: 12px; margin-top: 5px; border: 2px solid #e1e1e1; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
         .btn-enviar { width: 100%; padding: 16px; background-color: var(--cor-principal); color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        
+        /* Estilo para o seletor de jornada simplificado */
+        .jornada-group { display: flex; gap: 10px; margin-top: 5px; }
+        .jornada-btn { flex: 1; padding: 10px; border: 2px solid #e1e1e1; border-radius: 8px; background: #f8f9fa; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .jornada-btn.active { border-color: var(--cor-principal); background: var(--cor-principal); color: white; }
     </style>
 </head>
 <body>
@@ -77,26 +70,16 @@
             <option value="HIDRATADO">HIDRATADO</option>
         </select>
 
-        <label style="display:block; margin-top:15px; font-weight:bold;">WhatsApp (Com DDD)</label>
+        <label style="display:block; margin-top:15px; font-weight:bold;">WhatsApp</label>
         <input type="tel" id="telefone" placeholder="(19) 99999-9999" maxlength="15" required>
 
         <label style="display:block; margin-top:15px; font-weight:bold;">Fim da Jornada</label>
-        <select id="jornada" required>
-            <option value="">Selecione o horário...</option>
-            <option value="24 Horas">24 Horas (Livre)</option>
-            <option value="00:00">00:00</option><option value="01:00">01:00</option>
-            <option value="02:00">02:00</option><option value="03:00">03:00</option>
-            <option value="04:00">04:00</option><option value="05:00">05:00</option>
-            <option value="06:00">06:00</option><option value="07:00">07:00</option>
-            <option value="08:00">08:00</option><option value="09:00">09:00</option>
-            <option value="10:00">10:00</option><option value="11:00">11:00</option>
-            <option value="12:00">12:00</option><option value="13:00">13:00</option>
-            <option value="14:00">14:00</option><option value="15:00">15:00</option>
-            <option value="16:00">16:00</option><option value="17:00">17:00</option>
-            <option value="18:00">18:00</option><option value="19:00">19:00</option>
-            <option value="20:00">20:00</option><option value="21:00">21:00</option>
-            <option value="22:00">22:00</option><option value="23:00">23:00</option>
-        </select>
+        <div class="jornada-group">
+            <button type="button" class="jornada-btn active" id="btn24h" onclick="setJornada('24 Horas')">24 Horas</button>
+            <button type="button" class="jornada-btn" id="btnHorario" onclick="ativarHorario()">Definir Horário</button>
+        </div>
+        <input type="time" id="jornadaTime" style="display:none; margin-top:10px;">
+        <input type="hidden" id="jornadaFinal" value="24 Horas">
 
         <button type="submit" class="btn-enviar" id="btnEnviar">REGISTRAR ENTRADA</button>
     </form>
@@ -115,8 +98,8 @@
                     <th>WhatsApp</th>
                     <th>Produto</th>
                     <th>Status Jornada</th>
-                    <th style="background:#2d4a3e; color:white;">AGENDADO PARA</th>
-                    <th>Ação Agenda</th>
+                    <th>Agendado para</th>
+                    <th>Pátio</th>
                     <th>Ações</th>
                 </tr>
             </thead>
@@ -140,32 +123,48 @@
 <script>
     const API_URL = 'https://sheetdb.io/api/v1/p9z83v5m0dxq5';
 
-    // 1. MÁSCARA WHATSAPP
+    // FUNÇÕES DA JORNADA SIMPLIFICADA
+    function setJornada(valor) {
+        document.getElementById('jornadaFinal').value = valor;
+        document.getElementById('jornadaTime').style.display = 'none';
+        document.getElementById('btn24h').classList.add('active');
+        document.getElementById('btnHorario').classList.remove('active');
+    }
+
+    function ativarHorario() {
+        document.getElementById('jornadaTime').style.display = 'block';
+        document.getElementById('btn24h').classList.remove('active');
+        document.getElementById('btnHorario').classList.add('active');
+        document.getElementById('jornadaFinal').value = "";
+    }
+
+    // MÁSCARA TELEFONE
     document.getElementById('telefone').addEventListener('input', function(e) {
         let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
         e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
     });
 
-    // 2. VALIDAÇÃO DE PLACA (TRAVA 1111111)
+    // VALIDAÇÃO DE PLACA
     document.getElementById('placa').addEventListener('input', function(e) {
         let v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
-        if (v.length <= 3) {
-            e.target.value = v.replace(/[0-9]/g, ""); 
-        } else {
-            if (!isNaN(v[3])) { // Se o 4º caractere for número (Formato Antigo)
-                if (v.length > 3) v = v.substring(0,3) + "-" + v.substring(3,7);
-            }
+        if (v.length <= 3) e.target.value = v.replace(/[0-9]/g, "");
+        else {
+            if (!isNaN(v[3])) { if (v.length > 3) v = v.substring(0,3) + "-" + v.substring(3,7); }
             e.target.value = v.substring(0,8);
         }
     });
 
-    function isPlacaValida(placa) {
-        const regexAntigo = /^[A-Z]{3}-[0-9]{4}$/;
-        const regexMercosul = /^[A-Z]{3}[0-9][A-Z][0-9]{2}$/;
-        return regexAntigo.test(placa) || regexMercosul.test(placa);
+    function calcularPatio(entrada) {
+        if (!entrada) return "0 min";
+        const agora = new Date();
+        const partes = entrada.split(', ');
+        const dataPartes = partes[0].split('/');
+        const horaPartes = partes[1].split(':');
+        const dataEntrada = new Date(dataPartes[2], dataPartes[1]-1, dataPartes[0], horaPartes[0], horaPartes[1]);
+        const diff = Math.floor((agora - dataEntrada) / 60000);
+        return diff > 0 ? diff + " min" : "0 min";
     }
 
-    // 3. CARREGAR DADOS
     function carregarAtivos() {
         fetch(API_URL + "?t=" + new Date().getTime())
         .then(res => res.json())
@@ -173,24 +172,21 @@
             const tbody = document.querySelector('#tabelaDados tbody');
             tbody.innerHTML = "";
             data.filter(i => i.PLACA && !i.SAIDA).forEach(i => {
-                const placa = i.PLACA || "—";
-                const tel = i.TELEFONE || "—";
-                const prod = (i.PRODUTO && i.PRODUTO !== "undefined") ? i.PRODUTO : "—";
-                const agendadoTxt = (i.COLETA && i.COLETA !== "" && i.COLETA !== "undefined") ? i.COLETA : "Pendente";
+                const prod = (i.PRODUTO && i.PRODUTO !== "undefined" && i.PRODUTO !== "") ? i.PRODUTO : "—";
+                const agendado = (i.COLETA && i.COLETA !== "undefined" && i.COLETA !== "") ? i.COLETA : "Pendente";
                 
-                const estiloAgendado = agendadoTxt === "Pendente" ? "color:#999; font-style:italic;" : "background:#d4edda; color:#155724; padding:6px 10px; border-radius:6px; font-weight:bold; border:1px solid #c3e6cb;";
-
                 tbody.innerHTML += `
                     <tr>
-                        <td style="font-weight:bold">${placa}</td>
-                        <td>${tel}</td>
+                        <td style="font-weight:bold">${i.PLACA}</td>
+                        <td>${i.TELEFONE}</td>
                         <td>${prod}</td>
                         <td>${getStatusJornada(i.JORNADA)}</td>
-                        <td><span style="${estiloAgendado}">${agendadoTxt}</span></td>
-                        <td><button class="btn-acao-agenda ${agendadoTxt === 'Pendente' ? 'agenda-vazia' : 'agenda-existe'}" onclick="abrirModalColeta('${placa}')">${agendadoTxt === 'Pendente' ? '📅 Agendar' : '🔄 Alterar'}</button></td>
+                        <td><span style="font-weight:bold; color:${agendado === 'Pendente' ? '#999' : '#155724'}">${agendado}</span></td>
+                        <td>${calcularPatio(i.ENTRADA)}</td>
                         <td>
-                            <button class="btn-zap" onclick="enviarZap('${tel}', '${placa}', '${agendadoTxt}')">📱 CHAMAR</button>
-                            <button class="btn-concluir" onclick="concluir('${placa}')">OK</button>
+                            <button class="btn-zap" onclick="enviarZap('${i.TELEFONE}', '${i.PLACA}', '${agendado}')">📱 CHAMAR</button>
+                            <button class="btn-concluir" onclick="concluir('${i.PLACA}')">OK</button>
+                            <button onclick="abrirModalColeta('${i.PLACA}')" style="font-size:10px; border:none; background:none; color:blue; cursor:pointer;">[Agendar]</button>
                         </td>
                     </tr>`;
             });
@@ -198,7 +194,7 @@
     }
 
     function getStatusJornada(horaFim) {
-        if (!horaFim || horaFim === "24 Horas" || horaFim === "undefined") return '<span class="status-badge bg-ok">EM DIA (Livre)</span>';
+        if (!horaFim || horaFim === "24 Horas") return '<span class="status-badge bg-ok">EM DIA</span>';
         const agora = new Date();
         const [h, m] = horaFim.split(':');
         const dF = new Date(); dF.setHours(h, m, 0);
@@ -208,79 +204,39 @@
         return `<span class="status-badge bg-ok">EM DIA (${horaFim})</span>`;
     }
 
-    // 4. SALVAR AGENDAMENTO
-    function salvarColeta() {
-        const placa = document.getElementById('placaAlvo').value;
-        const d = document.getElementById('inputData').value;
-        const h = document.getElementById('inputHora').value;
-        if(!d || !h) return alert("Preencha data e hora!");
-
-        const infoFinal = d.split('-')[2] + "/" + d.split('-')[1] + " " + h;
-        const btn = document.getElementById('btnSalvarAgenda');
-        btn.innerText = "GRAVANDO...";
-
-        fetch(`${API_URL}/PLACA/${placa}`, {
-            method: 'PATCH',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ "COLETA": infoFinal })
-        }).then(() => {
-            fecharModal();
-            setTimeout(carregarAtivos, 1000);
-        }).finally(() => {
-            btn.innerText = "SALVAR NA TABELA";
-        });
-    }
-
-    function abrirModalColeta(placa) {
-        document.getElementById('placaAlvo').value = placa;
-        document.getElementById('modalColeta').style.display = 'block';
-    }
-
-    function fecharModal() { document.getElementById('modalColeta').style.display = 'none'; }
-
-    // 5. REGISTRAR ENTRADA
     document.getElementById('formAgendamento').addEventListener('submit', function(e) {
         e.preventDefault();
-        const p = document.getElementById('placa').value;
-        if(!isPlacaValida(p)) return alert("Placa Inválida!");
+        const jornada = document.getElementById('jornadaFinal').value || document.getElementById('jornadaTime').value;
+        if(!jornada) return alert("Defina o horário da jornada!");
 
         const btn = document.getElementById('btnEnviar');
         btn.innerText = "GRAVANDO...";
         const dados = {
-            "PLACA": p,
+            "PLACA": document.getElementById('placa').value,
             "PRODUTO": document.getElementById('produto').value,
             "TELEFONE": document.getElementById('telefone').value,
-            "JORNADA": document.getElementById('jornada').value,
+            "JORNADA": jornada,
             "ENTRADA": new Date().toLocaleString('pt-BR'),
             "COLETA": "", "SAIDA": ""
         };
         fetch(API_URL, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify([dados]) })
-        .then(() => { alert("Registrado!"); this.reset(); }).finally(() => btn.innerText = "REGISTRAR ENTRADA");
+        .then(() => { alert("Registrado!"); location.reload(); });
     });
 
-    function abrirAdmin() {
-        if (prompt("Senha:") === "raizen2026") {
-            document.getElementById('tela-motorista').style.display = 'none';
-            document.getElementById('admin-panel').style.display = 'block';
-            carregarAtivos();
-        }
+    // Funções de Modal e Admin permanecem iguais...
+    function abrirAdmin() { if (prompt("Senha:") === "raizen2026") { document.getElementById('tela-motorista').style.display = 'none'; document.getElementById('admin-panel').style.display = 'block'; carregarAtivos(); } }
+    function abrirModalColeta(placa) { document.getElementById('placaAlvo').value = placa; document.getElementById('modalColeta').style.display = 'block'; }
+    function fecharModal() { document.getElementById('modalColeta').style.display = 'none'; }
+    function salvarColeta() {
+        const placa = document.getElementById('placaAlvo').value;
+        const d = document.getElementById('inputData').value;
+        const h = document.getElementById('inputHora').value;
+        const info = d.split('-')[2] + "/" + d.split('-')[1] + " " + h;
+        fetch(`${API_URL}/PLACA/${placa}`, { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ "COLETA": info }) })
+        .then(() => { fecharModal(); carregarAtivos(); });
     }
-
-    function enviarZap(tel, placa, agenda) {
-        const baia = prompt("Qual a BAIA?");
-        if(!baia) return;
-        const limpo = tel.replace(/\D/g, "");
-        window.open(`https://web.whatsapp.com/send?phone=55${limpo}&text=${encodeURIComponent(`*RAÍZEN*\nPlaca: ${placa}\nAgendado: ${agenda}\nBaia: ${baia}`)}`);
-    }
-
-    function concluir(placa) {
-        if(!confirm("Concluir saída?")) return;
-        fetch(`${API_URL}/PLACA/${placa}`, {
-            method: 'PATCH',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ "SAIDA": new Date().toLocaleString() })
-        }).then(() => carregarAtivos());
-    }
+    function concluir(placa) { if(confirm("Concluir?")) fetch(`${API_URL}/PLACA/${placa}`, { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ "SAIDA": new Date().toLocaleString() }) }).then(() => carregarAtivos()); }
+    function enviarZap(tel, placa, agenda) { const baia = prompt("Qual a BAIA?"); if(baia) window.open(`https://web.whatsapp.com/send?phone=55${tel.replace(/\D/g, "")}&text=${encodeURIComponent(`*RAÍZEN*\nPlaca: ${placa}\nAgendado: ${agenda}\nBaia: ${baia}`)}`); }
 </script>
 </body>
 </html>
