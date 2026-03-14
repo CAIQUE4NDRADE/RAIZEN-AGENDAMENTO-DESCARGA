@@ -30,6 +30,7 @@
 
         .btn-enviar { width: 100%; padding: 16px; background-color: var(--cor-principal); color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
         
+        /* ADMIN */
         #admin-panel { display: none; max-width: 98%; width: 1250px; }
         .search-box { margin-bottom: 15px; padding: 12px; border-radius: 8px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; }
         
@@ -43,7 +44,8 @@
         
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
-        .badge-coleta { background: #e3f2fd; color: #0d47a1; padding: 6px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; cursor: pointer; border: 1px solid #0d47a1; }
+        /* BADGE AGENDA - Melhorada para visualização direta */
+        .badge-coleta { background: #e3f2fd; color: #0d47a1; padding: 8px 10px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; border: 2px solid #0d47a1; display: block; text-align: center; min-width: 100px; }
         .badge-espera { background: #f0f0f0; color: #555; padding: 4px 6px; border-radius: 4px; font-weight: bold; font-size: 11px; }
         
         .btn-zap { background:#25D366; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer; font-weight:bold; width: 100%; margin-bottom: 4px; display: block; text-decoration: none; text-align: center; font-size: 11px; }
@@ -129,7 +131,7 @@
         <input type="date" id="inputData">
         <label>Hora:</label>
         <input type="time" id="inputHora">
-        <button class="btn-enviar" onclick="salvarColeta()">SALVAR</button>
+        <button class="btn-enviar" onclick="salvarColeta()">SALVAR AGENDA</button>
         <button class="btn-enviar" style="background:#ccc; color:#333;" onclick="fecharModal()">CANCELAR</button>
     </div>
 </div>
@@ -137,6 +139,7 @@
 <script>
     const API_URL = 'https://sheetdb.io/api/v1/p9z83v5m0dxq5';
 
+    // UI Máscaras
     document.getElementById('placa').addEventListener('input', e => {
         let v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
         if (v.length > 3) v = v.substring(0,3) + "-" + v.substring(3,7);
@@ -154,6 +157,7 @@
         document.getElementById('campo-hora').style.display = this.checked ? 'none' : 'block';
     });
 
+    // Envio Motorista
     document.getElementById('formAgendamento').addEventListener('submit', function(e) {
         e.preventDefault();
         const btn = document.getElementById('btnEnviar');
@@ -168,7 +172,7 @@
             "JORNADA": document.getElementById('jornada24').checked ? "24 Horas" : document.getElementById('jornada').value,
             "ENTRADA": agora.toLocaleString('pt-BR'),
             "TIMESTAMP": agora.getTime(),
-            "COLETA": "Pendente",
+            "COLETA": "", // Começa vazio para mostrar Pendente
             "SAIDA": ""
         };
 
@@ -195,12 +199,10 @@
 
     function getStatusJornada(horaJornada) {
         if (!horaJornada || horaJornada === "24 Horas") return "<span>24 Horas</span>";
-        
         const agora = new Date();
         const [horas, minutos] = horaJornada.split(':');
         const dataJornada = new Date();
         dataJornada.setHours(horas, minutos, 0);
-
         const diffMinutos = (dataJornada - agora) / (1000 * 60);
 
         if (diffMinutos < 0) return `<span class="status-vencido">VENCIDA (${horaJornada})</span>`;
@@ -217,7 +219,9 @@
             data.filter(i => i.PLACA && !i.SAIDA).forEach(i => {
                 const minutosPatio = i.TIMESTAMP ? Math.floor((agora - i.TIMESTAMP) / 60000) : "?";
                 const statusJornada = getStatusJornada(i.JORNADA);
-                const agenda = i.COLETA || "Pendente";
+                
+                // Se i.COLETA estiver vazio ou nulo, mostra Pendente
+                const agendaVisual = (i.COLETA && i.COLETA !== "") ? i.COLETA : "📅 Pendente";
                 
                 tbody.innerHTML += `
                     <tr>
@@ -225,10 +229,14 @@
                         <td style="color:#666">${i.TELEFONE}</td>
                         <td>${i.PRODUTO}</td>
                         <td>${statusJornada}</td>
-                        <td><span class="badge-coleta" onclick="abrirModalColeta('${i.PLACA}')">📅 ${agenda}</span></td>
+                        <td>
+                            <span class="badge-coleta" onclick="abrirModalColeta('${i.PLACA}')">
+                                ${agendaVisual}
+                            </span>
+                        </td>
                         <td><span class="badge-espera">${minutosPatio} min</span></td>
                         <td>
-                            <button class="btn-zap" onclick="enviarZap('${i.TELEFONE}', '${i.PLACA}', '${agenda}')">📱 CHAMAR</button>
+                            <button class="btn-zap" onclick="enviarZap('${i.TELEFONE}', '${i.PLACA}', '${agendaVisual}')">📱 CHAMAR</button>
                             <button class="btn-concluir" onclick="concluir('${i.PLACA}')">CONCLUIR</button>
                         </td>
                     </tr>`;
@@ -243,13 +251,15 @@
 
     function fecharModal() {
         document.getElementById('modalColeta').style.display = 'none';
+        document.getElementById('inputData').value = "";
+        document.getElementById('inputHora').value = "";
     }
 
     function salvarColeta() {
         const placa = document.getElementById('placaAlvo').value;
         const dataInput = document.getElementById('inputData').value;
         const horaInput = document.getElementById('inputHora').value;
-        if(!dataInput || !horaInput) return alert("Preencha data e hora!");
+        if(!dataInput || !horaInput) return alert("Por favor, preencha Data e Hora!");
 
         const d = dataInput.split('-');
         const infoFinal = d[2] + "/" + d[1] + " - " + horaInput;
@@ -279,7 +289,7 @@
     }
 
     function concluir(placa) {
-        if(!confirm("Concluir descarga?")) return;
+        if(!confirm("Concluir descarga desta placa?")) return;
         fetch(`${API_URL}/PLACA/${placa}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
