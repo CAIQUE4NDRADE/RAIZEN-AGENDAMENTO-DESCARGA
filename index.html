@@ -27,7 +27,8 @@
 
         .btn-enviar { width: 100%; padding: 16px; background-color: var(--cor-principal); color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
         
-        #admin-panel { display: none; max-width: 98%; width: 1180px; }
+        /* ADMIN */
+        #admin-panel { display: none; max-width: 98%; width: 1250px; }
         .search-box { margin-bottom: 15px; padding: 12px; border-radius: 8px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; }
         
         table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; font-size: 13px; }
@@ -38,9 +39,13 @@
         .badge-jornada { background: #fce4ec; color: #c2185b; padding: 4px 6px; border-radius: 4px; font-weight: bold; font-size: 11px; }
         .badge-espera { background: #fff3cd; color: #856404; padding: 4px 6px; border-radius: 4px; font-weight: bold; font-size: 11px; }
         
-        .btn-zap { background:#25D366; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer; font-weight:bold; width: 100%; margin-bottom: 4px; display: block; text-decoration: none; text-align: center; }
-        .btn-concluir { background:#007bff; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer; font-weight:bold; width: 100%; }
+        .btn-zap { background:#25D366; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer; font-weight:bold; width: 100%; margin-bottom: 4px; display: block; text-decoration: none; text-align: center; font-size: 11px; }
+        .btn-concluir { background:#007bff; color:white; border:none; padding:8px; border-radius:5px; cursor:pointer; font-weight:bold; width: 100%; font-size: 11px; }
         
+        /* MODAL CALENDARIO */
+        #modalColeta { display:none; position:fixed; z-index:999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5); }
+        .modal-content { background:white; margin:15% auto; padding:25px; border-radius:15px; width:300px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
+
         .footer-link { text-align: center; margin-top: 20px; }
         .btn-admin-link { background: none; border: none; color: #999; text-decoration: underline; cursor: pointer; }
     </style>
@@ -88,31 +93,45 @@
 </div>
 
 <div class="container" id="admin-panel">
-    <h2>Fila do Pátio</h2>
-    <input type="text" id="buscaPlaca" class="search-box" placeholder="🔎 Filtrar Placa..." onkeyup="filtrarTabela()">
+    <h2>Painel Administrativo - Pátio</h2>
+    <input type="text" id="buscaPlaca" class="search-box" placeholder="🔎 Buscar Placa..." onkeyup="filtrarTabela()">
     
     <div style="overflow-x: auto;">
         <table id="tabelaDados">
             <thead>
                 <tr>
                     <th>Placa</th>
+                    <th>Telefone</th>
                     <th>Produto</th>
-                    <th>Fim Jornada</th>
-                    <th>Agenda Coleta (Data/Hora)</th>
-                    <th>No Pátio</th>
+                    <th>Jornada</th>
+                    <th>Agenda Coleta</th>
+                    <th>Espera</th>
                     <th>Ações</th>
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
     </div>
-    <button class="btn-enviar" style="margin-top: 20px; background:#666;" onclick="window.location.reload()">SAIR / VOLTAR</button>
+    <button class="btn-enviar" style="margin-top: 20px; background:#666;" onclick="window.location.reload()">SAIR</button>
+</div>
+
+<div id="modalColeta">
+    <div class="modal-content">
+        <h3>Agendar Coleta</h3>
+        <input type="hidden" id="placaAlvo">
+        <label>Data:</label>
+        <input type="date" id="inputData">
+        <label>Hora:</label>
+        <input type="time" id="inputHora">
+        <button class="btn-enviar" onclick="salvarColeta()">SALVAR</button>
+        <button class="btn-enviar" style="background:#ccc; color:#333;" onclick="fecharModal()">CANCELAR</button>
+    </div>
 </div>
 
 <script>
     const API_URL = 'https://sheetdb.io/api/v1/p9z83v5m0dxq5';
 
-    // Máscaras
+    // Máscaras e UI
     document.getElementById('placa').addEventListener('input', e => {
         let v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
         if (v.length > 3) v = v.substring(0,3) + "-" + v.substring(3,7);
@@ -130,7 +149,7 @@
         document.getElementById('campo-hora').style.display = this.checked ? 'none' : 'block';
     });
 
-    // Envio Motorista
+    // Envio
     document.getElementById('formAgendamento').addEventListener('submit', function(e) {
         e.preventDefault();
         const btn = document.getElementById('btnEnviar');
@@ -154,7 +173,7 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ data: [dados] })
         }).then(() => {
-            alert("✅ Registrado com Sucesso!");
+            alert("✅ Registrado!");
             document.getElementById('formAgendamento').reset();
         }).finally(() => {
             btn.innerText = "ENVIAR DADOS";
@@ -163,7 +182,7 @@
     });
 
     function abrirAdmin() {
-        if (prompt("Senha de acesso:") === "raizen2026") {
+        if (prompt("Senha:") === "raizen2026") {
             document.getElementById('tela-motorista').style.display = 'none';
             document.getElementById('admin-panel').style.display = 'block';
             carregarAtivos();
@@ -178,17 +197,18 @@
 
             data.filter(i => i.PLACA && !i.SAIDA).forEach(i => {
                 const minutosPatio = i.TIMESTAMP ? Math.floor((agora - i.TIMESTAMP) / 60000) : "?";
-                const coletaInfo = i.COLETA || "Pendente";
+                const coletaVal = i.COLETA || "Pendente";
                 
                 tbody.innerHTML += `
                     <tr>
                         <td style="font-weight:bold">${i.PLACA}</td>
+                        <td style="color:#666">${i.TELEFONE}</td>
                         <td>${i.PRODUTO}</td>
                         <td><span class="badge-jornada">⏰ ${i.JORNADA}</span></td>
-                        <td><span class="badge-coleta" onclick="editarColeta('${i.PLACA}')">📅 ${coletaInfo}</span></td>
+                        <td><span class="badge-coleta" onclick="abrirModalColeta('${i.PLACA}')">📅 ${coletaVal}</span></td>
                         <td><span class="badge-espera">${minutosPatio} min</span></td>
                         <td>
-                            <button class="btn-zap" onclick="enviarZap('${i.TELEFONE}', '${i.PLACA}', '${coletaInfo}')">📱 CHAMAR</button>
+                            <button class="btn-zap" onclick="enviarZap('${i.TELEFONE}', '${i.PLACA}', '${coletaVal}')">📱 CHAMAR</button>
                             <button class="btn-concluir" onclick="concluir('${i.PLACA}')">CONCLUIR</button>
                         </td>
                     </tr>`;
@@ -196,21 +216,35 @@
         });
     }
 
-    // NOVA FUNÇÃO: Editar Data e Hora do Coleta
-    function editarColeta(placa) {
-        const dataC = prompt("Data do Agendamento (Ex: 14/03):");
-        if (!dataC) return;
-        const horaC = prompt("Hora do Agendamento (Ex: 15:30):");
-        if (!horaC) return;
+    // FUNÇÕES DO MODAL CALENDARIO
+    function abrirModalColeta(placa) {
+        document.getElementById('placaAlvo').value = placa;
+        document.getElementById('modalColeta').style.display = 'block';
+    }
 
-        const infoFinal = dataC + " - " + horaC;
+    function fecharModal() {
+        document.getElementById('modalColeta').style.display = 'none';
+    }
+
+    function salvarColeta() {
+        const placa = document.getElementById('placaAlvo').value;
+        const dataInput = document.getElementById('inputData').value; // Formato YYYY-MM-DD
+        const horaInput = document.getElementById('inputHora').value;
+
+        if(!dataInput || !horaInput) { alert("Preencha data e hora!"); return; }
+
+        // Formata data para DD/MM
+        const d = dataInput.split('-');
+        const dataFormatada = d[2] + "/" + d[1];
+        const infoFinal = dataFormatada + " - " + horaInput;
 
         fetch(`${API_URL}/PLACA/${placa}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ data: { "COLETA": infoFinal } })
         }).then(() => {
-            carregarAtivos(); // Recarrega a tabela para mostrar o valor novo
+            fecharModal();
+            carregarAtivos();
         });
     }
 
@@ -221,15 +255,15 @@
     }
 
     function enviarZap(tel, placa, agenda) {
-        const baia = prompt("Informe a BAIA para a placa " + placa);
+        const baia = prompt("Informe a BAIA:");
         if (!baia) return;
         const limpo = tel.replace(/\D/g, "");
-        const txt = encodeURIComponent(`*RAÍZEN PAULÍNIA*\n\nMotorista da placa *${placa}* (Agendamento Coleta: ${agenda}), sua descarga está liberada na *BAIA ${baia}*.\n\nFavor deslocar-se imediatamente.`);
+        const txt = encodeURIComponent(`*RAÍZEN PAULÍNIA*\n\nMotorista da placa *${placa}* (Agenda Coleta: ${agenda}), descarga liberada na *BAIA ${baia}*.\n\nFavor deslocar-se agora.`);
         window.open(`https://web.whatsapp.com/send?phone=55${limpo}&text=${txt}`, '_blank');
     }
 
     function concluir(placa) {
-        if(!confirm("Deseja finalizar a placa " + placa + "?")) return;
+        if(!confirm("Concluir placa " + placa + "?")) return;
         fetch(`${API_URL}/PLACA/${placa}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
