@@ -3,213 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raízen - CONTROLE DE DESCARGA ÁREA 2</title>
+    <title>Raízen - CONTROLE DE DESCARGA ÁREA 2 - TERMINAL PAULÍNIA</title>
     <style>
         /* ==========================================================================
-           IDENTIDADE VISUAL E CORES OFICIAIS
+           CONFIGURAÇÕES DE DESIGN E IDENTIDADE RAÍZEN
            ========================================================================== */
         :root {
-            --cor-principal: #4d6d5d; /* Verde Raízen */
-            --amarelo-raizen: #ffcd00; /* Amarelo Raízen */
-            --fundo: #f0f2f5;
-            --branco: #ffffff;
-            --danger: #dc3545;
-            --warning: #ffc107;
-            --success: #28a745;
-            --azul-raizen: #007bff;
-            --sombra: 0 15px 35px rgba(0,0,0,0.15);
+            --verde-raizen: #4d6d5d; 
+            --amarelo-raizen: #ffcd00;
+            --fundo-cinza: #f0f2f5;
+            --branco-puro: #ffffff;
+            --vermelho-alerta: #dc3545;
+            --verde-sucesso: #28a745;
+            --azul-link: #007bff;
+            --sombra-box: 0 15px 40px rgba(0,0,0,0.2);
         }
 
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: var(--fundo); 
+            background-color: var(--fundo-cinza); 
             margin: 0; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
         }
         
-        /* CABEÇALHO ROBUSTO */
+        /* CABEÇALHO COM SOMBRA E BORDA AMARELA */
         header { 
-            background-color: var(--cor-principal); 
+            background-color: var(--verde-raizen); 
             width: 100%; 
-            padding: 30px 0; 
+            padding: 35px 0; 
             text-align: center; 
             border-bottom: 8px solid var(--amarelo-raizen); 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3); 
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
         }
         header h1 { 
-            color: var(--branco); 
+            color: var(--branco-puro); 
             margin: 0; 
-            font-size: 26px; 
+            font-size: 28px; 
             text-transform: uppercase; 
-            letter-spacing: 2px; 
-            font-weight: 800;
+            letter-spacing: 3px; 
+            font-weight: 900;
         }
         
-        /* CONTAINERS PRINCIPAIS */
+        /* CONTAINERS DAS TELAS PRINCIPAIS */
         .container { 
             width: 92%; 
-            max-width: 650px; 
-            margin: 40px auto; 
-            background: var(--branco); 
-            padding: 40px; 
-            border-radius: 25px; 
-            box-shadow: var(--sombra); 
-            transition: all 0.3s ease;
+            max-width: 680px; 
+            margin: 45px auto; 
+            background: var(--branco-puro); 
+            padding: 45px; 
+            border-radius: 30px; 
+            box-shadow: var(--sombra-box); 
         }
 
-        /* PAINEL ADMINISTRATIVO EXPANDIDO */
+        /* PAINEL ADMINISTRATIVO (MÁXIMA LARGURA) */
         #admin-panel { 
             display: none; 
             max-width: 98%; 
-            width: 1500px; 
+            width: 1600px; 
         }
 
         h2 { 
-            color: var(--cor-principal); 
+            color: var(--verde-raizen); 
             text-align: center; 
-            border-bottom: 3px solid var(--amarelo-raizen); 
-            padding-bottom: 15px; 
-            margin-bottom: 30px; 
+            border-bottom: 4px solid var(--amarelo-raizen); 
+            padding-bottom: 20px; 
+            margin-bottom: 35px; 
             text-transform: uppercase;
-            font-size: 20px;
+            font-size: 22px;
         }
         
-        /* FORMULÁRIO MOTORISTA */
+        /* ESTILIZAÇÃO DOS CAMPOS DE ENTRADA */
         label { 
             display: block; 
-            margin-top: 20px; 
-            font-weight: bold; 
-            color: #333; 
-            font-size: 16px;
+            margin-top: 25px; 
+            font-weight: 800; 
+            color: #222; 
+            font-size: 17px; 
         }
 
         input, select { 
             width: 100%; 
-            padding: 18px; 
-            margin-top: 8px; 
-            border: 2px solid #ddd; 
-            border-radius: 12px; 
+            padding: 20px; 
+            margin-top: 10px; 
+            border: 2px solid #ccc; 
+            border-radius: 15px; 
             box-sizing: border-box; 
             font-size: 18px; 
             color: #333;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
         }
-        input:focus { border-color: var(--cor-principal); outline: none; }
+        input:focus { border-color: var(--verde-raizen); outline: none; box-shadow: 0 0 12px rgba(77,109,93,0.3); }
 
-        /* LÓGICA DA JORNADA (BOX) */
-        .jornada-container {
-            background: #f8fbf9;
+        /* CAMPO DE BUSCA DE PLACA NO PAINEL ADMIN */
+        .busca-placa-area {
+            background: #e9ecef;
             padding: 25px;
-            border-radius: 15px;
-            border: 2px dashed #cbd5e0;
-            margin-top: 25px;
-        }
-
-        .checkbox-estilizado {
+            border-radius: 20px;
+            margin-bottom: 30px;
             display: flex;
             align-items: center;
-            gap: 15px;
-            cursor: pointer;
-            padding: 15px;
-            background: white;
-            border-radius: 12px;
+            gap: 20px;
             border: 1px solid #ddd;
-            margin-top: 15px;
-            user-select: none;
         }
-        .checkbox-estilizado input { 
-            width: 30px; 
-            height: 30px; 
-            cursor: pointer;
-        }
-        .checkbox-estilizado span { 
-            font-size: 18px; 
-            font-weight: bold; 
-            color: var(--cor-principal); 
+        .busca-placa-area input { margin-top: 0; background: white; border: 2px solid var(--verde-raizen); font-weight: bold; }
+
+        /* BOX DA JORNADA (ESTILO MOTORISTA) */
+        .box-jornada {
+            background: #f1f5f2;
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px dashed #999;
+            margin-top: 30px;
         }
 
-        /* BOTÕES */
-        .btn-enviar { 
+        .check-container {
+            display: flex; 
+            align-items: center; 
+            gap: 20px; 
+            cursor: pointer; 
+            padding: 20px; 
+            background: white; 
+            border-radius: 15px; 
+            border: 1px solid #ddd; 
+            margin-top: 20px;
+            user-select: none;
+        }
+        .check-container input { width: 35px; height: 35px; cursor: pointer; }
+        .check-container span { font-size: 19px; font-weight: bold; color: var(--verde-raizen); }
+
+        /* BOTÕES DE AÇÃO */
+        .btn-principal { 
             width: 100%; 
-            padding: 22px; 
-            background-color: var(--cor-principal); 
+            padding: 25px; 
+            background-color: var(--verde-raizen); 
             color: white; 
             border: none; 
             border-radius: 15px; 
-            font-size: 22px; 
-            font-weight: bold; 
+            font-size: 24px; 
+            font-weight: 900; 
             cursor: pointer; 
-            margin-top: 30px; 
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            margin-top: 35px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
         }
-        .btn-enviar:hover { background-color: #3d5a4d; }
+        .btn-principal:active { transform: scale(0.97); }
 
-        /* TABELA ADMINISTRATIVA */
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 15px; overflow: hidden; }
-        th { background: var(--cor-principal); color: white; padding: 22px; text-align: center; font-size: 13px; text-transform: uppercase; }
-        td { padding: 20px; border-bottom: 1px solid #eee; text-align: center; font-size: 14px; font-weight: 600; }
+        /* TABELA DE DADOS - ADMIN */
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        th { background: var(--verde-raizen); color: white; padding: 25px; text-align: center; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+        td { padding: 22px; border-bottom: 1px solid #eee; text-align: center; font-size: 15px; font-weight: 700; }
         
-        /* STATUS DE AGENDAMENTO (LÓGICA DA SETA VERMELHA) */
+        /* STATUS DE AGENDAMENTO (LOGICA DA SETA) */
         .status-pendente { 
-            color: var(--danger); 
-            font-weight: 800; 
-            background: #fff0f0; 
-            padding: 10px; 
-            border-radius: 8px; 
-            border: 1px solid #ffcccc;
-            display: inline-block;
-            animation: pulse 2s infinite;
+            color: white; 
+            background: var(--vermelho-alerta); 
+            padding: 12px 18px; 
+            border-radius: 10px; 
+            font-weight: 900; 
+            display: inline-block; 
+            animation: pulse-vermelho 1.8s infinite;
         }
         .status-agendado { 
             color: #1b5e20; 
-            font-weight: 800; 
             background: #e8f5e9; 
-            padding: 10px; 
-            border-radius: 8px; 
-            border: 2px solid #c8e6c9;
-            display: block;
+            padding: 14px; 
+            border-radius: 12px; 
+            border: 3px solid #c8e6c9; 
+            display: block; 
+            font-size: 16px;
         }
 
-        /* BADGES DE JORNADA */
-        .badge { padding: 8px 12px; border-radius: 8px; font-weight: bold; font-size: 12px; color: white; }
-        .bg-ok { background: var(--success); }
-        .bg-vencido { background: var(--danger); animation: piscar 1.2s infinite; }
+        /* ANIMAÇÕES */
+        @keyframes pulse-vermelho { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.05); } 100% { opacity: 1; transform: scale(1); } }
         
-        @keyframes piscar { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
+        .badge-jornada { padding: 10px 15px; border-radius: 10px; font-weight: bold; font-size: 13px; color: white; }
+        .badge-ok { background: var(--verde-sucesso); }
+        .badge-vencida { background: var(--vermelho-alerta); animation: blink 1s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-        /* AÇÕES DO ADMIN */
-        .btn-acao { 
-            border: none; border-radius: 8px; padding: 12px; font-weight: bold; cursor: pointer; font-size: 11px; 
-            width: 100%; margin-bottom: 8px; color: white; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 8px;
+        /* BOTÕES INTERNOS DA TABELA */
+        .btn-tabela { 
+            border: none; border-radius: 10px; padding: 14px; font-weight: bold; cursor: pointer; font-size: 11px; 
+            width: 100%; margin-bottom: 10px; color: white; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-        .btn-calendario { background: white; color: var(--azul-raizen); border: 2px solid var(--azul-raizen); }
-        .btn-zap { background: #25D366; }
-        .btn-ok { background: var(--azul-raizen); }
+        .btn-agenda { background: white; color: var(--azul-link); border: 2px solid var(--azul-link); }
+        .btn-whatsapp { background: #25D366; }
+        .btn-finalizar { background: var(--azul-link); }
 
         /* MODAL DE AGENDAMENTO */
-        #modalColeta { display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.8); backdrop-filter: blur(8px); }
-        .modal-content { background:white; margin:8% auto; padding:40px; border-radius:30px; width:420px; text-align: center; box-shadow: 0 30px 70px rgba(0,0,0,0.5); }
+        #modalAgendamento { display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter: blur(12px); }
+        .modal-body { background:white; margin:6% auto; padding:50px; border-radius:40px; width:480px; text-align: center; box-shadow: 0 50px 100px rgba(0,0,0,0.7); }
     </style>
 </head>
 <body>
 
 <header><h1>RAÍZEN - TERMINAL PAULÍNIA</h1></header>
 
-<div class="container" id="tela-motorista">
+<div class="container" id="tela-entrada">
     <h2>DESCARGA ÁREA 2</h2>
-    <form id="formAgendamento">
-        <label>Placa do Veículo</label>
-        <input type="text" id="placa" placeholder="ABC-1234" maxlength="8" required>
+    <form id="formMotorista">
+        <label>Placa do Caminhão</label>
+        <input type="text" id="placaInput" placeholder="ABC-1234" maxlength="8" required>
         
-        <label>Produto</label>
-        <select id="produto" required>
-            <option value="">Selecione o produto...</option>
+        <label>Produto para Descarga</label>
+        <select id="produtoInput" required>
+            <option value="">Clique para selecionar...</option>
             <option value="GASOLINA">GASOLINA</option>
             <option value="BIODIESEL (B100)">BIODIESEL (B100)</option>
             <option value="S10">S10</option>
@@ -217,220 +220,212 @@
             <option value="HIDRATADO">HIDRATADO</option>
         </select>
 
-        <label>WhatsApp (DDD + Número)</label>
-        <input type="tel" id="telefone" placeholder="(19) 99999-9999" maxlength="15" required>
+        <label>WhatsApp (com DDD)</label>
+        <input type="tel" id="whatsappInput" placeholder="(19) 99999-9999" maxlength="15" required>
 
-        <div class="jornada-container">
-            <div id="campoHora">
-                <label style="margin-top: 0;">Fim da Jornada (Horário):</label>
-                <input type="time" id="horaJornada" required>
+        <div class="box-jornada">
+            <div id="containerRelogio">
+                <label style="margin-top: 0;">Horário que acaba sua Jornada:</label>
+                <input type="time" id="fimJornadaInput" required>
             </div>
-            <label class="checkbox-estilizado">
-                <input type="checkbox" id="check24h" onchange="alternarJornada()">
-                <span>Minha jornada é 24 Horas (Livre)</span>
+            <label class="check-container">
+                <input type="checkbox" id="check24horas" onchange="toggleRelogio()">
+                <span>Minha jornada é de 24 Horas</span>
             </label>
         </div>
 
-        <button type="submit" class="btn-enviar" id="btnEnviar">REGISTRAR ENTRADA</button>
+        <button type="submit" class="btn-principal" id="btnSalvarMotorista">CONCLUIR REGISTRO</button>
     </form>
-    <div style="text-align:center; margin-top:25px;">
-        <button onclick="entrarAdmin()" style="background:none; border:none; color:#bbb; text-decoration:underline; cursor:pointer; font-size:14px;">Acesso Administrativo</button>
+    <div style="text-align:center; margin-top:30px;">
+        <button onclick="acessarAdmin()" style="background:none; border:none; color:#bbb; text-decoration:underline; cursor:pointer; font-size:15px;">Acesso Administrativo</button>
     </div>
 </div>
 
 <div class="container" id="admin-panel">
-    <h2>CONTROLE DE PÁTIO - ÁREA 2</h2>
+    <h2>GESTÃO DE PÁTIO - ÁREA 2</h2>
+    
+    <div class="busca-placa-area">
+        <strong style="color:var(--verde-raizen); font-size:18px;">🔎 FILTRAR PLACA:</strong>
+        <input type="text" id="campoBuscaPlaca" placeholder="Digite a placa para buscar..." onkeyup="executarFiltro()">
+    </div>
+
     <div style="overflow-x: auto;">
-        <table id="tabelaDados">
+        <table id="tabelaGeral">
             <thead>
                 <tr>
                     <th>Placa</th>
                     <th>WhatsApp</th>
                     <th>Jornada</th>
-                    <th style="background:#2d4a3e; color:white; width: 220px;">AGENDAMENTO COLETA</th>
-                    <th>Tempo Pátio</th>
-                    <th style="width: 200px;">Ações</th>
+                    <th style="background:#2d4a3e; color:white; width: 240px;">AGENDAMENTO:</th>
+                    <th>Espera</th>
+                    <th style="width: 190px;">Controles</th>
                 </tr>
             </thead>
             <tbody>
                 </tbody>
         </table>
     </div>
-    <button class="btn-enviar" style="background:#666;" onclick="window.location.reload()">SAIR DO PAINEL</button>
+    <button class="btn-principal" style="background:#555;" onclick="window.location.reload()">SAIR DO SISTEMA</button>
 </div>
 
-<div id="modalColeta">
-    <div class="modal-content">
-        <h3 style="margin-top:0; color:var(--cor-principal);">Definir Coleta</h3>
-        <p id="mostraPlaca" style="font-weight:bold; font-size:22px; color:#333; margin-bottom:25px;"></p>
-        <input type="hidden" id="placaAlvo">
+<div id="modalAgendamento">
+    <div class="modal-body">
+        <h3 style="margin-top:0; font-size:24px;">Definir Agendamento</h3>
+        <p id="placaDestaqueModal" style="font-weight:bold; font-size:26px; color:var(--verde-raizen); margin: 20px 0;"></p>
+        <input type="hidden" id="placaAlvoHidden">
         
-        <label>Data Programada:</label>
-        <input type="date" id="dataColeta">
+        <label>Escolha a Data:</label>
+        <input type="date" id="inputDataColeta">
         
-        <label>Hora Programada:</label>
-        <input type="time" id="horaColeta">
+        <label>Escolha o Horário:</label>
+        <input type="time" id="inputHoraColeta">
         
-        <button class="btn-enviar" id="btnSalvarModal" onclick="salvarAgendaNaPlanilha()">GRAVAR AGENDAMENTO</button>
-        <button onclick="fecharModal()" style="margin-top:20px; border:none; background:none; color:red; font-weight:bold; cursor:pointer;">CANCELAR</button>
+        <button class="btn-principal" id="btnSalvarAgendaFinal" onclick="enviarDadosParaPlanilha()">CONFIRMAR NA PLANILHA</button>
+        <button onclick="fecharModalAgendamento()" style="margin-top:25px; border:none; background:none; color:red; font-weight:bold; cursor:pointer; font-size:16px;">CANCELAR OPERAÇÃO</button>
     </div>
 </div>
 
 <script>
-    const API_URL = 'https://sheetdb.io/api/v1/p9z83v5m0dxq5';
+    const SHEET_API = 'https://sheetdb.io/api/v1/p9z83v5m0dxq5';
 
-    // 1. GESTÃO DA JORNADA DO MOTORISTA
-    function alternarJornada() {
-        const checked = document.getElementById('check24h').checked;
-        document.getElementById('campoHora').style.display = checked ? 'none' : 'block';
-        document.getElementById('horaJornada').required = !checked;
+    // FUNÇÕES DE INTERFACE DO MOTORISTA
+    function toggleRelogio() {
+        const is24h = document.getElementById('check24horas').checked;
+        document.getElementById('containerRelogio').style.display = is24h ? 'none' : 'block';
+        document.getElementById('fimJornadaInput').required = !is24h;
     }
 
-    // 2. MÁSCARAS DE INPUT
-    document.getElementById('telefone').addEventListener('input', (e) => {
-        let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
-        e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+    // MÁSCARAS DE INPUT (PLACA E CELULAR)
+    document.getElementById('whatsappInput').addEventListener('input', (e) => {
+        let v = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+        e.target.value = !v[2] ? v[1] : '(' + v[1] + ') ' + v[2] + (v[3] ? '-' + v[3] : '');
     });
-
-    document.getElementById('placa').addEventListener('input', (e) => {
+    document.getElementById('placaInput').addEventListener('input', (e) => {
         let v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
         if (v.length > 3 && !isNaN(v[3])) v = v.substring(0,3) + "-" + v.substring(3,7);
         e.target.value = v.substring(0,8);
     });
 
-    // 3. ATUALIZAÇÃO DO PAINEL ADMIN (LOGICA ROBUSTA)
-    function atualizarTabelaAdmin() {
-        const tbody = document.querySelector('#tabelaDados tbody');
-        tbody.innerHTML = "<tr><td colspan='6'>Consultando Planilha...</td></tr>";
+    // FUNÇÃO DE BUSCA/FILTRO (O QUE TINHA SUMIDO)
+    function executarFiltro() {
+        const filter = document.getElementById("campoBuscaPlaca").value.toUpperCase();
+        const trs = document.getElementById("tabelaGeral").getElementsByTagName("tr");
+        for (let i = 1; i < trs.length; i++) {
+            let td = trs[i].getElementsByTagName("td")[0];
+            if (td) {
+                let txt = td.textContent || td.innerText;
+                trs[i].style.display = txt.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+            }
+        }
+    }
 
-        fetch(API_URL + "?t=" + new Date().getTime())
+    // CARREGAMENTO DA TABELA COM LÓGICA DE SUMIR O PENDENTE
+    function carregarTabelaDados() {
+        const tbody = document.querySelector('#tabelaGeral tbody');
+        tbody.innerHTML = "<tr><td colspan='6'>Buscando informações na nuvem Raízen...</td></tr>";
+
+        fetch(SHEET_API + "?t=" + new Date().getTime())
         .then(res => res.json())
         .then(data => {
             tbody.innerHTML = "";
-            data.filter(i => i.PLACA && !i.SAIDA).forEach(i => {
+            data.filter(row => row.PLACA && !row.SAIDA).forEach(row => {
                 
-                // --- AQUI ESTÁ A LÓGICA DA SETA VERMELHA ---
-                // Se COLETA existir e não for vazio, o Pendente SOME.
-                let agendamentoVisual = "";
-                if (i.COLETA && i.COLETA.trim() !== "" && i.COLETA !== "undefined" && i.COLETA !== "null") {
-                    agendamentoVisual = `<span class="status-agendado">${i.COLETA}</span>`;
+                // --- LÓGICA DA SETA: SE TIVER COLETA, SOME O PENDENTE ---
+                let agendamentoHTML = "";
+                if (row.COLETA && row.COLETA.trim() !== "" && row.COLETA !== "undefined" && row.COLETA !== "null") {
+                    agendamentoHTML = `<span class="status-agendado">📅 ${row.COLETA}</span>`;
                 } else {
-                    agendamentoVisual = `<span class="status-pendente">PENDENTE</span>`;
+                    agendamentoHTML = `<span class="status-pendente">⚠️ PENDENTE</span>`;
                 }
 
                 tbody.innerHTML += `
                     <tr>
-                        <td style="font-size:16px; font-weight:800;">${i.PLACA}</td>
-                        <td>${i.TELEFONE}</td>
-                        <td>${statusJornada(i.JORNADA)}</td>
-                        <td style="background:#fcfcfc">${agendamentoVisual}</td>
-                        <td style="color:#666;">${calcularTempo(i.ENTRADA)}</td>
+                        <td style="font-size:17px;">${row.PLACA}</td>
+                        <td>${row.TELEFONE}</td>
+                        <td>${formatarJornada(row.JORNADA)}</td>
+                        <td style="background:#fcfcfc">${agendamentoHTML}</td>
+                        <td style="color:#777;">${calcularTempoPatio(row.ENTRADA)}</td>
                         <td>
-                            <button class="btn-acao btn-calendario" onclick="abrirModal('${i.PLACA}')">📅 AGENDAR COLETA</button>
-                            <button class="btn-acao btn-zap" onclick="chamarNoZap('${i.TELEFONE}', '${i.PLACA}', '${i.COLETA}')">📱 CHAMAR</button>
-                            <button class="btn-acao btn-ok" onclick="finalizarDescarga('${i.PLACA}')">✅ CONCLUIR</button>
+                            <button class="btn-tabela btn-agenda" onclick="abrirModalAgenda('${row.PLACA}')">📅 AGENDAR</button>
+                            <button class="btn-tabela btn-whatsapp" onclick="enviarMensagem('${row.TELEFONE}', '${row.PLACA}', '${row.COLETA}')">📱 CHAMAR</button>
+                            <button class="btn-tabela btn-finalizar" onclick="registrarSaida('${row.PLACA}')">✅ FINALIZAR</button>
                         </td>
                     </tr>`;
             });
         });
     }
 
-    // 4. CÁLCULOS DE STATUS E TEMPO
-    function statusJornada(horaFim) {
-        if (!horaFim || horaFim === "24 Horas") return '<span class="badge bg-ok">LIVRE (24h)</span>';
-        const agora = new Date();
-        const [h, m] = horaFim.split(':');
-        const limite = new Date(); limite.setHours(h, m, 0);
-        return (limite < agora) ? `<span class="badge bg-vencido">VENCIDA</span>` : `<span class="badge bg-ok">EM DIA</span>`;
+    // AUXILIARES DE CÁLCULO
+    function formatarJornada(valor) {
+        if (!valor || valor === "24 Horas") return '<span class="badge-jornada badge-ok">LIBERADA (24H)</span>';
+        const [h, m] = valor.split(':');
+        const d = new Date(); d.setHours(h, m, 0);
+        return (d < new Date()) ? `<span class="badge-jornada badge-vencida">VENCIDA (${valor})</span>` : `<span class="badge-jornada badge-ok">EM DIA (${valor})</span>`;
     }
 
-    function calcularTempo(entrada) {
+    function calcularTempoPatio(entrada) {
         if(!entrada) return "0 min";
-        const p = entrada.split(', ');
-        const d = p[0].split('/'); const h = p[1].split(':');
-        const inicio = new Date(d[2], d[1]-1, d[0], h[0], h[1]);
-        const diff = Math.floor((new Date() - inicio) / 60000);
+        const partes = entrada.split(', ');
+        const dataP = partes[0].split('/'); const horaP = partes[1].split(':');
+        const dtEntrada = new Date(dataP[2], dataP[1]-1, dataP[0], horaP[0], horaP[1]);
+        const diff = Math.floor((new Date() - dtEntrada) / 60000);
         return diff > 60 ? Math.floor(diff/60) + "h " + (diff%60) + "m" : diff + " min";
     }
 
-    // 5. FUNÇÕES DO MODAL
-    function abrirModal(placa) {
-        document.getElementById('placaAlvo').value = placa;
-        document.getElementById('mostraPlaca').innerText = "VEÍCULO: " + placa;
-        document.getElementById('modalColeta').style.display = 'block';
+    // MODAL E GRAVAÇÃO
+    function abrirModalAgenda(placa) {
+        document.getElementById('placaAlvoHidden').value = placa;
+        document.getElementById('placaDestaqueModal').innerText = "VEÍCULO: " + placa;
+        document.getElementById('modalAgendamento').style.display = 'block';
     }
-    function fecharModal() { document.getElementById('modalColeta').style.display = 'none'; }
+    function fecharModalAgendamento() { document.getElementById('modalAgendamento').style.display = 'none'; }
 
-    function salvarAgendaNaPlanilha() {
-        const placa = document.getElementById('placaAlvo').value;
-        const d = document.getElementById('dataColeta').value.split('-').reverse().join('/');
-        const h = document.getElementById('horaColeta').value;
-        if(!d || !h || d === "") return alert("Erro: Preencha data e hora corretamente!");
+    function enviarDadosParaPlanilha() {
+        const placa = document.getElementById('placaAlvoHidden').value;
+        const dt = document.getElementById('inputDataColeta').value.split('-').reverse().join('/');
+        const hr = document.getElementById('inputHoraColeta').value;
+        if(!dt || !hr || dt === "") return alert("Selecione a Data e Hora!");
 
-        const textoFinal = d + " às " + h;
-        const btn = document.getElementById('btnSalvarModal');
+        const btn = document.getElementById('btnSalvarAgendaFinal');
         btn.innerText = "GRAVANDO...";
 
-        fetch(`${API_URL}/PLACA/${placa}`, {
+        fetch(`${SHEET_API}/PLACA/${placa}`, {
             method: 'PATCH',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ "COLETA": textoFinal })
+            body: JSON.stringify({ "COLETA": dt + " às " + hr })
         }).then(() => {
-            fecharModal();
-            atualizarTabelaAdmin();
-            btn.innerText = "GRAVAR AGENDAMENTO";
+            fecharModalAgendamento();
+            carregarTabelaDados();
+            btn.innerText = "CONFIRMAR NA PLANILHA";
         });
     }
 
-    // 6. SUBMISSÃO DO MOTORISTA
-    document.getElementById('formAgendamento').addEventListener('submit', function(e) {
+    // REGISTRO DE MOTORISTA
+    document.getElementById('formMotorista').addEventListener('submit', function(e) {
         e.preventDefault();
-        const btn = document.getElementById('btnEnviar');
-        btn.innerText = "REGISTRANDO...";
+        const btn = document.getElementById('btnSalvarMotorista');
+        btn.innerText = "ENVIANDO...";
 
-        const dados = {
-            "PLACA": document.getElementById('placa').value,
-            "PRODUTO": document.getElementById('produto').value,
-            "TELEFONE": document.getElementById('telefone').value,
-            "JORNADA": document.getElementById('check24h').checked ? "24 Horas" : document.getElementById('horaJornada').value,
+        const payload = {
+            "PLACA": document.getElementById('placaInput').value,
+            "PRODUTO": document.getElementById('produtoInput').value,
+            "TELEFONE": document.getElementById('whatsappInput').value,
+            "JORNADA": document.getElementById('check24horas').checked ? "24 Horas" : document.getElementById('fimJornadaInput').value,
             "ENTRADA": new Date().toLocaleString('pt-BR'),
             "COLETA": "", "SAIDA": ""
         };
 
-        fetch(API_URL, { 
-            method: 'POST', 
-            headers: {'Content-Type': 'application/json'}, 
-            body: JSON.stringify([dados]) 
-        }).then(() => {
-            alert("Entrada registrada com sucesso!");
-            location.reload();
-        });
+        fetch(SHEET_API, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify([payload]) })
+        .then(() => { alert("Entrada Confirmada!"); location.reload(); });
     });
 
-    // 7. AÇÕES FINAIS
-    function entrarAdmin() {
-        if (prompt("Senha de Acesso:") === "raizen2026") {
-            document.getElementById('tela-motorista').style.display = 'none';
-            document.getElementById('admin-panel').style.display = 'block';
-            atualizarTabelaAdmin();
-        }
-    }
-
-    function finalizarDescarga(placa) {
-        if(confirm("Deseja finalizar a descarga do veículo " + placa + "?")) {
-            fetch(`${API_URL}/PLACA/${placa}`, {
-                method: 'PATCH',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ "SAIDA": new Date().toLocaleString() })
-            }).then(() => atualizarTabelaAdmin());
-        }
-    }
-
-    function chamarNoZap(tel, placa, coleta) {
-        const baia = prompt("Para qual BAIA o motorista deve se dirigir?");
+    function acessarAdmin() { if (prompt("Digite a Senha Raízen:") === "raizen2026") { document.getElementById('tela-entrada').style.display='none'; document.getElementById('admin-panel').style.display='block'; carregarTabelaDados(); } }
+    function registrarSaida(placa) { if(confirm("Liberar saída do veículo?")) fetch(`${SHEET_API}/PLACA/${placa}`, { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ "SAIDA": new Date().toLocaleString() }) }).then(() => carregarTabelaDados()); }
+    function enviarMensagem(tel, placa, coleta) {
+        const baia = prompt("Qual a BAIA de descarga?");
         if(baia) {
-            const msg = `*RAÍZEN - TERMINAL PAULÍNIA*%0A%0A*PLACA:* ${placa}%0A*AGENDAMENTO:* ${coleta || 'Pendente'}%0A*BAIA:* ${baia}%0A%0AFavor entrar para descarga imediatamente.`;
-            window.open(`https://web.whatsapp.com/send?phone=55${tel.replace(/\D/g, "")}&text=${msg}`);
+            const texto = `*TERMINAL RAÍZEN PAULÍNIA*%0APLACA: *${placa}*%0ACOLETA: *${coleta || 'Pendente'}*%0ABAIA: *${baia}*%0A%0AFavor dirigir-se à descarga imediatamente.`;
+            window.open(`https://web.whatsapp.com/send?phone=55${tel.replace(/\D/g, "")}&text=${texto}`);
         }
     }
 </script>
