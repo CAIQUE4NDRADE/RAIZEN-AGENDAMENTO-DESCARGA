@@ -1,10 +1,3 @@
-Entendi perfeitamente o seu ponto. Para o motorista, quanto menos clique e menos confusão, melhor. O que você quer é aquele campo que "se transforma": se for 24h, ele não vê relógio nenhum; se ele desmarcar o 24h, o relógio aparece para ele colocar o horário.
-
-Ajustei o código para ser extremamente visual e simples. Agora o motorista vê uma caixa de seleção (checkbox) grande. Se estiver marcada, está em "24 Horas". Se ele desmarcar, o relógio aparece na hora.
-
-Aqui está o código completo, com as 290 linhas, sem simplificações, com todas as travas de placa e o relógio inteligente:
-
-HTML
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -57,34 +50,32 @@ HTML
             border: 2px solid #ddd; 
             border-radius: 10px; 
             box-sizing: border-box; 
-            font-size: 18px; /* Fonte maior para o motorista enxergar bem */
+            font-size: 18px;
         }
 
-        /* ESTILO DO CAMPO DE JORNADA (O QUE VOCÊ PEDIU) */
         .jornada-container {
-            background: #f9f9f9;
+            background: #f1f3f1;
             padding: 15px;
             border-radius: 10px;
-            border: 1px solid #eee;
-            margin-top: 10px;
+            border: 1px solid #ddd;
+            margin-top: 15px;
         }
+
         .checkbox-group {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+            margin-top: 10px;
             cursor: pointer;
-            user-select: none;
+            padding: 10px;
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #ccc;
         }
         .checkbox-group input[type="checkbox"] {
-            width: 30px;
-            height: 30px;
-            margin: 0;
+            width: 25px;
+            height: 25px;
             cursor: pointer;
-        }
-        .checkbox-label {
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--cor-principal);
         }
 
         .btn-enviar { 
@@ -101,7 +92,7 @@ HTML
         }
 
         /* TABELA ADMIN */
-        table { width: 100%; border-collapse: collapse; background: white; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; background: white; }
         th { background: var(--cor-principal); color: white; padding: 12px; text-align: left; font-size: 13px; }
         td { padding: 12px; border-bottom: 1px solid #eee; font-size: 13px; }
         
@@ -131,7 +122,7 @@ HTML
         
         <label>Produto</label>
         <select id="produto" required>
-            <option value="">Selecione...</option>
+            <option value="">Selecione o produto...</option>
             <option value="GASOLINA">GASOLINA</option>
             <option value="BIODIESEL (B100)">BIODIESEL (B100)</option>
             <option value="S10">S10</option>
@@ -143,27 +134,27 @@ HTML
         <input type="tel" id="telefone" placeholder="(19) 99999-9999" maxlength="15" required>
 
         <div class="jornada-container">
-            <label class="checkbox-group">
-                <input type="checkbox" id="check24h" checked onchange="toggleJornada()">
-                <span class="checkbox-label">Jornada 24 Horas (Livre)</span>
-            </label>
-            
-            <div id="campoHorario" style="display: none; margin-top: 15px;">
-                <label style="margin-top: 0;">Horário do Fim da Jornada:</label>
-                <input type="time" id="horaJornada">
+            <div id="divHorario">
+                <label style="margin-top: 0;">Fim da Jornada (Horário):</label>
+                <input type="time" id="horaJornada" required>
             </div>
+            
+            <label class="checkbox-group">
+                <input type="checkbox" id="check24h" onchange="toggleJornada()">
+                <span style="font-weight: bold; font-size: 16px;">Jornada 24 Horas (Sem Fim)</span>
+            </label>
         </div>
 
-        <button type="submit" class="btn-enviar" id="btnEnviar">ENVIAR AGORA</button>
+        <button type="submit" class="btn-enviar" id="btnEnviar">REGISTRAR ENTRADA</button>
     </form>
     
     <div style="text-align: center; margin-top: 30px;">
-        <button onclick="abrirAdmin()" style="background:none; border:none; color:#ccc; text-decoration:underline; cursor:pointer;">Painel Admin</button>
+        <button onclick="abrirAdmin()" style="background:none; border:none; color:#ccc; text-decoration:underline; cursor:pointer;">Admin</button>
     </div>
 </div>
 
 <div class="container" id="admin-panel">
-    <h2>CONTROLE DE PÁTIO - ÁREA 2</h2>
+    <h2>PAINEL ADMINISTRATIVO</h2>
     <div style="overflow-x: auto;">
         <table id="tabelaDados">
             <thead>
@@ -172,37 +163,45 @@ HTML
                     <th>WhatsApp</th>
                     <th>Produto</th>
                     <th>Status Jornada</th>
-                    <th style="background:#2d4a3e;">Agendado</th>
-                    <th>Espera</th>
+                    <th style="background:#2d4a3e; color:white;">Agendado</th>
+                    <th>Pátio</th>
                     <th>Ações</th>
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
     </div>
-    <button class="btn-enviar" style="background:#666;" onclick="window.location.reload()">VOLTAR</button>
+    <button class="btn-enviar" style="background:#666;" onclick="window.location.reload()">SAIR</button>
 </div>
 
 <div id="modalColeta">
     <div class="modal-content">
-        <h3>Definir Agenda</h3>
+        <h3>Definir Coleta</h3>
         <input type="hidden" id="placaAlvo">
-        <input type="date" id="inputData"><br>
-        <input type="time" id="inputHora"><br>
+        <input type="date" id="inputData"><br><br>
+        <input type="time" id="inputHora"><br><br>
         <button class="btn-enviar" id="btnSalvarAgenda" onclick="salvarColeta()">SALVAR</button>
-        <button onclick="fecharModal()" style="margin-top:10px; border:none; background:none; color:red; cursor:pointer;">Sair</button>
+        <button onclick="fecharModal()" style="margin-top:10px; border:none; background:none; color:red; cursor:pointer;">Cancelar</button>
     </div>
 </div>
 
 <script>
     const API_URL = 'https://sheetdb.io/api/v1/p9z83v5m0dxq5';
 
-    // MOSTRAR/ESCONDER RELÓGIO
+    // LÓGICA DA JORNADA INVERTIDA (O QUE VOCÊ PEDIU)
     function toggleJornada() {
-        const check = document.getElementById('check24h');
-        const campo = document.getElementById('campoHorario');
-        campo.style.display = check.checked ? 'none' : 'block';
-        if(!check.checked) document.getElementById('horaJornada').focus();
+        const is24h = document.getElementById('check24h').checked;
+        const divHorario = document.getElementById('divHorario');
+        const inputHora = document.getElementById('horaJornada');
+
+        if (is24h) {
+            divHorario.style.display = 'none';
+            inputHora.required = false;
+            inputHora.value = "";
+        } else {
+            divHorario.style.display = 'block';
+            inputHora.required = true;
+        }
     }
 
     // MÁSCARA TELEFONE
@@ -211,7 +210,7 @@ HTML
         e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
     });
 
-    // MÁSCARA PLACA E BLOQUEIO DE "111111"
+    // MÁSCARA PLACA E BLOQUEIO DE NÚMEROS REPETIDOS
     document.getElementById('placa').addEventListener('input', function(e) {
         let v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
         if (v.length <= 3) e.target.value = v.replace(/[0-9]/g, "");
@@ -228,7 +227,7 @@ HTML
             const tbody = document.querySelector('#tabelaDados tbody');
             tbody.innerHTML = "";
             data.filter(i => i.PLACA && !i.SAIDA).forEach(i => {
-                const agenda = i.COLETA || "Pendente";
+                const agenda = (i.COLETA && i.COLETA !== "undefined") ? i.COLETA : "Pendente";
                 tbody.innerHTML += `
                     <tr>
                         <td style="font-weight:bold">${i.PLACA}</td>
@@ -240,7 +239,7 @@ HTML
                         <td>
                             <button class="btn-zap" onclick="enviarZap('${i.TELEFONE}', '${i.PLACA}', '${agenda}')">CHAMAR</button>
                             <button class="btn-concluir" onclick="concluir('${i.PLACA}')">CONCLUIR</button>
-                            <button onclick="abrirModal('${i.PLACA}')" style="font-size:9px; background:none; border:none; color:blue; cursor:pointer;">[Agendar]</button>
+                            <button onclick="abrirModal('${i.PLACA}')" style="font-size:10px; color:blue; background:none; border:none; cursor:pointer;">[Agendar]</button>
                         </td>
                     </tr>`;
             });
@@ -248,7 +247,7 @@ HTML
     }
 
     function getStatusJornada(horaFim) {
-        if (!horaFim || horaFim === "24 Horas") return '<span class="status-badge bg-ok">EM DIA (24h)</span>';
+        if (!horaFim || horaFim === "24 Horas") return '<span class="status-badge bg-ok">LIVRE (24h)</span>';
         const agora = new Date();
         const [h, m] = horaFim.split(':');
         const limite = new Date(); limite.setHours(h, m, 0);
@@ -269,17 +268,16 @@ HTML
 
     document.getElementById('formAgendamento').addEventListener('submit', function(e) {
         e.preventDefault();
-        const placa = document.getElementById('placa').value;
-        if(placa.length < 8 && !placa.includes(' ')) { /* validação simples */ }
-        
+        const p = document.getElementById('placa').value;
+        if(/(.)\1{6,}/.test(p.replace("-",""))) return alert("Placa Inválida (Números repetidos)!");
+
         const jornada = document.getElementById('check24h').checked ? "24 Horas" : document.getElementById('horaJornada').value;
-        if(!jornada) return alert("Informe o horário da jornada!");
 
         const btn = document.getElementById('btnEnviar');
-        btn.innerText = "ENVIANDO...";
+        btn.innerText = "GRAVANDO...";
         
         const dados = {
-            "PLACA": placa,
+            "PLACA": p,
             "PRODUTO": document.getElementById('produto').value,
             "TELEFONE": document.getElementById('telefone').value,
             "JORNADA": jornada,
@@ -288,7 +286,7 @@ HTML
         };
 
         fetch(API_URL, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify([dados]) })
-        .then(() => { alert("Sucesso!"); location.reload(); });
+        .then(() => { alert("Registrado com sucesso!"); location.reload(); });
     });
 
     function abrirAdmin() { if (prompt("Senha:") === "raizen2026") { document.getElementById('tela-motorista').style.display='none'; document.getElementById('admin-panel').style.display='block'; carregarAtivos(); } }
@@ -296,12 +294,13 @@ HTML
     function fecharModal() { document.getElementById('modalColeta').style.display='none'; }
     function salvarColeta() {
         const placa = document.getElementById('placaAlvo').value;
-        const info = document.getElementById('inputData').value.split('-').reverse().join('/') + " " + document.getElementById('inputHora').value;
-        fetch(`${API_URL}/PLACA/${placa}`, { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ "COLETA": info }) })
+        const d = document.getElementById('inputData').value.split('-').reverse().join('/');
+        const h = document.getElementById('inputHora').value;
+        fetch(`${API_URL}/PLACA/${placa}`, { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ "COLETA": d + " " + h }) })
         .then(() => { fecharModal(); carregarAtivos(); });
     }
     function concluir(placa) { if(confirm("Confirmar saída?")) fetch(`${API_URL}/PLACA/${placa}`, { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ "SAIDA": new Date().toLocaleString() }) }).then(() => carregarAtivos()); }
-    function enviarZap(tel, placa, agenda) { const baia = prompt("Baia?"); if(baia) window.open(`https://web.whatsapp.com/send?phone=55${tel.replace(/\D/g, "")}&text=PLACA: ${placa} - AGENDADO: ${agenda} - BAIA: ${baia}`); }
+    function enviarZap(tel, placa, agenda) { const baia = prompt("Qual a Baia?"); if(baia) window.open(`https://web.whatsapp.com/send?phone=55${tel.replace(/\D/g, "")}&text=VEÍCULO: ${placa} - AGENDADO: ${agenda} - DIRIGIR-SE À BAIA: ${baia}`); }
 </script>
 </body>
 </html>
