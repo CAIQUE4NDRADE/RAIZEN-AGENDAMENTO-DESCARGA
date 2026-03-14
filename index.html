@@ -61,7 +61,7 @@
         <select id="produto" required>
             <option value="">Selecione o produto...</option>
             <option value="GASOLINA">GASOLINA</option>
-            <option value="S500">S500</option>
+            <option value="BIODIESEL (B100)">BIODIESEL (B100)</option>
             <option value="S10">S10</option>
             <option value="ANIDRO">ANIDRO</option>
             <option value="HIDRATADO">HIDRATADO</option>
@@ -112,7 +112,7 @@
 <script>
     const API_URL = 'https://sheetdb.io/api/v1/p9z83v5m0dxq5';
 
-    // Máscaras
+    // Máscaras e Controle de Tela
     document.getElementById('placa').addEventListener('input', e => {
         let v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
         if (v.length > 3) v = v.substring(0,3) + "-" + v.substring(3,7);
@@ -177,7 +177,7 @@
             const agora = new Date().getTime();
 
             data.filter(i => i.PLACA && !i.SAIDA).forEach(i => {
-                const minutosPátio = i.TIMESTAMP ? Math.floor((agora - i.TIMESTAMP) / 60000) : "?";
+                const minutosPatio = i.TIMESTAMP ? Math.floor((agora - i.TIMESTAMP) / 60000) : "?";
                 const coletaTexto = i.COLETA || "Pendente";
                 
                 tbody.innerHTML += `
@@ -186,7 +186,7 @@
                         <td>${i.PRODUTO}</td>
                         <td><span class="badge-jornada">⏰ ${i.JORNADA}</span></td>
                         <td><span class="badge-coleta" onclick="editarColeta('${i.PLACA}')">🕒 ${coletaTexto}</span></td>
-                        <td><span class="badge-espera">${minutosPátio} min</span></td>
+                        <td><span class="badge-espera">${minutosPatio} min</span></td>
                         <td>
                             <button class="btn-zap" onclick="enviarZap('${i.TELEFONE}', '${i.PLACA}', '${coletaTexto}')">📱 CHAMAR</button>
                             <button class="btn-concluir" onclick="concluir('${i.PLACA}')">CONCLUIR</button>
@@ -216,7 +216,7 @@
         const baia = prompt("Para qual BAIA o motorista "+placa+" deve ir?");
         if (!baia) return;
         const limpo = tel.replace(/\D/g, "");
-        const txt = encodeURIComponent(`*RAÍZEN PAULÍNIA*\n\nMotorista da placa *${placa}* (Agenda: ${agenda}), sua descarga está liberada na *BAIA ${baia}*.\n\nFavor deslocar-se agora.`);
+        const txt = encodeURIComponent(`*RAÍZEN PAULÍNIA*\n\nMotorista da placa *${placa}* (Agenda Coleta: ${agenda}), sua descarga está liberada na *BAIA ${baia}*.\n\nFavor deslocar-se agora.`);
         window.open(`https://web.whatsapp.com/send?phone=55${limpo}&text=${txt}`, '_blank');
     }
 
