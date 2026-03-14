@@ -3,103 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raízen - Agendamento & Chamada</title>
+    <title>Raízen - Terminal Paulínia</title>
     <style>
         :root {
-            --verde-raizen: #4d6d5d;
+            --cor-principal: #4d6d5d; 
             --amarelo-raizen: #ffcd00;
-            --fundo: #f4f4f4;
+            --fundo: #f0f2f5;
             --branco: #ffffff;
+            --sucesso: #28a745;
         }
 
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--fundo); margin: 0; display: flex; flex-direction: column; align-items: center; }
-        header { background-color: var(--roxo-raizen); width: 100%; padding: 20px 0; text-align: center; border-bottom: 5px solid var(--amarelo-raizen); }
-        header h1 { color: var(--branco); margin: 0; letter-spacing: 2px; font-size: 22px; }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background-color: var(--fundo); margin: 0; display: flex; flex-direction: column; align-items: center; color: #333; }
+        header { background-color: var(--cor-principal); width: 100%; padding: 25px 0; text-align: center; border-bottom: 6px solid var(--amarelo-raizen); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        header h1 { color: var(--branco); margin: 0; letter-spacing: 1px; font-size: 24px; text-transform: uppercase; }
         
-        .container { width: 90%; max-width: 500px; margin: 20px auto; background: var(--branco); padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        h2 { color: var(--roxo-raizen); text-align: center; margin-bottom: 20px; }
-        label { display: block; margin-top: 15px; font-weight: bold; color: #333; }
+        .container { width: 92%; max-width: 550px; margin: 25px auto; background: var(--branco); padding: 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
+        h2 { color: var(--cor-principal); text-align: center; margin-bottom: 25px; font-size: 22px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         
-        input { width: 100%; padding: 12px; margin-top: 5px; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; text-transform: uppercase; }
-        input::placeholder { text-transform: none; }
-        input:focus { border-color: var(--roxo-raizen); outline: none; }
+        label { display: block; margin-top: 18px; font-weight: 600; color: #444; font-size: 14px; }
+        
+        input, select { width: 100%; padding: 14px; margin-top: 6px; border: 2px solid #e1e1e1; border-radius: 10px; box-sizing: border-box; font-size: 16px; transition: 0.3s; }
+        input:focus, select:focus { border-color: var(--cor-principal); outline: none; background: #fafafa; }
 
-        .checkbox-group { display: flex; align-items: center; gap: 10px; margin: 15px 0; background: #f9f9f9; padding: 10px; border-radius: 8px; }
-        .checkbox-group input { width: auto; margin: 0; }
+        .checkbox-group { display: flex; align-items: center; gap: 12px; margin: 20px 0; background: #f8f9fa; padding: 15px; border-radius: 10px; border: 1px dashed #ccc; }
+        .checkbox-group input { width: auto; margin: 0; transform: scale(1.3); }
 
-        .btn-enviar { width: 100%; padding: 15px; background-color: var(--roxo-raizen); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-enviar:hover { background-color: #4d6d5d; }
+        .btn-enviar { width: 100%; padding: 16px; background-color: var(--cor-principal); color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; box-shadow: 0 5px 15px rgba(77, 109, 93, 0.3); }
+        .btn-enviar:active { transform: scale(0.98); }
 
-        /* TABELA ADMIN */
-        #admin-panel { display: none; max-width: 95%; width: 800px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
-        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
-        th { background: var(--roxo-raizen); color: white; }
+        /* PAINEL ADMIN MELHORADO */
+        #admin-panel { display: none; max-width: 95%; width: 900px; }
+        .search-box { margin-bottom: 15px; padding: 10px; border-radius: 8px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; }
         
-        .btn-zap { background:#25D366; color:white; border:none; padding:10px; border-radius:5px; cursor:pointer; font-weight:bold; width: 100%; margin-bottom: 5px; display: block; text-decoration: none; text-align: center; }
-        .btn-concluir { background:#007bff; color:white; border:none; padding:10px; border-radius:5px; cursor:pointer; font-weight:bold; width: 100%; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; border-radius: 10px; overflow: hidden; }
+        th { background: var(--cor-principal); color: white; padding: 15px; text-align: left; font-size: 13px; text-transform: uppercase; }
+        td { padding: 15px; border-bottom: 1px solid #eee; font-size: 14px; }
         
-        .btn-admin-link { background: none; border: none; color: #888; text-decoration: underline; cursor: pointer; margin-top: 20px; width: 100%; }
+        .badge-tempo { background: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 5px; font-size: 12px; font-weight: bold; }
+        
+        .btn-zap { background:#25D366; color:white; border:none; padding:10px; border-radius:6px; cursor:pointer; font-weight:bold; width: 100%; text-decoration: none; display: inline-block; text-align: center; margin-bottom: 5px; }
+        .btn-concluir { background:#007bff; color:white; border:none; padding:10px; border-radius:6px; cursor:pointer; font-weight:bold; width: 100%; }
+        
+        .footer-link { text-align: center; margin-top: 25px; }
+        .btn-admin-link { background: none; border: none; color: #999; text-decoration: underline; cursor: pointer; font-size: 13px; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>RAÍZEN - LOGÍSTICA</h1>
+    <h1>RAÍZEN - TERMINAL PAULÍNIA</h1>
 </header>
 
 <div class="container" id="tela-motorista">
-    <h2>Agendamento de Descarga</h2>
+    <h2>Início de Agendamento</h2>
     <form id="formAgendamento">
-        <label>Placa do Veículo</label>
+        <label>Placa do Cavalo / Veículo</label>
         <input type="text" id="placa" placeholder="ABC-1234" maxlength="8" required>
+
+        <label>Produto para Descarga</label>
+        <select id="produto" required>
+            <option value="">Selecione o produto...</option>
+            <option value="DIESEL S10">DIESEL S10</option>
+            <option value="DIESEL S500">DIESEL S500</option>
+            <option value="GASOLINA COMUM">GASOLINA COMUM</option>
+            <option value="GASOLINA ADITIVADA">GASOLINA ADITIVADA</option>
+            <option value="ETANOL">ETANOL</option>
+            <option value="OUTROS">OUTROS</option>
+        </select>
 
         <label>Seu WhatsApp (com DDD)</label>
         <input type="tel" id="telefone" placeholder="(19) 9 9999-9999" maxlength="16" required>
 
         <div id="campo-hora">
-            <label>Fim da Jornada</label>
+            <label>Horário Fim de Jornada</label>
             <input type="time" id="jornada">
         </div>
 
         <div class="checkbox-group">
             <input type="checkbox" id="jornada24">
-            <label for="jornada24">Jornada 24h</label>
+            <label for="jornada24">Trabalho em Jornada 24h</label>
         </div>
 
-        <button type="submit" class="btn-enviar" id="btnEnviar">ENVIAR DADOS</button>
+        <button type="submit" class="btn-enviar" id="btnEnviar">REGISTRAR ENTRADA</button>
     </form>
-    <button class="btn-admin-link" onclick="abrirAdmin()">Acesso Administrativo</button>
+    <div class="footer-link">
+        <button class="btn-admin-link" onclick="abrirAdmin()">Painel Administrativo</button>
+    </div>
 </div>
 
 <div class="container" id="admin-panel">
-    <h2>Pátio de Descarga (Ativos)</h2>
+    <h2>Controle de Pátio (Ativos)</h2>
+    <input type="text" id="buscaPlaca" class="search-box" placeholder="🔎 Buscar placa..." onkeyup="filtrarTabela()">
+    
     <div style="overflow-x: auto;">
         <table id="tabelaDados">
             <thead>
                 <tr>
-                    <th>PLACA</th>
-                    <th>ENTRADA</th>
-                    <th>AÇÕES</th>
+                    <th>Placa</th>
+                    <th>Produto</th>
+                    <th>Espera</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
     </div>
-    <button class="btn-enviar" style="margin-top: 20px; background:#666;" onclick="window.location.reload()">SAIR</button>
+    <button class="btn-enviar" style="margin-top: 25px; background:#666;" onclick="window.location.reload()">VOLTAR / SAIR</button>
 </div>
 
 <script>
     const API_URL = 'https://sheetdb.io/api/v1/p9z83v5m0dxq5';
 
-    // MASCARAS
-    document.getElementById('placa').addEventListener('input', function (e) {
+    // Máscara de Placa e Telefone (Mantido)
+    document.getElementById('placa').addEventListener('input', e => {
         let v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
         if (v.length > 3) v = v.substring(0,3) + "-" + v.substring(3,7);
         e.target.value = v.substring(0,8);
     });
 
-    document.getElementById('telefone').addEventListener('input', function (e) {
+    document.getElementById('telefone').addEventListener('input', e => {
         let v = e.target.value.replace(/\D/g, "");
         v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
         v = v.replace(/(\d)(\d{4})$/, "$1-$2");
@@ -110,20 +132,22 @@
         document.getElementById('campo-hora').style.display = this.checked ? 'none' : 'block';
     });
 
-    // ENVIO PARA PLANILHA
+    // Envio com feedback visual
     document.getElementById('formAgendamento').addEventListener('submit', function(e) {
         e.preventDefault();
         const btn = document.getElementById('btnEnviar');
-        const agora = new Date().toLocaleString('pt-BR');
+        const agora = new Date();
 
-        btn.innerText = "ENVIANDO...";
+        btn.innerText = "⏳ PROCESSANDO...";
         btn.disabled = true;
 
         const dados = {
             "PLACA": document.getElementById('placa').value,
+            "PRODUTO": document.getElementById('produto').value,
             "TELEFONE": document.getElementById('telefone').value,
             "JORNADA": document.getElementById('jornada24').checked ? "24 Horas" : document.getElementById('jornada').value,
-            "ENTRADA": agora,
+            "ENTRADA": agora.toLocaleString('pt-BR'),
+            "TIMESTAMP": agora.getTime(), // Para cálculo de espera
             "SAIDA": ""
         };
 
@@ -133,77 +157,73 @@
             body: JSON.stringify({ data: [dados] })
         })
         .then(() => {
-            alert("✅ Registrado com sucesso!");
+            alert("✅ SUCESSO!\nSua entrada foi registrada. Aguarde o chamado via WhatsApp.");
             document.getElementById('formAgendamento').reset();
         })
         .finally(() => {
-            btn.innerText = "ENVIAR DADOS";
+            btn.innerText = "REGISTRAR ENTRADA";
             btn.disabled = false;
         });
     });
 
-    // ACESSO ADMIN
     function abrirAdmin() {
-        if (prompt("Senha:") === "raizen2026") {
+        if (prompt("Digite a senha de acesso:") === "raizen2026") {
             document.getElementById('tela-motorista').style.display = 'none';
             document.getElementById('admin-panel').style.display = 'block';
             carregarAtivos();
-        } else { alert("Acesso negado."); }
+        } else { alert("Senha incorreta."); }
     }
 
     function carregarAtivos() {
         fetch(API_URL).then(res => res.json()).then(data => {
             const tbody = document.querySelector('#tabelaDados tbody');
             tbody.innerHTML = "";
-            // Só mostra quem não tem SAIDA registrada
+            const agora = new Date().getTime();
+
             data.filter(i => i.PLACA && !i.SAIDA).forEach(i => {
+                // Cálculo de tempo de espera
+                const entradaHora = i.TIMESTAMP ? Math.floor((agora - i.TIMESTAMP) / 60000) : "?";
+                
                 tbody.innerHTML += `
                     <tr>
-                        <td>${i.PLACA}</td>
-                        <td>${i.ENTRADA.split(',')[1]}</td> <td>
+                        <td style="font-weight:bold">${i.PLACA}</td>
+                        <td>${i.PRODUTO || '-'}</td>
+                        <td><span class="badge-tempo">${entradaHora} min</span></td>
+                        <td>
                             <button class="btn-zap" onclick="enviarZap('${i.TELEFONE}', '${i.PLACA}')">📱 CHAMAR</button>
-                            <button class="btn-concluir" onclick="concluir('${i.PLACA}')">✅ CONCLUIR</button>
+                            <button class="btn-concluir" onclick="concluir('${i.PLACA}')">CONCLUIR</button>
                         </td>
                     </tr>`;
             });
         });
     }
 
+    function filtrarTabela() {
+        let input = document.getElementById("buscaPlaca").value.toUpperCase();
+        let trs = document.querySelectorAll("#tabelaDados tbody tr");
+        trs.forEach(tr => {
+            tr.style.display = tr.innerText.toUpperCase().includes(input) ? "" : "none";
+        });
+    }
+
     function enviarZap(tel, placa) {
-        // Lista de baias disponíveis
-        const baias = ["209", "210", "211", "212", "213", "214"];
-        
-        // Pergunta ao usuário qual a baia (abre uma caixinha de texto)
-        const baiaEscolhida = prompt("Para qual baia deseja chamar o motorista?\nDigite uma: 209, 210, 211, 212, 213 ou 214");
-
-        // Verifica se o usuário digitou algo e se é uma baia válida
-        if (baiaEscolhida === null) return; // Se cancelar, não faz nada
-
-        if (!baias.includes(baiaEscolhida)) {
-            alert("Baia inválida! Por favor, escolha entre 209 e 214.");
-            return;
-        }
+        const baia = prompt("Para qual BAIA o motorista "+placa+" deve ir?");
+        if (!baia) return;
 
         const limpo = tel.replace(/\D/g, "");
-        
-        // Mensagem atualizada com a Baia
-        const txt = encodeURIComponent(`Olá! Motorista da placa *${placa}*, sua descarga na *Raízen* está liberada na *BAIA ${baiaEscolhida}*. Por favor, dirija-se ao local agora.`);
-        
-        // Abre o WhatsApp Web
+        const txt = encodeURIComponent(`*RAÍZEN PAULÍNIA*\n\nMotorista da placa *${placa}*, sua descarga está liberada na *BAIA ${baia}*.\n\nPor favor, dirija-se ao local agora.`);
         window.open(`https://web.whatsapp.com/send?phone=55${limpo}&text=${txt}`, '_blank');
     }
 
     function concluir(placa) {
-        const saida = new Date().toLocaleString('pt-BR');
-        if(!confirm("Concluir descarga da placa " + placa + "?")) return;
-
+        if(!confirm("Deseja finalizar a descarga da placa " + placa + "?")) return;
         fetch(`${API_URL}/PLACA/${placa}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ data: { "SAIDA": saida } })
+            body: JSON.stringify({ data: { "SAIDA": new Date().toLocaleString('pt-BR') } })
         })
         .then(() => {
-            alert("Baixa confirmada!");
+            alert("Baixa realizada!");
             carregarAtivos();
         });
     }
