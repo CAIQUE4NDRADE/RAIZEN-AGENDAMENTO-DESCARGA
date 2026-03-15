@@ -158,7 +158,6 @@
 
         td { padding: 30px; border-bottom: 4px solid #f1f5f9; text-align: center; font-weight: 800; font-size: 22px; }
 
-        /* TAGS DE PRODUTO - CORREÇÃO DE CORES */
         .tag-prod {
             padding: 18px 30px;
             border-radius: 25px;
@@ -172,19 +171,10 @@
             text-transform: uppercase;
         }
         
-        /* Gasolina: Laranja */
         .tag-gasosa { background: #ff8c00; color: #fff; border: 2px solid #e67e00; } 
-        
-        /* B100: Marrom Sólido */
         .tag-b100 { background: #5d4037; color: #fff; border: 2px solid #3e2723; } 
-        
-        /* Anidro: Azul Sólido */
         .tag-anidro { background: #0056b3; color: #fff; border: 2px solid #003d80; } 
-        
-        /* Hidratado: Azul com Branco (Fundo Branco, Borda e Texto Azul) */
         .tag-hidratado { background: #ffffff; color: #0056b3; border: 5px solid #0056b3; } 
-        
-        /* S10: Marrom com Branco (Fundo Branco, Borda e Texto Marrom) */
         .tag-s10 { background: #ffffff; color: #5d4037; border: 5px solid #5d4037; } 
 
         .box-semaforo {
@@ -244,12 +234,10 @@
 <div class="card-industrial" id="modulo-entrada">
     <h2><i class="fa-solid fa-file-signature"></i> REGISTRO DE ENTRADA</h2>
     <form id="formDescarga">
-        
         <div class="wrapper-campo">
             <label><i class="fa-solid fa-truck-front"></i> PLACA DO VEÍCULO</label>
             <input type="text" id="campo_placa" placeholder="ABC-1234" maxlength="8" required>
         </div>
-
         <div class="wrapper-campo">
             <label><i class="fa-solid fa-droplet"></i> PRODUTO CARREGADO</label>
             <select id="campo_produto" required>
@@ -261,29 +249,24 @@
                 <option value="DIESEL S10">DIESEL S10</option>
             </select>
         </div>
-
         <div class="wrapper-campo">
             <label><i class="fa-brands fa-whatsapp"></i> NÚMERO DO WHATSAPP</label>
             <input type="tel" id="campo_whatsapp" placeholder="(19) 99999-9999" maxlength="15" required>
         </div>
-
         <div class="container-jornada-exp">
             <div id="box-horario-input">
                 <label><i class="fa-solid fa-clock-rotate-left"></i> TÉRMINO DA JORNADA</label>
                 <input type="time" id="campo_hora_limite">
             </div>
-            
             <label class="check-box-24h">
                 <input type="checkbox" id="check_jornada_24h">
                 <span class="txt-check"><i class="fa-solid fa-triangle-exclamation"></i> ESTOU EM JORNADA 24 HORAS</span>
             </label>
         </div>
-
         <div style="margin-top:70px;">
             <button type="submit" class="btn-principal" id="btn_registrar">EFETUAR REGISTRO NO PÁTIO</button>
         </div>
     </form>
-    
     <div style="text-align:center; margin-top:60px; border-top:4px dashed #ccc; padding-top:40px;">
         <button onclick="acessoOperador()" style="background:none; border:none; color:var(--roxo-raizen); font-weight:900; cursor:pointer; font-size:18px; text-decoration:underline;">MÓDULO DE GESTÃO DO OPERADOR</button>
     </div>
@@ -291,14 +274,12 @@
 
 <div id="secao-operador">
     <h2><i class="fa-solid fa-list-check"></i> FILA DE DESCARGA - ÁREA 02</h2>
-    
     <div style="margin-bottom:50px;">
         <div style="position:relative;">
             <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:30px; top:35px; font-size:30px; color:var(--roxo-raizen);"></i>
             <input type="text" id="filtroFila" placeholder="FILTRAR POR PLACA, PRODUTO OU JORNADA..." onkeyup="filtrarTabela()" style="padding-left:85px; border:6px solid var(--roxo-raizen);">
         </div>
     </div>
-
     <div class="moldura-tabela">
         <table id="tabelaMaster">
             <thead>
@@ -315,11 +296,6 @@
             <tbody id="dadosFila"></tbody>
         </table>
     </div>
-
-    <div style="margin-top:80px; display:flex; gap:50px;">
-        <button class="btn-principal" style="background:#475569;" onclick="location.reload()">SAIR</button>
-        <button class="btn-principal" style="background:var(--verde-raizen);" onclick="sincronizarFila()">ATUALIZAR FILA</button>
-    </div>
 </div>
 
 <script>
@@ -328,13 +304,7 @@
 
     document.getElementById('check_jornada_24h').addEventListener('change', function() {
         const boxHora = document.getElementById('box-horario-input');
-        const inputH = document.getElementById('campo_hora_limite');
-        if (this.checked) {
-            boxHora.style.display = 'none';
-            inputH.value = "";
-        } else {
-            boxHora.style.display = 'block';
-        }
+        if (this.checked) { boxHora.style.display = 'none'; } else { boxHora.style.display = 'block'; }
     });
 
     document.getElementById('campo_placa').oninput = e => {
@@ -349,17 +319,18 @@
     };
 
     function chamarMotorista(tel, placa) {
-    const num = tel.replace(/\D/g, "");
-    if(num.length < 11) return alert("ERRO: Número incompleto!");
-    
-    const baia = prompt("PARA QUAL BAIA O VEÍCULO " + placa + " DEVE IR?");
-    if(!baia) return;
+        const num = tel.replace(/\D/g, "");
+        if(num.length < 11) return alert("ERRO: Número incompleto!");
+        
+        // Você digita a baia aqui
+        const baia = prompt("PARA QUAL BAIA O VEÍCULO " + placa + " DEVE IR?");
+        if(!baia) return;
 
-    // Mensagem ajustada para o padrão correto
-    const msg = `*PORTAL COLETA - RAÍZEN*%0A%0AVeículo: *${placa}*%0AFavor seguir para a *BAIA ${baia}*%0AÁrea 02 - Terminal Paulínia`;
-    
-    window.open(`https://api.whatsapp.com/send?phone=55${num}&text=${msg}`, '_blank');
-}
+        // Mensagem exatamente conforme sua solicitação
+        const msg = `Olá%0AMotorista vamos descarregar?%0ABaia ${baia} - Área 02%0AObrigado!%0A%0AObs: aguarde a instrução do operador para entrar na baia!`;
+        
+        window.open(`https://api.whatsapp.com/send?phone=55${num}&text=${msg}`, '_blank');
+    }
 
     function filtrarTabela() {
         const termo = document.getElementById("filtroFila").value.toUpperCase();
@@ -374,7 +345,6 @@
         const btn = document.getElementById('btn_registrar');
         btn.innerHTML = '<span class="loader-raizen"></span> REGISTRANDO...';
         btn.disabled = true;
-
         const dados = {
             "PLACA": document.getElementById('campo_placa').value,
             "PRODUTO": document.getElementById('campo_produto').value,
@@ -384,60 +354,35 @@
             "SAIDA": "",
             "AGENDAMENTO NO COLETA": ""
         };
-
-        await fetch(API_URL, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify([dados])
-        });
-        alert("MOTORISTA CADASTRADO COM SUCESSO!");
+        await fetch(API_URL, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify([dados]) });
         location.reload();
     };
 
-    function gerarSemaforo(valor) {
-        if(valor === "24 HORAS") return `<div class="box-semaforo semaforo-vermelho"><span class="circulo-led led-r"></span> CRÍTICO (24H)</div>`;
-        const agora = new Date();
-        const t = valor.split(':');
-        if(t.length < 2) return valor;
-        const limite = new Date(); limite.setHours(t[0], t[1], 0);
-        if(agora > limite) return `<div class="box-semaforo semaforo-vermelho"><span class="circulo-led led-r"></span> FORA DE JORNADA</div>`;
-        return `<div class="box-semaforo semaforo-verde"><span class="circulo-led led-g"></span> DENTRO DA JORNADA</div>`;
-    }
-
     async function sincronizarFila() {
         const corpo = document.getElementById('dadosFila');
-        corpo.innerHTML = "<tr><td colspan='7'><span class='loader-raizen' style='width:30px; height:30px; border-top-color:var(--roxo-raizen);'></span> ATUALIZANDO...</td></tr>";
-        
         const res = await fetch(API_URL + "?t=" + Date.now());
         const json = await res.json();
         let ativos = json.filter(x => x.PLACA && !x.SAIDA);
-
         corpo.innerHTML = "";
         ativos.forEach(item => {
             let classeProd = "";
-            let iconeProd = "fa-gas-pump";
-            
-            // LÓGICA DE CLASSES CORRIGIDA
-            if(item.PRODUTO === "GASOLINA") { classeProd = "tag-gasosa"; iconeProd = "fa-fire-flame-simple"; }
-            else if(item.PRODUTO === "BIODIESEL (B100)") { classeProd = "tag-b100"; iconeProd = "fa-leaf"; }
-            else if(item.PRODUTO === "ETANOL ANIDRO") { classeProd = "tag-anidro"; iconeProd = "fa-droplet"; }
-            else if(item.PRODUTO === "ETANOL HIDRATADO") { classeProd = "tag-hidratado"; iconeProd = "fa-droplet"; }
-            else if(item.PRODUTO === "DIESEL S10") { classeProd = "tag-s10"; iconeProd = "fa-truck-ramp-box"; }
+            if(item.PRODUTO === "GASOLINA") classeProd = "tag-gasosa";
+            else if(item.PRODUTO === "BIODIESEL (B100)") classeProd = "tag-b100";
+            else if(item.PRODUTO === "ETANOL ANIDRO") classeProd = "tag-anidro";
+            else if(item.PRODUTO === "ETANOL HIDRATADO") classeProd = "tag-hidratado";
+            else if(item.PRODUTO === "DIESEL S10") classeProd = "tag-s10";
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td style="color:var(--roxo-raizen); font-size:32px;">${item.PLACA}</td>
-                <td><span class="tag-prod ${classeProd}"><i class="fa-solid ${iconeProd}"></i> ${item.PRODUTO}</span></td>
+                <td><span class="tag-prod ${classeProd}">${item.PRODUTO}</span></td>
                 <td>${item.TELEFONE}</td>
-                <td>${gerarSemaforo(item.JORNADA)}<br><small>Ref: ${item.JORNADA}</small></td>
-                <td>${item.ENTRADA.split(',')[1] || item.ENTRADA}</td>
-                <td style="background:#fffde7; border:3px solid var(--ouro-raizen);">
-                    <input type="datetime-local" id="ag-${item.PLACA}" value="${item['AGENDAMENTO NO COLETA'] || ''}" style="font-size:16px; padding:10px; border-radius:10px;">
-                    <button onclick="salvarAgenda('${item.PLACA}')" style="margin-top:10px; background:var(--verde-raizen); color:white; border:none; padding:12px; border-radius:10px; cursor:pointer; width:100%; font-weight:bold;">FIXAR</button>
-                </td>
+                <td>${item.JORNADA}</td>
+                <td>${item.ENTRADA}</td>
+                <td style="background:#fffde7;"><input type="datetime-local" id="ag-${item.PLACA}" value="${item['AGENDAMENTO NO COLETA'] || ''}"><button onclick="salvarAgenda('${item.PLACA}')">OK</button></td>
                 <td>
-                    <button class="btn-w-whatsapp" onclick="chamarMotorista('${item.TELEFONE}','${item.PLACA}')"><i class="fa-brands fa-whatsapp"></i> CONVOCAR</button>
-                    <button class="btn-f-finalizar" onclick="finalizar('${item.PLACA}')"><i class="fa-solid fa-circle-check"></i> FINALIZAR</button>
+                    <button class="btn-w-whatsapp" onclick="chamarMotorista('${item.TELEFONE}','${item.PLACA}')">CONVOCAR</button>
+                    <button class="btn-f-finalizar" onclick="finalizar('${item.PLACA}')">FINALIZAR</button>
                 </td>
             `;
             corpo.appendChild(tr);
