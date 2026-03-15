@@ -126,7 +126,7 @@
             border: 1px solid #ddd;
         }
         
-        table { width: 100%; border-collapse: collapse; min-width: 1400px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1200px; }
         
         th { 
             background: var(--verde-raizen); 
@@ -159,34 +159,11 @@
         .cor-etanol { background: #28a745; }
         .cor-s10 { background: #6c757d; }
 
-        .status-aguardando { 
-            color: white; 
-            background: var(--cor-pendente); 
-            padding: 15px 25px; 
-            border-radius: 15px; 
-            font-weight: 900; 
-            display: inline-block;
-            animation: alertaPisca 1.5s infinite; 
-        }
-        
-        .status-agendado { 
-            color: #155724; 
-            background: #d4edda; 
-            padding: 20px; 
-            border-radius: 18px; 
-            border: 3px solid #c3e6cb; 
-            display: block;
-            font-weight: 900;
-        }
-
-        @keyframes alertaPisca { 50% { opacity: 0.5; } }
-
         .btn-geral { 
             border: none; border-radius: 15px; padding: 18px; font-weight: bold; cursor: pointer; font-size: 12px; 
             width: 100%; margin-bottom: 12px; color: white; text-transform: uppercase; 
             display: flex; align-items: center; justify-content: center; gap: 10px;
         }
-        .btn-agenda { background: white; color: var(--cor-info); border: 2.5px solid var(--cor-info); }
         .btn-whats { background: #25D366; }
         .btn-concluir { background: var(--cor-info); }
 
@@ -196,7 +173,6 @@
             transition: 0.3s;
         }
 
-        /* ESTILO DA MENSAGEM DE SUCESSO MOTORISTA */
         #msgSucesso {
             display: none;
             background: #d4edda;
@@ -215,14 +191,6 @@
             0% { transform: scale(0.8); opacity: 0; }
             70% { transform: scale(1.1); }
             100% { transform: scale(1); opacity: 1; }
-        }
-
-        #janelaModal { 
-            display:none; position:fixed; z-index:99999; left:0; top:0; width:100%; height:100%; 
-            background:rgba(0,0,0,0.9); backdrop-filter: blur(15px); 
-        }
-        .conteudo-modal { 
-            background:white; margin:6% auto; padding:60px; border-radius:50px; width:550px; text-align: center; 
         }
     </style>
 </head>
@@ -291,7 +259,6 @@
                     <th>Produto</th>
                     <th>WhatsApp</th>
                     <th>Jornada</th>
-                    <th style="background:#2d4a3e; color:white; width: 260px;">STATUS DE COLETA</th>
                     <th>Tempo</th>
                     <th style="width: 190px;">Ações</th>
                 </tr>
@@ -300,18 +267,6 @@
         </table>
     </div>
     <button class="btn-principal-form" style="background:#666;" onclick="window.location.reload()">VOLTAR PARA ENTRADA</button>
-</div>
-
-<div id="janelaModal">
-    <div class="conteudo-modal">
-        <h3 style="font-size:28px;">Agendar Horário</h3>
-        <p id="placaTextoModal" style="font-weight:900; font-size:30px; color:var(--verde-raizen); margin-bottom:40px;"></p>
-        <input type="hidden" id="placaReferencia">
-        <label>Data Programada:</label><input type="date" id="dataAgendada">
-        <label>Hora Programada:</label><input type="time" id="horaAgendada">
-        <button class="btn-principal-form" id="btnSalvaModal" onclick="salvarAgendamentoNoSheet()">GRAVAR NA PLANILHA</button>
-        <button onclick="document.getElementById('janelaModal').style.display='none'" style="margin-top:30px; border:none; background:none; color:red; font-weight:bold; cursor:pointer;">FECHAR</button>
-    </div>
 </div>
 
 <script>
@@ -339,17 +294,13 @@
 
     function atualizarPainel() {
         const corpo = document.querySelector('#tabelaDados tbody');
-        corpo.innerHTML = "<tr><td colspan='7'>Carregando banco de dados Raízen...</td></tr>";
+        corpo.innerHTML = "<tr><td colspan='6'>Carregando banco de dados Raízen...</td></tr>";
 
         fetch(SHEET_API + "?t=" + new Date().getTime())
         .then(r => r.json())
         .then(dados => {
             corpo.innerHTML = "";
             dados.filter(f => f.PLACA && !f.SAIDA).forEach(i => {
-                let htmlStatus = (i.COLETA && i.COLETA !== "" && i.COLETA !== "undefined")
-                    ? `<span class="status-agendado">📅 ${i.COLETA}</span>`
-                    : `<span class="status-aguardando">⚠️ PENDENTE</span>`;
-
                 let cProd = "cor-s10";
                 if(i.PRODUTO.includes("GASOLINA")) cProd = "cor-gasolina";
                 if(i.PRODUTO.includes("B100")) cProd = "cor-biodiesel";
@@ -361,10 +312,8 @@
                         <td><span class="etiqueta-prod ${cProd}">${i.PRODUTO}</span></td>
                         <td>${i.TELEFONE}</td>
                         <td>${calcJornada(i.JORNADA)}</td>
-                        <td style="background:#fafafa">${htmlStatus}</td>
                         <td style="font-size:13px; color:#999;">${calcEspera(i.ENTRADA)}</td>
                         <td>
-                            <button class="btn-geral btn-agenda" onclick="abreModal('${i.PLACA}')">📅 AGENDAR</button>
                             <button class="btn-geral btn-whats" onclick="chamarZap('${i.TELEFONE}', '${i.PLACA}', '${i.COLETA}')">📱 WHATSAPP</button>
                             <button class="btn-geral btn-concluir" onclick="finaliza('${i.PLACA}')">✅ CONCLUIR</button>
                         </td>
@@ -376,7 +325,6 @@
     function calcJornada(j) {
         if(j === "24 Horas") return '<span style="color:green">LIVRE (24H)</span>';
         const [h,m] = j.split(':'); const d = new Date(); d.setHours(h,m,0);
-        // Retorna o status junto com o horário digitado (Ex: OK - 18:30)
         return (d < new Date()) 
             ? `<span style="color:red">VENCIDA (${j})</span>` 
             : `<span style="color:green">OK (${j})</span>`;
@@ -388,30 +336,6 @@
         const dIn = new Date(d[2], d[1]-1, d[0], h[0], h[1]);
         const df = Math.floor((new Date() - dIn) / 60000);
         return df > 60 ? Math.floor(df/60)+"h "+(df%60)+"m" : df+"m";
-    }
-
-    function abreModal(p) {
-        document.getElementById('placaReferencia').value = p;
-        document.getElementById('placaTextoModal').innerText = "VEÍCULO: " + p;
-        document.getElementById('janelaModal').style.display = 'block';
-    }
-
-    function salvarAgendamentoNoSheet() {
-        const p = document.getElementById('placaReferencia').value;
-        const dt = document.getElementById('dataAgendada').value.split('-').reverse().join('/');
-        const hr = document.getElementById('horaAgendada').value;
-        if(!dt || !hr || dt === "") return alert("Preencha tudo!");
-
-        document.getElementById('btnSalvaModal').innerText = "ENVIANDO...";
-        fetch(`${SHEET_API}/PLACA/${p}`, {
-            method: 'PATCH',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ "COLETA": dt + " às " + hr })
-        }).then(() => {
-            document.getElementById('janelaModal').style.display='none';
-            atualizarPainel();
-            document.getElementById('btnSalvaModal').innerText = "GRAVAR NA PLANILHA";
-        });
     }
 
     // ENVIO DO FORMULÁRIO COM FEEDBACK DE SUCESSO
@@ -437,12 +361,8 @@
             if(response.ok) {
                 btn.style.backgroundColor = "#28a745";
                 btn.innerText = "✅ ENVIADO!";
-                msg.style.display = "block"; // EXIBE MENSAGEM: AGENDAMENTO REALIZADO!
-                
-                // ESPERA 3 SEGUNDOS PARA O MOTORISTA LER E RECARREGA
-                setTimeout(() => {
-                    location.reload();
-                }, 3500);
+                msg.style.display = "block";
+                setTimeout(() => { location.reload(); }, 3500);
             }
         });
     });
