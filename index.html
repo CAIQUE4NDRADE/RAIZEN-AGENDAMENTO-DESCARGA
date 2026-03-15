@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RAÍZEN - GESTÃO OPERACIONAL V25.0</title>
+    <title>RAÍZEN - GESTÃO V25.0</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
@@ -15,221 +15,111 @@
             --ouro-raizen: #ffc107;
             --fundo-base: #f1f5f9;
             --branco: #ffffff;
-            --cor-alerta: #e11d48;
-            --cor-sucesso: #10b981;
-            --cor-texto: #1e293b;
         }
 
         * { box-sizing: border-box; font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; }
+        body { background-color: var(--fundo-base); padding-bottom: 50px; }
 
-        body { 
-            background-color: var(--fundo-base); 
-            display: flex; 
-            flex-direction: column; 
-            min-height: 100vh;
-            color: var(--cor-texto);
-            padding-bottom: 100px;
-        }
-
-        /* --- HEADER GIGANTE --- */
+        /* HEADER ORIGINAL GIGANTE */
         header { 
             background: linear-gradient(135deg, var(--verde-raizen) 0%, #1a241f 100%); 
-            padding: 90px 20px; 
-            text-align: center; 
-            border-bottom: 25px solid var(--roxo-raizen);
+            padding: 90px 20px; text-align: center; border-bottom: 25px solid var(--roxo-raizen);
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
+        .logo-raizen-master { color: var(--branco); font-size: 85px; font-weight: 900; letter-spacing: 15px; text-transform: uppercase; }
 
-        .logo-raizen-master {
-            color: var(--branco);
-            font-size: 85px;
-            font-weight: 900;
-            letter-spacing: 15px;
-            text-transform: uppercase;
-            text-shadow: 4px 4px 0px rgba(0,0,0,0.2);
-        }
-
-        header h1 { 
-            color: var(--branco); 
-            font-size: 24px; 
-            letter-spacing: 6px; 
-            font-weight: 300;
-            margin-top: 15px;
-            text-transform: uppercase;
-        }
-
-        /* --- PAINEL DO MOTORISTA (RESTAURADO) --- */
+        /* PAINEL MOTORISTA (O TELÃO) */
         .card-industrial { 
-            width: 94%; 
-            max-width: 1100px; 
-            margin: 60px auto; 
-            background: var(--branco); 
-            padding: 70px; 
-            border-radius: 60px; 
-            box-shadow: 0 40px 80px rgba(0,0,0,0.2); 
+            width: 94%; max-width: 1100px; margin: 60px auto; background: var(--branco); 
+            padding: 70px; border-radius: 60px; box-shadow: 0 40px 80px rgba(0,0,0,0.2); 
             border-left: 35px solid var(--roxo-raizen);
-            position: relative;
         }
-
-        h2 { 
-            color: var(--roxo-raizen); 
-            text-align: center; 
-            font-weight: 900; 
-            text-transform: uppercase; 
-            margin-bottom: 50px; 
-            font-size: 38px;
-            border-bottom: 12px solid #f1f5f9;
-            padding-bottom: 30px;
-        }
-
-        .wrapper-campo { margin-bottom: 40px; position: relative; }
+        .card-industrial h2 { font-size: 38px; color: var(--roxo-raizen); font-weight: 900; margin-bottom: 40px; text-align: center; }
         
-        label { 
-            display: block; 
-            margin-bottom: 15px; 
-            font-weight: 900; 
-            color: var(--verde-raizen); 
-            font-size: 16px; 
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
         input, select { 
-            width: 100%; 
-            padding: 28px; 
-            border: 5px solid #e2e8f0; 
-            border-radius: 30px; 
-            font-size: 24px; 
-            font-weight: 700;
-            background: #f8fafc;
+            width: 100%; padding: 28px; border: 5px solid #e2e8f0; border-radius: 30px; 
+            font-size: 24px; font-weight: 700; background: #f8fafc; margin-bottom: 30px;
         }
 
         .btn-principal { 
-            width: 100%; 
-            padding: 40px; 
-            background: var(--roxo-raizen); 
-            color: white; 
-            border: none; 
-            border-radius: 35px; 
-            font-size: 30px; 
-            font-weight: 900; 
-            cursor: pointer; 
-            text-transform: uppercase;
+            width: 100%; padding: 40px; background: var(--roxo-raizen); color: white; border: none; 
+            border-radius: 35px; font-size: 30px; font-weight: 900; cursor: pointer; text-transform: uppercase;
         }
 
-        /* --- PAINEL ADM COMPLETO --- */
-        #secao-operador { 
-            display: none; 
-            width: 98%; 
-            margin: 20px auto;
-            background: var(--branco);
-            padding: 40px;
-            border-radius: 40px;
-        }
-
-        .filtros-container {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .filtros-container input { padding: 20px; font-size: 18px; }
-
-        .moldura-tabela { 
-            overflow-x: auto; 
-            border: 3px solid #e2e8f0;
-            border-radius: 30px;
-        }
-
-        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        /* PAINEL ADM COMPLETO */
+        #secao-operador { display: none; width: 98%; margin: 10px auto; background: var(--branco); padding: 20px; border-radius: 30px; }
         
-        th { background: #0f172a; color: white; padding: 25px; font-size: 16px; text-transform: uppercase; }
-        td { padding: 25px; border-bottom: 2px solid #f1f5f9; text-align: center; font-weight: 800; font-size: 18px; }
+        .area-filtros { display: flex; gap: 10px; margin-bottom: 15px; }
+        .area-filtros input { padding: 15px; font-size: 16px; margin-bottom: 0; border: 3px solid var(--roxo-raizen); }
 
-        /* TAGS DE PRODUTO */
-        .tag-prod { padding: 10px 15px; border-radius: 12px; color: white; font-size: 14px; display: block; }
+        /* TABELA SEM ROLAGEM LATERAL */
+        .moldura-tabela { overflow-x: hidden; border: 2px solid #ddd; border-radius: 20px; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        
+        th { background: #0f172a; color: white; padding: 10px 2px; font-size: 9px; text-transform: uppercase; }
+        td { padding: 10px 2px; border-bottom: 1px solid #eee; text-align: center; font-weight: 800; font-size: 11px; word-wrap: break-word; }
+
+        /* CAMPO DE EDIÇÃO DO COLETA NA TABELA */
+        .input-coleta-edit { 
+            width: 95%; padding: 5px; font-size: 11px; font-weight: 900; 
+            border: 2px solid var(--ouro-raizen); border-radius: 5px; background: #fffde7; text-align: center;
+        }
+
+        .tag-prod { padding: 5px; border-radius: 6px; font-size: 9px; font-weight: 900; display: block; color: white; }
         .tag-gasolina { background: #ff8c00; }
         .tag-b100 { background: #5d4037; }
         .tag-anidro { background: #0056b3; }
         .tag-hidratado { background: #3b82f6; }
-        .tag-diesel { background: #334155; }
 
-        .btn-zap { background: #22c55e; color: white; padding: 15px; border-radius: 12px; border: none; font-weight: 900; cursor: pointer; margin-right: 5px; }
-        .btn-fim { background: #3b82f6; color: white; padding: 15px; border-radius: 12px; border: none; font-weight: 900; cursor: pointer; }
-
+        .btn-acao { width: 100%; padding: 8px 0; border-radius: 6px; border: none; color: white; font-weight: 900; font-size: 9px; margin-bottom: 3px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <header>
     <div class="logo-raizen-master">RAÍZEN</div>
-    <h1>TERMINAL PAULÍNIA | ÁREA 02</h1>
 </header>
 
 <div class="card-industrial" id="modulo-entrada">
-    <h2><i class="fa-solid fa-clipboard-list"></i> REGISTRO DE ENTRADA</h2>
+    <h2>REGISTRO DE PÁTIO</h2>
     <form id="formDescarga">
-        <div class="wrapper-campo">
-            <label>PLACA DO VEÍCULO</label>
-            <input type="text" id="campo_placa" placeholder="ABC-1234" required>
-        </div>
-        <div class="wrapper-campo">
-            <label>PRODUTO</label>
-            <select id="campo_produto" required>
-                <option value="">SELECIONE...</option>
-                <option value="GASOLINA">GASOLINA COMUM/ADITIVADA</option>
-                <option value="BIODIESEL (B100)">BIODIESEL (B100)</option>
-                <option value="ETANOL ANIDRO">ETANOL ANIDRO</option>
-                <option value="ETANOL HIDRATADO">ETANOL HIDRATADO</option>
-                <option value="DIESEL S10">DIESEL S10</option>
-            </select>
-        </div>
-        <div class="wrapper-campo">
-            <label>AGENDAMENTO (PORTAL COLETA)</label>
-            <input type="time" id="campo_coleta">
-        </div>
-        <div class="wrapper-campo">
-            <label>WHATSAPP</label>
-            <input type="tel" id="campo_whatsapp" placeholder="(19) 99999-9999" required>
-        </div>
-        <div class="wrapper-campo">
-            <label>TÉRMINO DA JORNADA</label>
-            <input type="time" id="campo_jornada">
-        </div>
+        <input type="text" id="campo_placa" placeholder="PLACA" required>
+        <select id="campo_produto" required>
+            <option value="">PRODUTO...</option>
+            <option value="GASOLINA">GASOLINA</option>
+            <option value="BIODIESEL (B100)">BIODIESEL (B100)</option>
+            <option value="ETANOL ANIDRO">ETANOL ANIDRO</option>
+            <option value="ETANOL HIDRATADO">ETANOL HIDRATADO</option>
+            <option value="DIESEL S10">DIESEL S10</option>
+        </select>
+        <input type="tel" id="campo_whatsapp" placeholder="WHATSAPP" required>
+        <input type="time" id="campo_jornada">
         <button type="submit" class="btn-principal">REGISTRAR ENTRADA</button>
     </form>
-    <button onclick="acessoOperador()" style="margin-top:40px; background:none; border:none; color:var(--roxo-raizen); text-decoration:underline; width:100%; font-weight:900; font-size: 20px;">ACESSO OPERADOR</button>
+    <button onclick="acessoOperador()" style="margin-top:30px; background:none; border:none; color:var(--roxo-raizen); text-decoration:underline; width:100%; font-weight:900; font-size:18px;">ADM - EDITAR FILA</button>
 </div>
 
 <div id="secao-operador">
-    <h2>PAINEL DE GESTÃO - FILA</h2>
-    
-    <div class="filtros-container">
-        <input type="text" id="filtroPlaca" placeholder="Buscar por Placa..." onkeyup="filtrar()">
+    <div class="area-filtros">
+        <input type="text" id="buscaPlaca" placeholder="Filtrar Placa..." onkeyup="filtrar()">
+        <button onclick="sincronizarFila()" style="background:var(--verde-raizen); color:white; border:none; padding:10px; border-radius:10px; font-weight:900;">ATUALIZAR</button>
     </div>
 
     <div class="moldura-tabela">
         <table>
             <thead>
                 <tr>
-                    <th>PLACA</th>
-                    <th>PRODUTO</th>
-                    <th>AG. COLETA</th>
-                    <th>JORNADA</th>
-                    <th>ENTRADA</th>
-                    <th>AÇÕES</th>
+                    <th style="width: 18%;">PLACA</th>
+                    <th style="width: 20%;">PRODUTO</th>
+                    <th style="width: 22%;">AG. COLETA</th>
+                    <th style="width: 18%;">JORNADA</th>
+                    <th style="width: 22%;">AÇÕES</th>
                 </tr>
             </thead>
             <tbody id="dadosFila"></tbody>
         </table>
     </div>
-    
-    <div style="margin-top:30px; display:flex; gap:20px;">
-        <button class="btn-principal" style="background:#475569;" onclick="location.reload()">VOLTAR</button>
-        <button class="btn-principal" style="background:var(--verde-raizen);" onclick="sincronizarFila()">ATUALIZAR</button>
-    </div>
+    <button class="btn-principal" style="background:#475569; margin-top:20px; font-size:20px;" onclick="location.reload()">SAIR</button>
 </div>
 
 <script>
@@ -237,16 +127,23 @@
     const SENHA_OP = 'raizen2026';
 
     function filtrar() {
-        let busca = document.getElementById("filtroPlaca").value.toUpperCase();
-        let linhas = document.getElementById("dadosFila").getElementsByTagName("tr");
-        for (let l of linhas) {
-            l.style.display = l.cells[0].innerText.toUpperCase().includes(busca) ? "" : "none";
-        }
+        let p = document.getElementById("buscaPlaca").value.toUpperCase();
+        let rows = document.getElementById("dadosFila").getElementsByTagName("tr");
+        for (let r of rows) r.style.display = r.cells[0].innerText.toUpperCase().includes(p) ? "" : "none";
+    }
+
+    async function salvarColeta(placa, novoHorario) {
+        await fetch(`${API_URL}/PLACA/${placa}`, {
+            method: 'PATCH',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({"AGENDAMENTO NO COLETA": novoHorario})
+        });
+        console.log("Coleta atualizado para " + placa);
     }
 
     async function sincronizarFila() {
         const corpo = document.getElementById('dadosFila');
-        corpo.innerHTML = "<tr><td colspan='6'>CARREGANDO...</td></tr>";
+        corpo.innerHTML = "<tr><td colspan='5'>...</td></tr>";
         const res = await fetch(API_URL + "?t=" + Date.now());
         const json = await res.json();
         let ativos = json.filter(x => x.PLACA && !x.SAIDA);
@@ -257,21 +154,19 @@
         ativos.forEach(item => {
             const tr = document.createElement('tr');
             let p = item.PRODUTO.toUpperCase();
-            let cor = "tag-diesel";
-            if(p.includes("GASOLINA")) cor = "tag-gasolina";
-            else if(p.includes("B100")) cor = "tag-b100";
-            else if(p.includes("ANIDRO")) cor = "tag-anidro";
-            else if(p.includes("HIDRATADO")) cor = "tag-hidratado";
+            let cor = p.includes("GASOLINA") ? "tag-gasolina" : p.includes("B100") ? "tag-b100" : p.includes("ANIDRO") ? "tag-anidro" : "tag-hidratado";
 
             tr.innerHTML = `
                 <td style="color:var(--roxo-raizen);">${item.PLACA}</td>
                 <td><span class="tag-prod ${cor}">${item.PRODUTO}</span></td>
-                <td style="background:#fffde7;">${item['AGENDAMENTO NO COLETA'] || '--:--'}</td>
-                <td>${item.JORNADA || '24H'}</td>
-                <td style="font-size:14px;">${item.ENTRADA}</td>
                 <td>
-                    <button class="btn-zap" onclick="window.open('https://api.whatsapp.com/send?phone=55${item.TELEFONE.replace(/\D/g,'')}&text=Placa ${item.PLACA}, favor encostar.')">ZAP</button>
-                    <button class="btn-fim" onclick="finalizar('${item.PLACA}')">FIM</button>
+                    <input type="time" class="input-coleta-edit" value="${item['AGENDAMENTO NO COLETA'] || ''}" 
+                    onchange="salvarColeta('${item.PLACA}', this.value)">
+                </td>
+                <td>${item.JORNADA || '24H'}</td>
+                <td>
+                    <button class="btn-acao" style="background:#22c55e;" onclick="window.open('https://api.whatsapp.com/send?phone=55${item.TELEFONE.replace(/\D/g,'')}&text=Placa ${item.PLACA}, favor encostar.')">ZAP</button>
+                    <button class="btn-acao" style="background:#3b82f6;" onclick="finalizar('${item.PLACA}')">FIM</button>
                 </td>
             `;
             corpo.appendChild(tr);
@@ -279,7 +174,7 @@
     }
 
     async function finalizar(placa) {
-        if(confirm(`FINALIZAR ${placa}?`)) {
+        if(confirm(`Encerrar ${placa}?`)) {
             await fetch(`${API_URL}/PLACA/${placa}`, { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({"SAIDA": new Date().toLocaleString()}) });
             sincronizarFila();
         }
@@ -291,7 +186,6 @@
             "PLACA": document.getElementById('campo_placa').value.toUpperCase(),
             "PRODUTO": document.getElementById('campo_produto').value,
             "TELEFONE": document.getElementById('campo_whatsapp').value,
-            "AGENDAMENTO NO COLETA": document.getElementById('campo_coleta').value,
             "JORNADA": document.getElementById('campo_jornada').value || "24 HORAS",
             "ENTRADA": new Date().toLocaleString(),
             "SAIDA": ""
@@ -308,8 +202,6 @@
             sincronizarFila();
         }
     }
-
-    setInterval(() => { if(document.getElementById('secao-operador').style.display === 'block') sincronizarFila(); }, 60000);
 </script>
 </body>
 </html>
