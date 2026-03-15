@@ -3,593 +3,292 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAÍZEN | SISTEMA INTEGRADO DE GESTÃO DE PÁTIO V4.0</title>
+    <title>RAÍZEN | TERMINAL DE PAULINIA</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 
     <style>
-        /* ============================================================
-           VARIÁVEIS DE DESIGN - SISTEMA DE CORES RAÍZEN
-           ============================================================ */
         :root {
-            --raizen-purple: #84207d; /* Pantone 512 C */
+            --raizen-purple: #84207d;
             --raizen-green: #4d6d5d;
-            --raizen-gold: #ffc107;
-            --fundo-base: #e9ecef;
-            --branco: #ffffff;
-            --texto-p: #2d3436;
-            --shadow-ux: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --trans-quick: all 0.2s ease-in-out;
-        }
-
-        /* ============================================================
-           RESET E ESTILIZAÇÃO GLOBAL
-           ============================================================ */
-        * {
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            --white: #ffffff;
+            --shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
         body { 
-            font-family: 'Montserrat', 'Segoe UI', sans-serif; 
-            background: linear-gradient(135deg, #f1f3f5 0%, #cfd8dc 100%);
-            background-attachment: fixed;
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+            background: #f0f2f5; 
             margin: 0; 
-            padding: 0;
-            color: var(--texto-p);
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             min-height: 100vh;
         }
 
-        /* Animação suave na abertura do site */
-        @keyframes fadeSlideIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ============================================================
-           CABEÇALHO PROFISSIONAL - STICKY
-           ============================================================ */
+        /* HEADER COM LOGO EM SVG (NÃO QUEBRA NUNCA) */
         header { 
-            background: linear-gradient(90deg, #4d6d5d 0%, #3a5246 100%);
+            background: var(--raizen-green);
             width: 100%; 
-            padding: 30px 0; 
+            padding: 25px 0; 
             text-align: center; 
-            border-bottom: 12px solid var(--raizen-purple); 
-            box-shadow: 0 8px 30px rgba(0,0,0,0.3); 
-            position: sticky;
-            top: 0;
-            z-index: 2000;
+            border-bottom: 8px solid var(--raizen-purple); 
+            box-shadow: var(--shadow);
         }
 
-        header img {
-            height: 65px;
-            margin-bottom: 15px;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
-            animation: fadeSlideIn 0.8s ease-out;
+        .logo-container {
+            margin-bottom: 10px;
         }
-        
+
         header h1 { 
-            color: var(--branco); 
+            color: white; 
             margin: 0; 
-            font-size: 20px; 
-            text-transform: uppercase; 
-            letter-spacing: 6px; 
+            font-size: 18px; 
+            letter-spacing: 5px; 
+            text-transform: uppercase;
             font-weight: 300;
         }
 
-        /* ============================================================
-           CONTAINER PRINCIPAL E LAYOUT DE GESTÃO
-           ============================================================ */
-        .container-main { 
-            width: 92%; 
-            max-width: 850px; 
-            margin: 50px auto; 
-            background: var(--branco); 
-            padding: 50px; 
-            border-radius: 40px; 
-            box-shadow: var(--shadow-ux); 
-            border: 1px solid #f1f3f5;
-            position: relative;
-            overflow: hidden;
-            animation: fadeSlideIn 1s ease-out;
+        /* CONTAINER PRINCIPAL */
+        .main-card { 
+            width: 90%; 
+            max-width: 600px; 
+            background: white; 
+            margin: 30px auto; 
+            padding: 40px; 
+            border-radius: 30px; 
+            box-shadow: var(--shadow);
+            border-left: 10px solid var(--raizen-purple);
         }
 
-        /* Destaque lateral de cor (Identidade Visual) */
-        .container-main::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 12px;
-            height: 100%;
-            background: var(--raizen-purple);
-        }
+        #admin-panel { display: none; max-width: 95%; width: 1700px; }
 
-        #modulo-admin-full { 
-            display: none; 
-            max-width: 96%; 
-            width: 1800px; 
-        }
+        h2 { color: var(--raizen-purple); text-align: center; margin-bottom: 30px; text-transform: uppercase; }
 
-        h2 { 
-            color: var(--raizen-purple); 
-            text-align: center; 
-            font-size: 30px;
-            font-weight: 900;
-            margin-bottom: 45px;
-            text-transform: uppercase;
-        }
-
-        /* ============================================================
-           FORMULÁRIOS, INPUTS E UX
-           ============================================================ */
-        .form-field { 
-            margin-bottom: 30px; 
-        }
-
-        label { 
-            display: block; 
-            margin-bottom: 12px; 
-            font-weight: 700; 
-            color: #4a5568; 
-            font-size: 14px; 
-            text-transform: uppercase;
-        }
+        /* CAMPOS DE FORMULÁRIO */
+        .field { margin-bottom: 20px; }
+        
+        label { font-weight: bold; color: #444; display: block; margin-bottom: 8px; text-transform: uppercase; font-size: 13px; }
 
         input, select { 
             width: 100%; 
-            padding: 20px 25px; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 18px; 
-            box-sizing: border-box; 
-            font-size: 18px; 
-            background-color: #f7fafc;
-            color: var(--texto-p);
-            font-weight: 600;
-            transition: var(--trans-quick);
-        }
-
-        input:focus, select:focus {
-            border-color: var(--raizen-purple);
-            background-color: #fff;
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(132, 32, 125, 0.1);
-            transform: translateY(-2px);
-        }
-
-        /* Secao Jornada com fundo amarelo (Alerta Visual) */
-        .alerta-box {
-            background-color: #fffbeb;
-            border: 2px solid #fef3c7;
-            padding: 35px;
-            border-radius: 25px;
-            margin: 40px 0;
-        }
-
-        /* ============================================================
-           BOTÕES PREMIUM E AÇÕES
-           ============================================================ */
-        .btn-action-main { 
-            width: 100%; 
-            padding: 25px; 
-            background: linear-gradient(135deg, #84207d 0%, #63175e 100%);
-            color: white; 
-            border: none; 
-            border-radius: 20px; 
-            font-size: 24px; 
-            font-weight: 800; 
-            cursor: pointer; 
-            margin-top: 30px;
-            box-shadow: 0 12px 20px -3px rgba(132, 32, 125, 0.4);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .btn-action-main:hover {
-            transform: translateY(-3px) scale(1.01);
-            box-shadow: 0 20px 25px -5px rgba(132, 32, 125, 0.5);
-        }
-
-        /* ============================================================
-           TABELAS DE GESTÃO E ADMINISTRAÇÃO
-           ============================================================ */
-        .table-scroller { 
-            overflow-x: auto; 
-            background: white; 
-            border-radius: 30px; 
-            border: 1px solid #e2e8f0; 
-            margin-top: 25px;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.03);
-        }
-
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            min-width: 1550px; 
-        }
-
-        th { 
-            background: #f8fafc; 
-            color: #64748b; 
-            padding: 25px 15px; 
-            font-size: 12px; 
-            text-transform: uppercase; 
-            border-bottom: 2px solid #e2e8f0;
-            text-align: center;
-        }
-
-        td { 
-            padding: 20px 15px; 
-            border-bottom: 1px solid #f1f5f9; 
-            text-align: center; 
+            padding: 18px; 
+            border: 2px solid #ddd; 
+            border-radius: 15px; 
             font-size: 16px; 
-            font-weight: 700;
+            background: #fafafa;
+            box-sizing: border-box;
         }
 
-        /* Etiquetas de Produto Modernas */
-        .badge-prod { 
-            padding: 10px 18px; 
-            border-radius: 12px; 
-            font-size: 11px; 
+        input:focus { border-color: var(--raizen-purple); outline: none; background: white; }
+
+        .btn-submit { 
+            width: 100%; 
+            padding: 22px; 
+            background: var(--raizen-purple);
             color: white; 
-            display: inline-block; 
-            min-width: 120px; 
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-        .b-yellow { background: #f59e0b; color: #000; }
-        .b-black { background: #1a1a1a; }
-        .b-green { background: #10b981; }
-        .b-grey { background: #64748b; }
-
-        /* Botões da Tabela */
-        .btn-tbl { 
             border: none; 
-            border-radius: 12px; 
-            padding: 12px; 
+            border-radius: 15px; 
+            font-size: 20px; 
             font-weight: bold; 
             cursor: pointer; 
-            width: 100%; 
-            margin-bottom: 8px; 
-            color: white; 
-            text-transform: uppercase; 
-            font-size: 11px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: var(--trans-quick);
+            margin-top: 20px;
+            text-transform: uppercase;
         }
 
-        .btn-w { background: #22c55e; }
-        .btn-w:hover { background: #1da851; transform: translateX(3px); }
+        /* AJUSTE DO LINK ADMINISTRATIVO (MAIS VISÍVEL) */
+        .admin-trigger {
+            display: block;
+            margin-top: 40px;
+            text-align: center;
+            color: var(--raizen-purple) !important; /* Cor forte para visibilidade */
+            font-weight: 800;
+            text-decoration: underline;
+            font-size: 14px;
+            cursor: pointer;
+        }
 
-        .btn-c { background: #3b82f6; }
-        .btn-c:hover { background: #2563eb; }
+        /* TABELA DE GESTÃO */
+        .table-area { overflow-x: auto; margin-top: 20px; border-radius: 20px; border: 1px solid #ddd; }
+        table { width: 100%; border-collapse: collapse; min-width: 1400px; }
+        th { background: #f8f9fa; padding: 20px; border-bottom: 2px solid #eee; text-transform: uppercase; font-size: 12px; }
+        td { padding: 18px; border-bottom: 1px solid #eee; text-align: center; font-weight: bold; }
+
+        .badge { padding: 8px 15px; border-radius: 10px; color: white; font-size: 11px; }
+        .bg-gas { background: #f39c12; color: #000; }
+        .bg-bio { background: #000; }
+        .bg-eta { background: #27ae60; }
+
+        .btn-zap { background: #25D366; color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; }
+        .btn-done { background: #3498db; color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 5px; }
 
     </style>
 </head>
 <body>
 
 <header>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAABMCAMAAAD2l3J9AAAAQlBMVEVMaXFLpUVLn0ZLoUZKpkZLoUZKpUdLpEVLoUZKpkdLpUZKpUZKpkZLoUZKpUdLpkZKpUdKpUdKpUVKpUZLpkZKpUfqA92HAAAABnRSTlMAAAAAAAB7p576AAAACXBIWXMAAAsTAAALEwEAmpwYAAADJ0lEQVRoQ+2ZaXOiMBRG5f5pG5w46v3f/8pQy/6q5pAWhM07nN8bZpU9D0UuU+r3//r169evX79+/YpGqfH5XJ5w+6vX67N/A6/X4PML9uH6S/bL9Sv26fK5fLpeLpcvF3m9Xi9fLo+XyxNuN9xu+H2A32f4fYZfV/h5gV8v8P0Ofn9D8A+X69PzCfcXvFzwcsHzBS8XvFzwfMH9AfcH3B9wfcD9AfcH3B9wf0BwRzBHAHMEcEcwdwRwRzBfAHOEcEcQcwdRdxAVfXAH+gAFfVDUB0V9UDQfVfNRtR5Vw4X64EL9R9VyVC1H1XJUbUbVdVQdh+pD6F98XF98XF98XF98XF98XF98XF98fH8P7+8NfH8b7w9X8R9V8R9V8R9Vyf4K+5O6+6m6v6n6u6p+ruqfT7vPufmcm8+5+fK4v7Wp36P6PV4+HwM4/9wA7j/A/fW5v78996vBfQpA9wSAbgmApwBfA3wO8DnAv/sX5X/8e6//HwD/EwL/OwL/5l/7+6p/q/p3Vf+p+pXqV6pfqX6l+pXqV6pfqX6l+pXqV6pfqX6l+rXaX6v9tdpvq/222m+r/braP6v9s9o/q/2z2j+r/bPaf6v9vtp/q/2+2l+v9vdrf6T253v98Rrvj9Y83VjzDGPNA8MFA8XVA4XVBQUF8wUDw/vV+9X71XvD+4b3De8b3jf8Ofzn8Ofwn8Nfhv8T/k9YFBaFRWFRWBQWhUVhUVgUFoVFvS5vV+/L6fS6vK5vVxfF5/D5vL5fXb9fXb9fXb+v79fX7+u7+n59/b6+vV+9X71fvT+9X70/vT+9X5wNPhv8W/Dfgn8L/lnwz4J/FvxXmBX+W+C/wRz4b7AF/hvMv8F8AfMFzAebf4M5vMDW8I/hH8M/hn8N/xr+Ofxr+K8wK/wXmBv8W5jr/FuYm/64Of8G/w5miv4OZob+DmaO/gxmkv4MJo//CGaN/whmkv4IZpP+CGaU/ghmlv4IZpb+COaX/gjmmf4I5p3+COaj/gjmo/4I5qn+COat/gjmtf4IZrf+COa9/gjmxP4I5sh+DuCj/hxAtp8DCLFzADFmDmD7/QP7/QP7/QP7/QP7/QP7/QP7vUPu98v9fzn/7wAAUv9I+H6O4fsZfp/h9xl+XeHnBX69wPc7+P0Nf/9D0I//7b//b/7f/vs/22/Xf9ZfX//p9Y/Xf6f97fVv13/uX6//fD5+AtW9b+p30v646p/N/NnMn8/9D4A7X/HnBOfX96uH76uHh++rh//C974p//z72fT/P8OfS/9b4Z8H/9v5f8v5f8v5f8s55v89/v/V9L/N9L/N9P8m+5N5P9f5/839b+5/b+bPP9D/59v59v4H2P4I+COY679fD7//r1+/fv369es//9+H/wUAAAABAAAAmf8AABX/AAAAnf8AABb/AAAAnv8AABf/AAAAn/8AABj/AAAAsP8AACz/AAAAsv8AAC//AAAAtv8AADX/AAAAt/8AADb/AAAAw/8AAD//AAAAxf8AAEH/AAAAyP8AAEf/AAAAyf8AAE//AAAAzv8AAFP/AAAAz/8AAFT/AAAA2f8AAGD/AAAA2v8AAGH/AAAA4f8AAG3/AAAA5P8AAHH/AAAA6P8AAHf/AAAA6/8AAHv/AAAA9f8AAIv/AAAA+v8AAIz/AAAA/f8AAY//AQAA//8BANX/AwAA//8UAP//HwAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
-    ">
+    <div class="logo-container">
+        <svg width="180" height="50" viewBox="0 0 300 80" xmlns="http://www.w3.org/2000/svg">
+            <path d="M25.2 20.5c0 14.1-11.5 25.6-25.6 25.6h-2.1v12.8h-11.8V20.5h39.5zm-25.6 13.9c7.7 0 13.9-6.2 13.9-13.9s-6.2-13.9-13.9-13.9h-2.1v27.8h2.1zM65.4 58.9l-3.8-10.4H45.8l-3.8 10.4h-12.2l15.8-38.4h12.5l15.8 38.4H65.4zm-15.6-32.3l-8.2 21.9h16.4l-8.2-21.9zM88.5 20.5v38.4H76.7V20.5h11.8zM128.5 20.5L108.2 58.9h-12.5l15.8-38.4h12.5l12.5 38.4h-12.2l-3.3-10.4h-15.8l-3.3 10.4h-12.2l15.8-38.4h12.5zM140.5 20.5h32.5v10.4h-20.7v5.5h18.2v10.4h-18.2v6.6h20.7v10.4h-32.5V20.5zM180.5 20.5l25.5 28.5V20.5h11.8v38.4h-9.5l-27.8-31.5v31.5h-11.8V20.5h11.8z" fill="#ffffff"/>
+            <circle cx="270" cy="40" r="25" fill="#ffc107"/>
+        </svg>
+    </div>
     <h1>TERMINAL PAULÍNIA | PORTAL COLETA</h1>
 </header>
 
-<div class="container-main" id="modulo-motorista">
-    <h2><i class="fa-solid fa-truck-moving"></i> REGISTRO DE DESCARGA</h2>
-    
-    <form id="formPrincipal">
-        <div class="form-group">
-            <label>Placa do Veículo (Caminhão/Bitrem)</label>
-            <input type="text" id="campoPlaca" placeholder="EX: BRA-2E19" maxlength="8" required>
+<div class="main-card" id="form-motorista">
+    <h2><i class="fa-solid fa-truck"></i> REGISTRO DE DESCARGA</h2>
+    <form id="raizenForm">
+        <div class="field">
+            <label>Placa do Veículo</label>
+            <input type="text" id="p_placa" placeholder="ABC-1234" maxlength="8" required>
         </div>
-
-        <div class="form-group">
-            <label>Produto Carregado</label>
-            <select id="campoProduto" required>
-                <option value="">Selecione o combustível...</option>
-                <option value="GASOLINA">GASOLINA (COMUM/ADIT)</option>
-                <option value="BIODIESEL (B100)">BIODIESEL B100</option>
-                <option value="S10">DIESEL S10 (RODOVIÁRIO)</option>
-                <option value="ANIDRO">ETANOL ANIDRO</option>
-                <option value="HIDRATADO">ETANOL HIDRATADO</option>
+        <div class="field">
+            <label>Produto</label>
+            <select id="p_produto" required>
+                <option value="">Selecione...</option>
+                <option value="GASOLINA">GASOLINA</option>
+                <option value="B100">BIODIESEL B100</option>
+                <option value="S10">DIESEL S10</option>
+                <option value="ETANOL">ETANOL (ANIDRO/HIDRATADO)</option>
             </select>
         </div>
-
-        <div class="form-group">
-            <label>WhatsApp do Condutor (Contato)</label>
-            <input type="tel" id="campoZap" placeholder="(19) 99999-9999" maxlength="15" required>
+        <div class="field">
+            <label>WhatsApp</label>
+            <input type="tel" id="p_zap" placeholder="(19) 99999-9999" required>
         </div>
-        
-        <div class="alerta-box">
-            <div id="container-hora-jornada">
-                <label><i class="fa-regular fa-clock"></i> Horário de Término da Jornada</label>
-                <input type="time" id="campoHoraJornada" required>
-            </div>
-            
-            <label style="display:flex; align-items:center; gap:20px; margin-top:25px; cursor:pointer; user-select: none;">
-                <input type="checkbox" id="check24" style="width:28px; height:28px;" onchange="ajustarCampoJornada(this)">
-                <span style="font-weight:800; color: #b91c1c; font-size: 16px;">DECLARO JORNADA 24 HORAS</span>
+        <div class="field" style="background:#fff8e1; padding:20px; border-radius:15px;">
+            <label>Término da Jornada</label>
+            <input type="time" id="p_hora">
+            <label style="margin-top:15px; display:flex; align-items:center; gap:10px; cursor:pointer;">
+                <input type="checkbox" id="p_24h" style="width:20px; height:20px;"> JORNADA 24 HORAS
             </label>
         </div>
-
-        <button type="submit" class="btn-action-main" id="btnRegistrarFila">REGISTRAR ENTRADA NO PÁTIO</button>
+        <button type="submit" class="btn-submit" id="btn_enviar">REGISTRAR ENTRADA</button>
     </form>
-    
-    <div style="text-align:center;">
-        <a href="#" class="admin-link" onclick="solicitarAcessoAdmin()" style="margin-top:40px; color:#adb5bd; text-decoration:underline; font-size:12px; font-weight:700;">
-            Painel de Gestão Operacional / Operador
-        </a>
-    </div>
+    <span class="admin-trigger" onclick="acessoAdmin()">ACESSAR PAINEL DO OPERADOR</span>
 </div>
 
-<div class="container-main" id="modulo-admin-full">
-    <h2><i class="fa-solid fa-tower-observation"></i> CONTROLE DE PÁTIO - ÁREA 2</h2>
-    
-    <div style="margin-bottom:30px; display: flex; background: #f8fafc; padding: 15px; border-radius: 20px; border: 1px solid #e2e8f0; align-items: center; gap: 15px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
-        <i class="fa-solid fa-magnifying-glass" style="color: #cbd5e1; padding-left: 10px; font-size: 18px;"></i>
-        <input type="text" id="filtroPesquisaTable" placeholder="Pesquisar por placa, produto ou telefone..." onkeyup="filtrarTabelaGestao()" style="border:none; background:transparent; padding: 10px; margin:0; font-size: 16px;">
-    </div>
-
-    <div class="table-scroller">
-        <table id="tabelaMasterGestao">
+<div class="main-card" id="admin-panel">
+    <h2>PAINEL DE GESTÃO - ÁREA 2</h2>
+    <div class="table-area">
+        <table id="tabelaDados">
             <thead>
                 <tr>
                     <th>Placa</th>
                     <th>Produto</th>
                     <th>WhatsApp</th>
-                    <th>Status Jornada</th>
-                    <th>Tempo Pátio</th>
-                    <th style="background: #fffbeb; color: #92400e; font-weight: 900; border-left: 3px solid var(--raizen-purple);">PORTAL COLETA</th>
-                    <th style="width: 250px;">Operações</th>
+                    <th>Jornada</th>
+                    <th>No Pátio</th>
+                    <th style="background:#fffde7;">PORTAL COLETA</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
-            <tbody>
-                </tbody>
+            <tbody></tbody>
         </table>
     </div>
-    
-    <button class="btn-action-main" style="background:linear-gradient(135deg, #2d3436 0%, #1e293b 100%); margin-top:40px; font-size: 16px;" onclick="window.location.reload()">
-        VOLTAR PARA INÍCIO / SAIR
-    </button>
+    <button class="btn-submit" style="background:#333;" onclick="location.reload()">SAIR</button>
 </div>
 
 <script>
-    /**
-     * CONFIGURAÇÕES DO SISTEMA RAÍZEN V4.0
-     * INTEGRAÇÃO GOOGLE SHEETS VIA SHEETDB.IO
-     */
-    const URL_BASE_DB = 'https://sheetdb.io/api/v1/p9z83v5m0dxq5';
-    const COLUNA_PORTAL_COLETA = "AGENDAMENTO NO COLETA";
+    const API = 'https://sheetdb.io/api/v1/p9z83v5m0dxq5';
 
-    // --- LÓGICA DE INTERFACE, MÁSCARAS E UX ---
+    // MÁSCARA PLACA
+    document.getElementById('p_placa').oninput = (e) => {
+        let v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+        if (v.length > 3 && !isNaN(v[3])) v = v.substring(0,3) + "-" + v.substring(3,7);
+        e.target.value = v.substring(0,8);
+    };
 
-    // Função para tratar o checkbox de 24 horas
-    function ajustarCampoJornada(statusCheckbox) {
-        const inputHora = document.getElementById('campoHoraJornada');
-        const boxContainer = document.getElementById('container-hora-jornada');
-        if (statusCheckbox.checked) {
-            boxContainer.style.opacity = '0.25';
-            inputHora.required = false;
-            inputHora.disabled = true;
-            inputHora.value = "";
-        } else {
-            boxContainer.style.opacity = '1';
-            inputHora.required = true;
-            inputHora.disabled = false;
-        }
-    }
-
-    // Máscara dinâmica para o campo WhatsApp (00) 00000-0000
-    document.getElementById('campoZap').addEventListener('input', function(e) {
+    // MÁSCARA ZAP
+    document.getElementById('p_zap').oninput = (e) => {
         let r = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
         e.target.value = !r[2] ? r[1] : '(' + r[1] + ') ' + r[2] + (r[3] ? '-' + r[3] : '');
-    });
+    };
 
-    // Máscara e validação automática para a Placa ABC-1234
-    document.getElementById('campoPlaca').addEventListener('input', function(e) {
-        let v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
-        if (v.length > 3 && !isNaN(v[3])) {
-            v = v.substring(0,3) + "-" + v.substring(3,7);
-        }
-        e.target.value = v.substring(0,8);
-    });
+    async function carregar() {
+        const tb = document.querySelector('#tabelaDados tbody');
+        tb.innerHTML = "<tr><td colspan='7'>Carregando dados...</td></tr>";
+        const res = await fetch(API + "?t=" + Date.now());
+        const dados = await res.json();
+        tb.innerHTML = "";
 
-    // --- LÓGICA DE GESTÃO E COMUNICAÇÃO ---
-
-    // Função para disparar a mensagem via wa.me (pula erro zap web no cel)
-    function chamarZapMotorista(telefoneRaw) {
-        const nBaiaOperador = prompt("CONTROLE DE PÁTIO:\nPara qual BAIA o motorista deve se dirigir agora?");
-        if (!nBaiaOperador) return;
-
-        const foneLimpo = telefoneRaw.replace(/\D/g, "");
-        // MENSAGEM ORIGINAL PRESERVADA
-        const textoZap = `Olá%0AMotorista vamos descarregar?%0ABaia *${nBaiaOperador}* - Área 02%0AObrigado!%0A%0A_Obs: aguarde a instrução do operador para entrar na baia!_`;
-        
-        // Link wa.me é o mais estável para mobile
-        const linkZapFinal = `https://wa.me/55${foneLimpo}?text=${textoZap}`;
-        window.open(linkZapFinal, '_blank');
-    }
-
-    // Função para filtrar a tabela dinamicamente
-    function filtrarTabelaGestao() {
-        const termoBusca = document.getElementById("filtroPesquisaTable").value.toUpperCase();
-        document.querySelectorAll("#tabelaMasterGestao tbody tr").forEach(tr => {
-            const contudoLinha = tr.innerText.toUpperCase();
-            tr.style.display = contudoLinha.indexOf(termoBusca) > -1 ? "" : "none";
+        dados.filter(i => i.PLACA && !i.SAIDA).forEach(i => {
+            let badge = i.PRODUTO.includes("GAS") ? "bg-gas" : (i.PRODUTO.includes("B100") ? "bg-bio" : "bg-eta");
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="color:#84207d; font-size:18px;">${i.PLACA}</td>
+                <td><span class="badge ${badge}">${i.PRODUTO}</span></td>
+                <td>${i.TELEFONE}</td>
+                <td>${i.JORNADA}</td>
+                <td style="font-size:12px; color:#666;">${i.ENTRADA}</td>
+                <td style="background:#fffde7;">
+                    <input type="datetime-local" id="col-${i.PLACA}" value="${i['AGENDAMENTO NO COLETA'] || ''}" style="font-size:11px; padding:5px;">
+                    <button onclick="salvarCol('${i.PLACA}')" style="margin-top:5px; width:100%; font-size:10px;">SALVAR</button>
+                </td>
+                <td>
+                    <button class="btn-zap" onclick="chamar('${i.TELEFONE}')">CHAMAR ZAP</button>
+                    <button class="btn-done" onclick="finalizar('${i.PLACA}')">CONCLUIR</button>
+                </td>
+            `;
+            tb.appendChild(tr);
         });
     }
 
-    // --- CÁLCULOS E PROCESSAMENTO DE DADOS ---
-
-    // Calcula se a jornada do motorista está dentro do prazo
-    function statusJornadaHtml(jornadaStr) {
-        if(jornadaStr === "24 Horas") return '<span style="color:#10b981; font-weight:800;"><i class="fa-solid fa-infinity"></i> JORNADA 24H</span>';
-        if(!jornadaStr) return '<span style="color:#64748b;">---</span>';
-
-        const agora = new Date();
-        const [horas, minutos] = jornadaStr.split(':');
-        const dataLimite = new Date(); dataLimite.setHours(parseInt(horas), parseInt(minutos), 0);
-
-        if(dataLimite < agora) {
-            return `<span style="color:#ef4444; background:#fef2f2; padding:8px; border-radius:8px; font-weight:900;">⚠️ VENCIDA (${jornadaStr})</span>`;
-        }
-        return `<span style="color:#10b981;">OK (${jornadaStr})</span>`;
+    // CORREÇÃO DO WHATSAPP (FORÇA ABRIR APP NO CELULAR)
+    function chamar(tel) {
+        const baia = prompt("Informe a BAIA:");
+        if(!baia) return;
+        const num = tel.replace(/\D/g, "");
+        const txt = `Olá! Vamos descarregar? Baia *${baia}* - Área 02. Aguarde a instrução do operador para entrar!`;
+        // O "api.whatsapp.com" funciona melhor que "wa.me" em alguns Androids para evitar a tela de erro
+        window.open(`https://api.whatsapp.com/send?phone=55${num}&text=${encodeURIComponent(txt)}`, '_blank');
     }
 
-    // Calcula o tempo que o veículo está no pátio
-    function calcularTempoPatio(dataEntradaStr) {
-        if (!dataEntradaStr) return "---";
-        try {
-            const partes = dataEntradaStr.split(', ');
-            const dPartes = partes[0].split('/');
-            const hPartes = partes[1].split(':');
-            const dataEntrada = new Date(dPartes[2], dPartes[1]-1, dPartes[0], hPartes[0], hPartes[1]);
-            const diffMs = new Date() - dataEntrada;
-            const diffMin = Math.floor(diffMs / 60000);
-
-            if (diffMin < 60) return diffMin + " min";
-            const h = Math.floor(diffMin / 60);
-            const m = diffMin % 60;
-            return `${h}h ${m}m`;
-        } catch (err) {
-            return "Erro data";
-        }
-    }
-
-    // --- INTEGRAÇÃO COM A API SHEETDB ---
-
-    // Sincroniza e carrega a tabela do painel
-    async function carregarDadosOperacionais() {
-        const tbody = document.querySelector('#tabelaMasterGestao tbody');
-        tbody.innerHTML = "<tr><td colspan='7' style='padding:80px; text-align:center; color:#64748b; font-size:18px;'><i class='fa-solid fa-spinner fa-spin fa-2x'></i><br><br>Sincronizando com o Terminal Paulínia...</td></tr>";
-
-        try {
-            const resposta = await fetch(`${URL_BASE_DB}?t=${Date.now()}`);
-            const dadosApi = await resposta.json();
-            
-            tbody.innerHTML = "";
-            // Filtra removendo os que já saíram e ordena pela entrada
-            const veiculosAtivos = dadosApi.filter(veiculo => veiculo.PLACA && !veiculo.SAIDA).sort((a,b) => {
-                return new Date(a.ENTRADA) - new Date(b.ENTRADA);
-            });
-
-            veiculosAtivos.forEach(item => {
-                let badgeClass = "b-grey";
-                if(item.PRODUTO.includes("GASOLINA")) badgeClass = "b-yellow";
-                if(item.PRODUTO.includes("B100")) badgeClass = "b-black";
-                if(item.PRODUTO.includes("HIDRATADO") || item.PRODUTO.includes("ANIDRO")) badgeClass = "b-green";
-
-                const agendadoColeta = item[COLUNA_PORTAL_COLETA] || " ";
-                const [dataS, horaS] = agendadoColeta.split(" ");
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="font-size:20px; color:var(--raizen-purple); font-weight:900;">${item.PLACA}</td>
-                    <td><span class="badge-prod ${badgeClass}">${item.PRODUTO}</span></td>
-                    <td style="color:#555; font-weight:400; font-size:14px;">${item.TELEFONE}</td>
-                    <td>${statusJornadaHtml(item.JORNADA)}</td>
-                    <td style="font-weight:400; font-size:14px; color:#64748b;">${calcularTempoPatio(item.ENTRADA)}</td>
-                    <td style="background:#fffcf5; border-left: 3px solid var(--raizen-purple);">
-                        <div style="display:flex; flex-direction:column; gap:8px; padding: 10px;">
-                            <input type="date" id="dt-${item.PLACA}" value="${dataS||''}" style="padding:10px; font-size:12px; border-radius:10px;">
-                            <input type="time" id="hr-${item.PLACA}" value="${horaS||''}" style="padding:10px; font-size:12px; border-radius:10px;">
-                            <button onclick="salvarAgendaColeta('${item.PLACA}')" style="background:var(--raizen-purple); color:white; border:none; padding:10px; border-radius:10px; font-size:10px; font-weight:900; cursor:pointer; transition:var(--trans-quick);">ATUALIZAR COLETA</button>
-                        </div>
-                    </td>
-                    <td>
-                        <button class="btn-tbl btn-w" onclick="chamarZapMotorista('${item.TELEFONE}')"><i class="fa-brands fa-whatsapp"></i> CHAMAR ZAP</button>
-                        <button class="btn-tbl btn-c" onclick="confirmarSaidaPatio('${item.PLACA}')"><i class="fa-solid fa-check"></i> CONCLUIR</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        } catch (erro) {
-            tbody.innerHTML = "Erro ao conectar com a base de dados Raízen.";
-        }
-    }
-
-    // Salva o agendamento do Portal Coleta direto na planilha
-    async function salvarAgendaColeta(placaVeiculo) {
-        const dInput = document.getElementById(`dt-${placaVeiculo}`).value;
-        const hInput = document.getElementById(`hr-${placaVeiculo}`).value;
-        
-        if(!dInput || !hInput) {
-            alert("Preencha data e hora do agendamento Coleta!");
-            return;
-        }
-
-        let bodyUpdate = {};
-        bodyUpdate[COLUNA_PORTAL_COLETA] = `${dInput} ${hInput}`;
-        
-        await fetch(`${URL_BASE_DB}/PLACA/${placaVeiculo}`, {
+    async function salvarCol(placa) {
+        const val = document.getElementById(`col-${placa}`).value;
+        await fetch(`${API}/PLACA/${placa}`, {
             method: 'PATCH',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(bodyUpdate)
+            body: JSON.stringify({"AGENDAMENTO NO COLETA": val})
         });
-        alert("Agendamento sincronizado com sucesso!");
-        carregarDadosOperacionais();
+        alert("Agendado!");
+        carregar();
     }
 
-    // --- SUBMISSÃO DE FORMULÁRIO E FINALIZAÇÃO ---
-
-    document.getElementById('formPrincipal').onsubmit = async function(e) {
+    document.getElementById('raizenForm').onsubmit = async (e) => {
         e.preventDefault();
-        const btnSub = document.getElementById('btnRegistrarFila');
-        btnSub.innerHTML = "<i class='fa-solid fa-sync fa-spin'></i> PROCESSANDO REGISTRO...";
-        btnSub.disabled = true;
-
-        const novoItem = {
-            "PLACA": document.getElementById('campoPlaca').value.toUpperCase(),
-            "PRODUTO": document.getElementById('campoProduto').value,
-            "TELEFONE": document.getElementById('campoZap').value,
-            "JORNADA": document.getElementById('check24').checked ? "24 Horas" : document.getElementById('campoHoraJornada').value,
+        document.getElementById('btn_enviar').innerText = "REGISTRANDO...";
+        const payload = {
+            "PLACA": document.getElementById('p_placa').value,
+            "PRODUTO": document.getElementById('p_produto').value,
+            "TELEFONE": document.getElementById('p_zap').value,
+            "JORNADA": document.getElementById('p_24h').checked ? "24 Horas" : document.getElementById('p_hora').value,
             "ENTRADA": new Date().toLocaleString('pt-BR'),
             "SAIDA": ""
         };
-        novoItem[COLUNA_PORTAL_COLETA] = "";
-
-        await fetch(URL_BASE_DB, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify([novoItem])
-        });
-
-        alert("Check-in realizado com sucesso!\nAguarde a chamada operacional.");
+        await fetch(API, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify([payload]) });
+        alert("Registrado com sucesso!");
         location.reload();
     };
 
-    // Registra a saída do veículo do pátio
-    async function confirmarSaidaPatio(placaSaindo) {
-        if(confirm(`Deseja confirmar a SAÍDA definitiva do veículo ${placaSaindo}?`)) {
-            await fetch(`${URL_BASE_DB}/PLACA/${placaSaindo}`, {
+    async function finalizar(placa) {
+        if(confirm("Confirmar saída?")) {
+            await fetch(`${API}/PLACA/${placa}`, {
                 method: 'PATCH',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ "SAIDA": new Date().toLocaleString('pt-BR') })
+                body: JSON.stringify({"SAIDA": new Date().toLocaleString('pt-BR')})
             });
-            carregarDadosOperacionais();
+            carregar();
         }
     }
 
-    function solicitarAcessoAdmin() {
-        if(prompt("IDENTIFICAÇÃO DE SEGURANÇA:\nDigite a chave de acesso do operador:") === "raizen2026") {
-            document.getElementById('modulo-motorista').style.display = 'none';
-            document.getElementById('modulo-admin-full').style.display = 'block';
-            carregarDadosOperacionais();
-        } else {
-            alert("Acesso Negado.");
+    function acessoAdmin() {
+        if(prompt("Senha:") === "raizen2026") {
+            document.getElementById('form-motorista').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'block';
+            carregar();
         }
     }
-
-    console.log("Sistema Raízen Paulínia V4.0 Online. Robustez e Visual Garantidos.");
 </script>
 </body>
 </html>
