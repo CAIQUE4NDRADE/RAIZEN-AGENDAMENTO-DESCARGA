@@ -345,14 +345,16 @@
     }
 
     // FUNÇÃO PARA DETECTAR MOBILE E ABRIR O APP OU WEB
-    function chamarZapMotorista(tel) {
+   function chamarZapMotorista(tel) {
     const baia = prompt("Para qual BAIA o motorista deve ir?");
     if (!baia) return;
 
-    const msg = `Olá%0AMotorista vamos descarregar?%0ABaia *${baia}* - Área 02%0AObrigado!`;
+    // RECUPERADA A SUA MENSAGEM ORIGINAL:
+    const msg = `Olá%0AMotorista vamos descarregar?%0ABaia *${baia}* - Área 02%0AObrigado!%0A%0A_Obs: aguarde a instrução do operador para entrar na baia!_`;
+    
     const fone = tel.replace(/\D/g, "");
     
-    // Este formato abaixo funciona tanto no PC quanto no Celular (abre o App)
+    // LINK CORRIGIDO PARA NÃO DAR ERRO NO CELULAR (ABRE O APP DIRETO)
     const linkFinal = `https://api.whatsapp.com/send?phone=55${fone}&text=${msg}`;
     
     window.open(linkFinal, '_blank');
