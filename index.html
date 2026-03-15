@@ -349,13 +349,17 @@
     };
 
     function chamarMotorista(tel, placa) {
-        const num = tel.replace(/\D/g, "");
-        if(num.length < 11) return alert("ERRO: Número incompleto!");
-        const baia = prompt("PARA QUAL BAIA O VEÍCULO " + placa + " DEVE IR?");
-        if(!baia) return;
-        const msg = `Olá%0AMotorista vamos descarregar?%0ABaia *${baia}* - Área 02%0AObrigado!`;
-        window.open(`https://api.whatsapp.com/send?phone=55${num}&text=${msg}`, '_blank');
-    }
+    const num = tel.replace(/\D/g, "");
+    if(num.length < 11) return alert("ERRO: Número incompleto!");
+    
+    const baia = prompt("PARA QUAL BAIA O VEÍCULO " + placa + " DEVE IR?");
+    if(!baia) return;
+
+    // Mensagem ajustada para o padrão correto
+    const msg = `*PORTAL COLETA - RAÍZEN*%0A%0AVeículo: *${placa}*%0AFavor seguir para a *BAIA ${baia}*%0AÁrea 02 - Terminal Paulínia`;
+    
+    window.open(`https://api.whatsapp.com/send?phone=55${num}&text=${msg}`, '_blank');
+}
 
     function filtrarTabela() {
         const termo = document.getElementById("filtroFila").value.toUpperCase();
