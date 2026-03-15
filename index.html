@@ -9,8 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
-        /* CSS EXPANDIDO - DESIGN E IDENTIDADE VISUAL 
-        */
         :root {
             --verde-raizen: #4d6d5d;
             --roxo-raizen: #84207d;
@@ -22,12 +20,7 @@
             --cor-texto: #1e293b;
         }
 
-        * { 
-            box-sizing: border-box; 
-            font-family: 'Montserrat', sans-serif; 
-            margin: 0; 
-            padding: 0; 
-        }
+        * { box-sizing: border-box; font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; }
 
         body { 
             background-color: var(--fundo-base); 
@@ -38,7 +31,6 @@
             padding-bottom: 100px;
         }
 
-        /* HEADER IDENTIDADE CORPORATIVA */
         header { 
             background: linear-gradient(135deg, var(--verde-raizen) 0%, #1a241f 100%); 
             padding: 90px 20px; 
@@ -65,7 +57,6 @@
             text-transform: uppercase;
         }
 
-        /* CONTAINER DE ENTRADA */
         .card-industrial { 
             width: 94%; 
             max-width: 1100px; 
@@ -78,7 +69,6 @@
             position: relative;
         }
 
-        /* PAINEL DO OPERADOR - TELA CHEIA */
         #secao-operador { 
             display: none; 
             width: 98%; 
@@ -101,7 +91,6 @@
             padding-bottom: 30px;
         }
 
-        /* ESTILO DOS INPUTS E ÍCONES INTERNOS */
         .wrapper-campo { margin-bottom: 40px; position: relative; }
         
         label { 
@@ -136,7 +125,6 @@
             box-shadow: 0 0 0 8px rgba(132, 32, 125, 0.1);
         }
 
-        /* BOX DE JORNADA COM ANIMAÇÃO */
         .container-jornada-exp {
             background: #fffbeb;
             padding: 50px;
@@ -165,7 +153,6 @@
 
         .txt-check { font-weight: 900; color: var(--cor-alerta); font-size: 22px; }
 
-        /* TABELA TÉCNICA */
         .moldura-tabela { 
             overflow-x: auto; 
             border-radius: 50px; 
@@ -191,7 +178,6 @@
             font-size: 22px;
         }
 
-        /* SEMÁFORO VISUAL */
         .box-semaforo {
             padding: 18px 25px;
             border-radius: 60px;
@@ -209,7 +195,6 @@
         .led-g { background: #10b981; box-shadow: 0 0 12px #10b981; }
         .led-r { background: #ef4444; box-shadow: 0 0 12px #ef4444; }
 
-        /* BOTÕES RAÍZEN */
         .btn-principal { 
             width: 100%; 
             padding: 40px; 
@@ -227,11 +212,10 @@
         .btn-w-whatsapp { background: #22c55e; color: white; border: none; padding: 22px; border-radius: 20px; width: 100%; cursor: pointer; margin-bottom: 12px; font-weight: 900; font-size: 15px; }
         .btn-f-finalizar { background: #3b82f6; color: white; border: none; padding: 22px; border-radius: 20px; width: 100%; cursor: pointer; font-weight: 900; font-size: 15px; }
 
-        /* TAGS DE PRODUTO COM ÍCONES */
+        /* NOVAS CORES DE PRODUTOS SOLICITADAS */
         .tag-prod {
             padding: 18px 30px;
             border-radius: 25px;
-            color: white;
             font-size: 14px;
             font-weight: 900;
             display: flex;
@@ -239,11 +223,14 @@
             justify-content: center;
             gap: 10px;
             min-width: 220px;
+            text-transform: uppercase;
         }
-        .tag-gasosa { background: #f59e0b; color: #000; }
-        .tag-b100 { background: #000000; }
-        .tag-etanol { background: #059669; }
-        .tag-diesel { background: #475569; }
+        
+        .tag-gasosa { background: #ff8c00; color: #fff; } /* Laranja */
+        .tag-b100 { background: #5d4037; color: #fff; } /* Marrom */
+        .tag-anidro { background: #0d47a1; color: #fff; } /* Azul */
+        .tag-hidratado { background: #ffffff; color: #0d47a1; border: 3px solid #0d47a1; } /* Azul com Branco */
+        .tag-s10 { background: #ffffff; color: #5d4037; border: 3px solid #5d4037; } /* Marrom com Branco */
 
         .loader-raizen {
             border: 10px solid rgba(255,255,255,0.2);
@@ -350,7 +337,6 @@
     const API_URL = 'https://sheetdb.io/api/v1/p9z83v5m0dxq5';
     const SENHA_OP = 'raizen2026';
 
-    /* RESTAURAÇÃO DA JORNADA INTELIGENTE: SOME AO MARCAR 24H */
     document.getElementById('check_jornada_24h').addEventListener('change', function() {
         const boxHora = document.getElementById('box-horario-input');
         const inputH = document.getElementById('campo_hora_limite');
@@ -362,7 +348,6 @@
         }
     });
 
-    /* MÁSCARAS TÉCNICAS */
     document.getElementById('campo_placa').oninput = e => {
         let v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
         if (v.length > 3 && !isNaN(v[3])) v = v.substring(0,3) + "-" + v.substring(3,7);
@@ -374,7 +359,6 @@
         e.target.value = !v[2] ? v[1] : '(' + v[1] + ') ' + v[2] + (v[3] ? '-' + v[3] : '');
     };
 
-    /* WHATSAPP COM ÍCONES E MENSAGEM PADRÃO */
     function chamarMotorista(tel, placa) {
         const num = tel.replace(/\D/g, "");
         if(num.length < 11) return alert("ERRO: Número incompleto!");
@@ -384,7 +368,6 @@
         window.open(`https://api.whatsapp.com/send?phone=55${num}&text=${msg}`, '_blank');
     }
 
-    /* FILTRO DE BUSCA GLOBAL */
     function filtrarTabela() {
         const termo = document.getElementById("filtroFila").value.toUpperCase();
         const linhas = document.getElementById("tabelaMaster").getElementsByTagName("tr");
@@ -393,7 +376,6 @@
         }
     }
 
-    /* SALVAR REGISTRO (POST) */
     document.getElementById('formDescarga').onsubmit = async e => {
         e.preventDefault();
         const btn = document.getElementById('btn_registrar');
@@ -419,7 +401,6 @@
         location.reload();
     };
 
-    /* SEMÁFORO DE STATUS (VERDE/VERMELHO) */
     function gerarSemaforo(valor) {
         if(valor === "24 HORAS") return `<div class="box-semaforo semaforo-vermelho"><span class="circulo-led led-r"></span> CRÍTICO (24H)</div>`;
         const agora = new Date();
@@ -430,7 +411,6 @@
         return `<div class="box-semaforo semaforo-verde"><span class="circulo-led led-g"></span> DENTRO DA JORNADA</div>`;
     }
 
-    /* SINCRONIZAÇÃO E ORDENAÇÃO */
     async function sincronizarFila() {
         const corpo = document.getElementById('dadosFila');
         corpo.innerHTML = "<tr><td colspan='7'><span class='loader-raizen' style='width:30px; height:30px; border-top-color:var(--roxo-raizen);'></span> ATUALIZANDO...</td></tr>";
@@ -439,7 +419,6 @@
         const json = await res.json();
         let ativos = json.filter(x => x.PLACA && !x.SAIDA);
 
-        // Ordenação por Agendamento Coleta
         ativos.sort((a, b) => {
             const agA = a['AGENDAMENTO NO COLETA'] ? new Date(a['AGENDAMENTO NO COLETA']) : new Date(8640000000000000);
             const agB = b['AGENDAMENTO NO COLETA'] ? new Date(b['AGENDAMENTO NO COLETA']) : new Date(8640000000000000);
@@ -448,11 +427,15 @@
 
         corpo.innerHTML = "";
         ativos.forEach(item => {
-            let classeProd = "tag-diesel";
+            let classeProd = "";
             let iconeProd = "fa-gas-pump";
+            
+            // LÓGICA DE CORES PERSONALIZADAS
             if(item.PRODUTO === "GASOLINA") { classeProd = "tag-gasosa"; iconeProd = "fa-fire-flame-simple"; }
-            if(item.PRODUTO === "BIODIESEL (B100)") { classeProd = "tag-b100"; iconeProd = "fa-leaf"; }
-            if(item.PRODUTO.includes("ETANOL")) { classeProd = "tag-etanol"; iconeProd = "fa-droplet"; }
+            else if(item.PRODUTO === "BIODIESEL (B100)") { classeProd = "tag-b100"; iconeProd = "fa-leaf"; }
+            else if(item.PRODUTO === "ETANOL ANIDRO") { classeProd = "tag-anidro"; iconeProd = "fa-droplet"; }
+            else if(item.PRODUTO === "ETANOL HIDRATADO") { classeProd = "tag-hidratado"; iconeProd = "fa-droplet"; }
+            else if(item.PRODUTO === "DIESEL S10") { classeProd = "tag-s10"; iconeProd = "fa-truck-ramp-box"; }
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
