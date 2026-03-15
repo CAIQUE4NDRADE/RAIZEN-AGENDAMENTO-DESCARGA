@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RAÍZEN - GESTÃO OPERACIONAL V22.0</title>
+    <title>RAÍZEN - GESTÃO OPERACIONAL V20.0</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
@@ -31,125 +31,130 @@
             padding-bottom: 100px;
         }
 
+        /* HEADER ROBUSTO */
         header { 
             background: linear-gradient(135deg, var(--verde-raizen) 0%, #1a241f 100%); 
-            padding: 40px 15px; 
+            padding: 90px 20px; 
             text-align: center; 
-            border-bottom: 15px solid var(--roxo-raizen);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            border-bottom: 25px solid var(--roxo-raizen);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
 
         .logo-raizen-master {
             color: var(--branco);
-            font-size: 45px;
+            font-size: 85px;
             font-weight: 900;
-            letter-spacing: 8px;
+            letter-spacing: 15px;
+            text-transform: uppercase;
+            text-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+        }
+
+        header h1 { 
+            color: var(--branco); 
+            font-size: 24px; 
+            letter-spacing: 6px; 
+            font-weight: 300;
+            margin-top: 15px;
             text-transform: uppercase;
         }
 
+        /* CARD MOTORISTA (COMO ESTAVA ANTES) */
         .card-industrial { 
-            width: 95%; 
-            max-width: 800px; 
-            margin: 30px auto; 
+            width: 94%; 
+            max-width: 1100px; 
+            margin: 60px auto; 
             background: var(--branco); 
-            padding: 40px; 
-            border-radius: 40px; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
-            border-left: 20px solid var(--roxo-raizen);
+            padding: 70px; 
+            border-radius: 60px; 
+            box-shadow: 0 40px 80px rgba(0,0,0,0.2); 
+            border-left: 35px solid var(--roxo-raizen);
+            position: relative;
         }
 
+        .wrapper-campo { margin-bottom: 40px; position: relative; }
+        
+        label { 
+            display: block; 
+            margin-bottom: 15px; 
+            font-weight: 900; 
+            color: var(--verde-raizen); 
+            font-size: 16px; 
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        input, select { 
+            width: 100%; 
+            padding: 28px; 
+            border: 5px solid #e2e8f0; 
+            border-radius: 30px; 
+            font-size: 24px; 
+            font-weight: 700;
+            background: #f8fafc;
+        }
+
+        .container-jornada-exp {
+            background: #fffbeb;
+            padding: 50px;
+            border-radius: 50px;
+            border: 6px solid var(--ouro-raizen);
+            margin: 40px 0;
+        }
+
+        .btn-principal { 
+            width: 100%; 
+            padding: 40px; 
+            background: var(--roxo-raizen); 
+            color: white; 
+            border: none; 
+            border-radius: 35px; 
+            font-size: 30px; 
+            font-weight: 900; 
+            cursor: pointer; 
+            text-transform: uppercase;
+        }
+
+        /* PAINEL ADM - AJUSTADO PARA NÃO ROLAR */
         #secao-operador { 
             display: none; 
             width: 98%; 
             margin: 20px auto;
             background: var(--branco);
             padding: 20px;
+            border-radius: 40px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.2);
+        }
+
+        .moldura-tabela { 
+            overflow-x: hidden; 
+            border: 3px solid #e2e8f0;
             border-radius: 30px;
         }
 
-        h2 { 
-            color: var(--roxo-raizen); 
-            text-align: center; 
-            font-weight: 900; 
-            text-transform: uppercase; 
-            margin-bottom: 30px; 
-            font-size: 24px;
-        }
-
-        /* --- CONTROLE DE TABELA SEM ROLAGEM --- */
-        .moldura-tabela { 
-            overflow-x: hidden; /* Proíbe a rolagem lateral */
-            border: 2px solid #e2e8f0;
-            border-radius: 20px;
-        }
-
-        table { width: 100%; border-collapse: collapse; table-layout: fixed; } /* Largura fixa para caber na tela */
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         
-        th { 
-            background: #0f172a; 
-            color: #ffffff; 
-            padding: 10px 2px; 
-            font-size: 9px; 
-            text-transform: uppercase;
-        }
+        th { background: #0f172a; color: white; padding: 15px 2px; font-size: 10px; text-transform: uppercase; }
+        td { padding: 15px 2px; border-bottom: 2px solid #f1f5f9; text-align: center; font-weight: 800; font-size: 12px; word-wrap: break-word; }
 
-        td { 
-            padding: 12px 2px; 
-            border-bottom: 2px solid #f1f5f9; 
-            text-align: center; 
-            font-weight: 800; 
-            font-size: 11px; 
-            word-wrap: break-word; /* Força o texto a quebrar para baixo */
-        }
-
-        /* Estilização dos Produtos e Agendamento */
         .tag-prod {
-            padding: 4px;
-            border-radius: 6px;
-            font-size: 9px;
-            font-weight: 900;
-            display: block;
-            margin: 2px;
+            padding: 6px; border-radius: 10px; font-size: 9px; font-weight: 900; display: block;
         }
         .tag-gasosa { background: #ff8c00; color: #fff; } 
         .tag-b100 { background: #5d4037; color: #fff; } 
         .tag-anidro { background: #0056b3; color: #fff; } 
-        .tag-hidratado { border: 1px solid #0056b3; color: #0056b3; } 
-        .tag-s10 { border: 1px solid #5d4037; color: #5d4037; } 
+        .tag-hidratado { border: 2px solid #0056b3; color: #0056b3; } 
+        .tag-s10 { border: 2px solid #334155; color: #334155; } 
 
         .box-semaforo {
-            padding: 4px;
-            border-radius: 6px;
-            font-size: 9px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 3px;
+            padding: 6px; border-radius: 10px; font-size: 9px; display: flex; align-items: center; justify-content: center; gap: 4px;
         }
         .semaforo-verde { background: #dcfce7; color: #166534; }
         .semaforo-vermelho { background: #fee2e2; color: #991b1b; }
-        .led { width: 8px; height: 8px; border-radius: 50%; }
-        .led-g { background: #10b981; }
-        .led-r { background: #ef4444; }
+        .led { width: 10px; height: 10px; border-radius: 50%; }
 
-        .btn-acao { 
-            width: 100%; 
-            padding: 10px 2px; 
-            border-radius: 8px; 
-            border: none; 
-            color: white; 
-            font-weight: 900; 
-            font-size: 9px; 
-            margin-bottom: 4px;
-            cursor: pointer;
-        }
-
-        /* Inputs do Formulário */
-        input, select { width: 100%; padding: 18px; border-radius: 20px; border: 3px solid #ddd; margin-bottom: 20px; font-size: 18px; }
-        .btn-principal { width: 100%; padding: 25px; background: var(--roxo-raizen); color: white; border: none; border-radius: 25px; font-weight: 900; font-size: 22px; }
-
-        /* Estilo do Agendamento (Coleta) */
-        .col-agenda { background: #fffde7; color: #d97706; font-size: 10px; font-weight: 900; }
+        .btn-acao { width: 100%; padding: 12px 2px; border-radius: 10px; border: none; color: white; font-weight: 900; font-size: 10px; margin-bottom: 5px; cursor: pointer; }
 
     </style>
 </head>
@@ -157,30 +162,44 @@
 
 <header>
     <div class="logo-raizen-master">RAÍZEN</div>
+    <h1>CONTROLE DE DESCARGAS | ÁREA 02</h1>
 </header>
 
 <div class="card-industrial" id="modulo-entrada">
-    <h2>REGISTRO DE ENTRADA</h2>
+    <h2><i class="fa-solid fa-file-signature"></i> REGISTRO DE ENTRADA</h2>
     <form id="formDescarga">
-        <input type="text" id="campo_placa" placeholder="PLACA DO VEÍCULO" required>
-        <select id="campo_produto" required>
-            <option value="">SELECIONE O PRODUTO</option>
-            <option value="GASOLINA">GASOLINA</option>
-            <option value="BIODIESEL (B100)">BIODIESEL (B100)</option>
-            <option value="ETANOL ANIDRO">ETANOL ANIDRO</option>
-            <option value="ETANOL HIDRATADO">ETANOL HIDRATADO</option>
-            <option value="DIESEL S10">DIESEL S10</option>
-        </select>
-        <input type="tel" id="campo_whatsapp" placeholder="WHATSAPP DO MOTORISTA" required>
-        <label style="font-size: 12px; font-weight: 900; color: var(--verde-raizen);">TÉRMINO DA JORNADA:</label>
-        <input type="time" id="campo_hora_limite">
-        <button type="submit" class="btn-principal">EFETUAR REGISTRO</button>
+        <div class="wrapper-campo">
+            <label><i class="fa-solid fa-truck-front"></i> PLACA DO VEÍCULO</label>
+            <input type="text" id="campo_placa" placeholder="ABC-1234" maxlength="8" required>
+        </div>
+        <div class="wrapper-campo">
+            <label><i class="fa-solid fa-droplet"></i> PRODUTO CARREGADO</label>
+            <select id="campo_produto" required>
+                <option value="">-- SELECIONE O PRODUTO --</option>
+                <option value="GASOLINA">GASOLINA COMUM / ADITIVADA</option>
+                <option value="BIODIESEL (B100)">BIODIESEL (B100)</option>
+                <option value="ETANOL ANIDRO">ETANOL ANIDRO</option>
+                <option value="ETANOL HIDRATADO">ETANOL HIDRATADO</option>
+                <option value="DIESEL S10">DIESEL S10</option>
+            </select>
+        </div>
+        <div class="wrapper-campo">
+            <label><i class="fa-brands fa-whatsapp"></i> WHATSAPP</label>
+            <input type="tel" id="campo_whatsapp" placeholder="(19) 99999-9999" required>
+        </div>
+        <div class="container-jornada-exp">
+            <div id="box-horario-input">
+                <label><i class="fa-solid fa-clock"></i> TÉRMINO DA JORNADA</label>
+                <input type="time" id="campo_hora_limite">
+            </div>
+        </div>
+        <button type="submit" class="btn-principal" id="btn_registrar">REGISTRAR NO PÁTIO</button>
     </form>
-    <button onclick="acessoOperador()" style="margin-top:20px; background:none; border:none; color:var(--roxo-raizen); text-decoration:underline; width:100%; font-weight:900;">MÓDULO OPERADOR (PAINEL ADM)</button>
+    <button onclick="acessoOperador()" style="margin-top:40px; background:none; border:none; color:var(--roxo-raizen); text-decoration:underline; width:100%; font-weight:900;">MÓDULO OPERADOR</button>
 </div>
 
 <div id="secao-operador">
-    <h2>PAINEL DE DECISÃO - ÁREA 02</h2>
+    <h2><i class="fa-solid fa-list-check"></i> FILA DE DESCARGA</h2>
     <div class="moldura-tabela">
         <table>
             <thead>
@@ -195,7 +214,7 @@
             <tbody id="dadosFila"></tbody>
         </table>
     </div>
-    <button class="btn-principal" style="margin-top:30px; background:#475569;" onclick="location.reload()">VOLTAR</button>
+    <button class="btn-principal" style="margin-top:30px; background:#475569;" onclick="location.reload()">SAIR</button>
 </div>
 
 <script>
@@ -203,12 +222,12 @@
     const SENHA_OP = 'raizen2026';
 
     function gerarSemaforo(valor) {
-        if(!valor || valor === "24 HORAS") return `<div class="box-semaforo semaforo-vermelho"><span class="led led-r"></span> 24H</div>`;
+        if(!valor || valor === "24 HORAS") return `<div class="box-semaforo semaforo-vermelho"><span class="led led-r" style="background:red"></span> 24H</div>`;
         const agora = new Date();
         const t = valor.split(':');
         const limite = new Date(); limite.setHours(t[0], t[1], 0);
         const exp = agora > limite;
-        return `<div class="box-semaforo ${exp?'semaforo-vermelho':'semaforo-verde'}"><span class="led ${exp?'led-r':'led-g'}"></span> ${valor}</div>`;
+        return `<div class="box-semaforo ${exp?'semaforo-vermelho':'semaforo-verde'}"><span class="led" style="background:${exp?'red':'#10b981'}"></span> ${valor}</div>`;
     }
 
     async function sincronizarFila() {
@@ -216,26 +235,23 @@
         corpo.innerHTML = "<tr><td colspan='5'>CARREGANDO...</td></tr>";
         const res = await fetch(API_URL + "?t=" + Date.now());
         const json = await res.json();
-        const ativos = json.filter(x => x.PLACA && !x.SAIDA);
+        let ativos = json.filter(x => x.PLACA && !x.SAIDA);
         
-        // Ordenação por Agendamento
         ativos.sort((a, b) => (a['AGENDAMENTO NO COLETA'] || '99:99').localeCompare(b['AGENDAMENTO NO COLETA'] || '99:99'));
 
         corpo.innerHTML = "";
         ativos.forEach(item => {
             const tr = document.createElement('tr');
             const classeProd = "tag-" + item.PRODUTO.split(' ')[0].toLowerCase();
-            
-            // Formatando o Agendamento para aparecer apenas a Hora no celular
-            let agendaHora = item['AGENDAMENTO NO COLETA'] ? item['AGENDAMENTO NO COLETA'].split('T')[1] || item['AGENDAMENTO NO COLETA'] : 'S/AG';
+            const agenda = item['AGENDAMENTO NO COLETA'] ? item['AGENDAMENTO NO COLETA'].split('T')[1] || item['AGENDAMENTO NO COLETA'] : 'S/AG';
 
             tr.innerHTML = `
-                <td style="color:var(--roxo-raizen); font-size:13px;">${item.PLACA}</td>
+                <td style="color:var(--roxo-raizen);">${item.PLACA}</td>
                 <td><span class="tag-prod ${classeProd}">${item.PRODUTO}</span></td>
-                <td class="col-agenda">${agendaHora}</td>
+                <td style="background:#fffde7;">${agenda}</td>
                 <td>${gerarSemaforo(item.JORNADA)}</td>
                 <td>
-                    <button class="btn-acao" style="background:#22c55e;" onclick="window.open('https://api.whatsapp.com/send?phone=55${item.TELEFONE.replace(/\D/g,'')}&text=Motorista ${item.PLACA}, favor encostar para descarga.')">ZAP</button>
+                    <button class="btn-acao" style="background:#22c55e;" onclick="window.open('https://api.whatsapp.com/send?phone=55${item.TELEFONE.replace(/\D/g,'')}&text=Motorista ${item.PLACA}, favor encostar.')">ZAP</button>
                     <button class="btn-acao" style="background:#3b82f6;" onclick="finalizar('${item.PLACA}')">FIM</button>
                 </td>
             `;
@@ -261,12 +277,12 @@
             "SAIDA": ""
         };
         await fetch(API_URL, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify([dados]) });
-        alert("REGISTRADO NO PÁTIO!");
+        alert("REGISTRADO!");
         location.reload();
     };
 
     function acessoOperador() {
-        if(prompt("SENHA OPERACIONAL:") === SENHA_OP) {
+        if(prompt("SENHA:") === SENHA_OP) {
             document.getElementById('modulo-entrada').style.display = 'none';
             document.getElementById('secao-operador').style.display = 'block';
             sincronizarFila();
