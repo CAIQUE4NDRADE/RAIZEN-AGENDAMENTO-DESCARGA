@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RAÍZEN - GESTÃO V21.0</title>
+    <title>RAÍZEN - GESTÃO OPERACIONAL V20.0</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
@@ -17,168 +17,320 @@
             --branco: #ffffff;
             --cor-alerta: #e11d48;
             --cor-sucesso: #10b981;
+            --cor-texto: #1e293b;
         }
 
         * { box-sizing: border-box; font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; }
-        body { background-color: var(--fundo-base); color: #1e293b; padding-bottom: 50px; }
+
+        body { 
+            background-color: var(--fundo-base); 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh;
+            color: var(--cor-texto);
+            padding-bottom: 100px;
+        }
 
         header { 
             background: linear-gradient(135deg, var(--verde-raizen) 0%, #1a241f 100%); 
-            padding: 30px 15px; 
+            padding: 90px 20px; 
             text-align: center; 
-            border-bottom: 10px solid var(--roxo-raizen);
+            border-bottom: 25px solid var(--roxo-raizen);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
 
-        .logo-raizen-master { color: var(--branco); font-size: 40px; font-weight: 900; letter-spacing: 5px; }
+        .logo-raizen-master {
+            color: var(--branco);
+            font-size: 85px;
+            font-weight: 900;
+            letter-spacing: 15px;
+            text-transform: uppercase;
+            text-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+        }
+
+        header h1 { 
+            color: var(--branco); 
+            font-size: 24px; 
+            letter-spacing: 6px; 
+            font-weight: 300;
+            margin-top: 15px;
+            text-transform: uppercase;
+        }
 
         .card-industrial { 
-            width: 95%; max-width: 600px; margin: 20px auto; 
-            background: var(--branco); padding: 25px; border-radius: 30px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-left: 15px solid var(--roxo-raizen);
+            width: 94%; 
+            max-width: 1100px; 
+            margin: 60px auto; 
+            background: var(--branco); 
+            padding: 70px; 
+            border-radius: 60px; 
+            box-shadow: 0 40px 80px rgba(0,0,0,0.2); 
+            border-left: 35px solid var(--roxo-raizen);
+            position: relative;
         }
 
-        #secao-operador { display: none; width: 98%; margin: 15px auto; }
-
-        h2 { color: var(--roxo-raizen); font-size: 20px; text-transform: uppercase; margin-bottom: 20px; text-align: center; }
-
-        /* --- AJUSTE DA TABELA PARA NÃO ROLAR --- */
-        .moldura-tabela { 
-            background: white; border-radius: 20px; 
-            overflow: hidden; /* Corta a rolagem indesejada */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        #secao-operador { 
+            display: none; 
+            width: 98%; 
+            max-width: 2200px; 
+            margin: 40px auto;
+            background: var(--branco);
+            padding: 60px;
+            border-radius: 50px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.2);
         }
+
+        h2 { 
+            color: var(--roxo-raizen); 
+            text-align: center; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            margin-bottom: 50px; 
+            font-size: 38px;
+            border-bottom: 12px solid #f1f5f9;
+            padding-bottom: 30px;
+        }
+
+        .wrapper-campo { margin-bottom: 40px; position: relative; }
+        
+        label { 
+            display: block; 
+            margin-bottom: 15px; 
+            font-weight: 900; 
+            color: var(--verde-raizen); 
+            font-size: 16px; 
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        label i { color: var(--roxo-raizen); font-size: 20px; }
+
+        input, select { 
+            width: 100%; 
+            padding: 28px; 
+            border: 5px solid #e2e8f0; 
+            border-radius: 30px; 
+            font-size: 24px; 
+            font-weight: 700;
+            background: #f8fafc;
+            color: #334155;
+            transition: all 0.3s;
+        }
+
+        .container-jornada-exp {
+            background: #fffbeb;
+            padding: 50px;
+            border-radius: 50px;
+            border: 6px solid var(--ouro-raizen);
+            margin: 40px 0;
+        }
+
+        .check-box-24h {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            cursor: pointer;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 30px;
+            margin-top: 35px;
+            border: 3px solid #fde68a;
+        }
+
+        .check-box-24h input { width: 45px; height: 45px; accent-color: var(--cor-alerta); }
+
+        .txt-check { font-weight: 900; color: var(--cor-alerta); font-size: 22px; }
+
+        /* --- AJUSTE PARA NÃO ROLAR PRO LADO NO CELULAR --- */
+        .moldura-tabela { overflow-x: hidden; border-radius: 50px; border: 4px solid #e2e8f0; }
 
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         
-        th { background: #0f172a; color: white; padding: 12px 5px; font-size: 10px; text-transform: uppercase; }
-        td { padding: 12px 5px; border-bottom: 1px solid #eee; text-align: center; font-size: 13px; font-weight: 700; word-wrap: break-word; }
+        th { 
+            background: #0f172a; 
+            color: #ffffff; 
+            padding: 20px 5px; 
+            font-size: 11px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+        }
 
-        /* Colunas que ocultamos no mobile para caber na tela */
-        .col-extra { display: none; }
+        td { padding: 20px 5px; border-bottom: 4px solid #f1f5f9; text-align: center; font-weight: 800; font-size: 16px; word-wrap: break-word; }
 
-        @media (min-width: 800px) {
-            .col-extra { display: table-cell; }
+        /* Esconde colunas extras no celular para evitar rolagem lateral */
+        .col-sumir { display: none; }
+
+        @media (min-width: 1000px) {
+            .col-sumir { display: table-cell; }
             table { table-layout: auto; }
-            th { font-size: 13px; }
-            td { font-size: 16px; }
+            th { font-size: 15px; padding: 35px; }
+            td { font-size: 22px; padding: 30px; }
         }
 
-        /* Tags de Produto Compactas */
-        .tag-prod { 
-            padding: 5px; border-radius: 8px; font-size: 9px; 
-            display: block; text-align: center; font-weight: 900;
+        .tag-prod {
+            padding: 10px;
+            border-radius: 15px;
+            font-size: 10px;
+            font-weight: 900;
+            display: block;
+            text-transform: uppercase;
         }
-        .tag-gasosa { background: #ff8c00; color: #fff; }
-        .tag-b100 { background: #5d4037; color: #fff; }
-        .tag-anidro { background: #0056b3; color: #fff; }
-        .tag-hidratado { border: 1px solid #0056b3; color: #0056b3; }
-        .tag-s10 { border: 1px solid #334155; color: #334155; }
+        
+        .tag-gasosa { background: #ff8c00; color: #fff; } 
+        .tag-b100 { background: #5d4037; color: #fff; } 
+        .tag-anidro { background: #0056b3; color: #fff; } 
+        .tag-hidratado { border: 2px solid #0056b3; color: #0056b3; } 
+        .tag-s10 { border: 2px solid #5d4037; color: #5d4037; } 
 
-        /* Semáforo Compacto */
-        .box-semaforo { 
-            padding: 5px; border-radius: 8px; font-size: 10px; 
-            display: flex; align-items: center; justify-content: center; gap: 4px;
+        .box-semaforo {
+            padding: 10px;
+            border-radius: 15px;
+            font-size: 10px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
         }
         .semaforo-verde { background: #dcfce7; color: #166534; }
         .semaforo-vermelho { background: #fee2e2; color: #991b1b; }
-        .led { width: 8px; height: 8px; border-radius: 50%; }
-        .led-g { background: var(--cor-sucesso); }
-        .led-r { background: var(--cor-alerta); }
+        .circulo-led { width: 12px; height: 12px; border-radius: 50%; }
+        .led-g { background: #10b981; }
+        .led-r { background: #ef4444; }
 
-        /* Botões de Ação */
-        .btn-acao { 
-            width: 100%; padding: 8px; border-radius: 8px; border: none; 
-            color: white; font-weight: 900; font-size: 10px; margin-bottom: 4px;
+        .btn-principal { 
+            width: 100%; 
+            padding: 40px; 
+            background: var(--roxo-raizen); 
+            color: white; 
+            border: none; 
+            border-radius: 35px; 
+            font-size: 30px; 
+            font-weight: 900; 
+            cursor: pointer; 
+            text-transform: uppercase;
         }
 
-        input, select { width: 100%; padding: 15px; border-radius: 15px; border: 2px solid #ddd; margin-bottom: 15px; font-size: 16px; }
-        .btn-principal { width: 100%; padding: 20px; background: var(--roxo-raizen); color: white; border: none; border-radius: 15px; font-weight: 900; font-size: 18px; }
+        .btn-w-whatsapp { background: #22c55e; color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; margin-bottom: 8px; font-weight: 900; font-size: 12px; }
+        .btn-f-finalizar { background: #3b82f6; color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 900; font-size: 12px; }
+
     </style>
 </head>
 <body>
 
 <header>
     <div class="logo-raizen-master">RAÍZEN</div>
+    <h1>CONTROLE DE DESCARGAS | ÁREA 02</h1>
 </header>
 
 <div class="card-industrial" id="modulo-entrada">
-    <h2>ENTRADA DE VEÍCULO</h2>
+    <h2>REGISTRO DE ENTRADA</h2>
     <form id="formDescarga">
-        <input type="text" id="campo_placa" placeholder="PLACA (ABC-1234)" required>
-        <select id="campo_produto" required>
-            <option value="">PRODUTO...</option>
-            <option value="GASOLINA">GASOLINA</option>
-            <option value="BIODIESEL (B100)">BIODIESEL (B100)</option>
-            <option value="ETANOL ANIDRO">ETANOL ANIDRO</option>
-            <option value="ETANOL HIDRATADO">ETANOL HIDRATADO</option>
-            <option value="DIESEL S10">DIESEL S10</option>
-        </select>
-        <input type="tel" id="campo_whatsapp" placeholder="WHATSAPP" required>
-        <label style="font-size: 12px; font-weight: 900;">TÉRMINO DA JORNADA:</label>
-        <input type="time" id="campo_hora_limite">
+        <div class="wrapper-campo">
+            <label>PLACA DO VEÍCULO</label>
+            <input type="text" id="campo_placa" placeholder="ABC-1234" maxlength="8" required>
+        </div>
+        <div class="wrapper-campo">
+            <label>PRODUTO</label>
+            <select id="campo_produto" required>
+                <option value="">-- SELECIONE --</option>
+                <option value="GASOLINA">GASOLINA</option>
+                <option value="BIODIESEL (B100)">BIODIESEL (B100)</option>
+                <option value="ETANOL ANIDRO">ETANOL ANIDRO</option>
+                <option value="ETANOL HIDRATADO">ETANOL HIDRATADO</option>
+                <option value="DIESEL S10">DIESEL S10</option>
+            </select>
+        </div>
+        <div class="wrapper-campo">
+            <label>WHATSAPP</label>
+            <input type="tel" id="campo_whatsapp" placeholder="(19) 99999-9999" required>
+        </div>
+        <div class="container-jornada-exp">
+            <div id="box-horario-input">
+                <label>TÉRMINO DA JORNADA</label>
+                <input type="time" id="campo_hora_limite">
+            </div>
+            <label class="check-box-24h">
+                <input type="checkbox" id="check_jornada_24h">
+                <span class="txt-check">JORNADA 24 HORAS</span>
+            </label>
+        </div>
         <button type="submit" class="btn-principal" id="btn_registrar">REGISTRAR</button>
     </form>
-    <button onclick="acessoOperador()" style="margin-top:20px; background:none; border:none; color:var(--roxo-raizen); text-decoration:underline; width:100%;">PAINEL ADM</button>
+    <div style="text-align:center; margin-top:40px;">
+        <button onclick="acessoOperador()" style="color:var(--roxo-raizen); font-weight:900; background:none; border:none; text-decoration:underline;">PAINEL ADM</button>
+    </div>
 </div>
 
 <div id="secao-operador">
-    <h2>FILA ÁREA 02</h2>
+    <h2>FILA DE DESCARGA</h2>
     <div class="moldura-tabela">
-        <table>
+        <table id="tabelaMaster">
             <thead>
                 <tr>
                     <th style="width: 25%;">PLACA</th>
                     <th style="width: 25%;">PRODUTO</th>
                     <th style="width: 25%;">JORNADA</th>
-                    <th class="col-extra">CONTATO</th>
-                    <th class="col-extra">ENTRADA</th>
+                    <th class="col-sumir">CONTATO</th>
+                    <th class="col-sumir">ENTRADA</th>
+                    <th class="col-sumir">PRIORIDADE</th>
                     <th style="width: 25%;">AÇÕES</th>
                 </tr>
             </thead>
             <tbody id="dadosFila"></tbody>
         </table>
     </div>
-    <button class="btn-principal" style="margin-top:20px; background:#475569;" onclick="location.reload()">VOLTAR</button>
+    <div style="margin-top:50px; display:flex; gap:20px;">
+        <button class="btn-principal" style="background:#475569;" onclick="location.reload()">SAIR</button>
+        <button class="btn-principal" style="background:var(--verde-raizen);" onclick="sincronizarFila()">ATUALIZAR</button>
+    </div>
 </div>
 
 <script>
     const API_URL = 'https://sheetdb.io/api/v1/p9z83v5m0dxq5';
     const SENHA_OP = 'raizen2026';
 
+    document.getElementById('check_jornada_24h').addEventListener('change', function() {
+        document.getElementById('box-horario-input').style.display = this.checked ? 'none' : 'block';
+    });
+
     function gerarSemaforo(valor) {
-        if(!valor) return "-";
+        if(valor === "24 HORAS") return `<div class="box-semaforo semaforo-vermelho"><span class="circulo-led led-r"></span> 24H</div>`;
         const agora = new Date();
         const t = valor.split(':');
-        if(t.length < 2) return `<div class="box-semaforo semaforo-vermelho">24H</div>`;
+        if(t.length < 2) return valor;
         const limite = new Date(); limite.setHours(t[0], t[1], 0);
-        const expirou = agora > limite;
-        return `<div class="box-semaforo ${expirou?'semaforo-vermelho':'semaforo-verde'}">
-            <span class="led ${expirou?'led-r':'led-g'}"></span> ${valor}
-        </div>`;
+        const exp = agora > limite;
+        return `<div class="box-semaforo ${exp?'semaforo-vermelho':'semaforo-verde'}"><span class="circulo-led ${exp?'led-r':'led-g'}"></span> ${valor}</div>`;
     }
 
     async function sincronizarFila() {
         const corpo = document.getElementById('dadosFila');
-        corpo.innerHTML = "<tr><td colspan='4'>...</td></tr>";
+        corpo.innerHTML = "<tr><td colspan='4'>CARREGANDO...</td></tr>";
         const res = await fetch(API_URL + "?t=" + Date.now());
         const json = await res.json();
-        const ativos = json.filter(x => x.PLACA && !x.SAIDA);
+        let ativos = json.filter(x => x.PLACA && !x.SAIDA);
         
         corpo.innerHTML = "";
         ativos.forEach(item => {
+            let classeProd = "tag-" + item.PRODUTO.split(' ')[0].toLowerCase();
             const tr = document.createElement('tr');
-            // Ao clicar na linha no celular, mostra detalhes
-            tr.onclick = () => { if(window.innerWidth < 800) alert(`📞 ${item.TELEFONE}\n🕒 Entrada: ${item.ENTRADA}`); };
             
+            // Toque na linha mostra os dados ocultos no celular
+            tr.onclick = () => { if(window.innerWidth < 1000) alert(`📞 Contato: ${item.TELEFONE}\n🕒 Entrada: ${item.ENTRADA}\n🚀 Prioridade: ${item['AGENDAMENTO NO COLETA'] || 'Não definida'}`); };
+
             tr.innerHTML = `
                 <td style="color:var(--roxo-raizen);">${item.PLACA}</td>
-                <td><span class="tag-prod tag-${item.PRODUTO.split(' ')[0].toLowerCase()}">${item.PRODUTO.substring(0,10)}</span></td>
+                <td><span class="tag-prod ${classeProd}">${item.PRODUTO.substring(0,10)}</span></td>
                 <td>${gerarSemaforo(item.JORNADA)}</td>
-                <td class="col-extra">${item.TELEFONE}</td>
-                <td class="col-extra">${item.ENTRADA}</td>
+                <td class="col-sumir">${item.TELEFONE}</td>
+                <td class="col-sumir">${item.ENTRADA}</td>
+                <td class="col-sumir">${item['AGENDAMENTO NO COLETA'] || ''}</td>
                 <td>
-                    <button class="btn-acao" style="background:#22c55e;" onclick="event.stopPropagation(); window.open('https://api.whatsapp.com/send?phone=55${item.TELEFONE.replace(/\D/g,'')}&text=Motorista da placa ${item.PLACA}, favor encostar para descarga.')">ZAP</button>
-                    <button class="btn-acao" style="background:#3b82f6;" onclick="event.stopPropagation(); finalizar('${item.PLACA}')">FIM</button>
+                    <button class="btn-w-whatsapp" onclick="event.stopPropagation(); window.open('https://api.whatsapp.com/send?phone=55${item.TELEFONE.replace(/\D/g,'')}&text=Motorista da placa ${item.PLACA}, favor encostar.')">ZAP</button>
+                    <button class="btn-f-finalizar" onclick="event.stopPropagation(); finalizar('${item.PLACA}')">FIM</button>
                 </td>
             `;
             corpo.appendChild(tr);
@@ -186,7 +338,7 @@
     }
 
     async function finalizar(placa) {
-        if(confirm(`FINALIZAR ${placa}?`)) {
+        if(confirm("FINALIZAR " + placa + "?")) {
             await fetch(`${API_URL}/PLACA/${placa}`, { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({"SAIDA": new Date().toLocaleString()}) });
             sincronizarFila();
         }
@@ -198,12 +350,12 @@
             "PLACA": document.getElementById('campo_placa').value.toUpperCase(),
             "PRODUTO": document.getElementById('campo_produto').value,
             "TELEFONE": document.getElementById('campo_whatsapp').value,
-            "JORNADA": document.getElementById('campo_hora_limite').value || "24 HORAS",
+            "JORNADA": document.getElementById('check_jornada_24h').checked ? "24 HORAS" : document.getElementById('campo_hora_limite').value,
             "ENTRADA": new Date().toLocaleString(),
             "SAIDA": ""
         };
         await fetch(API_URL, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify([dados]) });
-        alert("REGISTRADO!");
+        alert("SUCESSO!");
         location.reload();
     };
 
