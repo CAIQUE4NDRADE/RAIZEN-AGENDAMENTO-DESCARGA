@@ -158,6 +158,7 @@
 
         td { padding: 30px; border-bottom: 4px solid #f1f5f9; text-align: center; font-weight: 800; font-size: 22px; }
 
+        /* TAGS DE PRODUTO */
         .tag-prod {
             padding: 18px 30px;
             border-radius: 25px;
@@ -176,23 +177,6 @@
         .tag-anidro { background: #0056b3; color: #fff; border: 2px solid #003d80; } 
         .tag-hidratado { background: #ffffff; color: #0056b3; border: 5px solid #0056b3; } 
         .tag-s10 { background: #ffffff; color: #5d4037; border: 5px solid #5d4037; } 
-
-        .box-semaforo {
-            padding: 18px 25px;
-            border-radius: 60px;
-            font-size: 14px;
-            font-weight: 900;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            text-transform: uppercase;
-        }
-        .semaforo-verde { background: #dcfce7; color: #166534; border: 3px solid var(--cor-sucesso); }
-        .semaforo-vermelho { background: #fee2e2; color: #991b1b; border: 3px solid var(--cor-alerta); }
-        .circulo-led { width: 15px; height: 15px; border-radius: 50%; }
-        .led-g { background: #10b981; box-shadow: 0 0 12px #10b981; }
-        .led-r { background: #ef4444; box-shadow: 0 0 12px #ef4444; }
 
         .btn-principal { 
             width: 100%; 
@@ -296,6 +280,11 @@
             <tbody id="dadosFila"></tbody>
         </table>
     </div>
+
+    <div style="margin-top:80px; display:flex; gap:50px;">
+        <button class="btn-principal" style="background:#475569;" onclick="location.reload()">SAIR</button>
+        <button class="btn-principal" style="background:var(--verde-raizen);" onclick="sincronizarFila()">ATUALIZAR PAINEL ADM</button>
+    </div>
 </div>
 
 <script>
@@ -321,14 +310,9 @@
     function chamarMotorista(tel, placa) {
         const num = tel.replace(/\D/g, "");
         if(num.length < 11) return alert("ERRO: Número incompleto!");
-        
-        // Você digita a baia aqui
         const baia = prompt("PARA QUAL BAIA O VEÍCULO " + placa + " DEVE IR?");
         if(!baia) return;
-
-        // Mensagem exatamente conforme sua solicitação
         const msg = `Olá%0AMotorista vamos descarregar?%0ABaia ${baia} - Área 02%0AObrigado!%0A%0AObs: aguarde a instrução do operador para entrar na baia!`;
-        
         window.open(`https://api.whatsapp.com/send?phone=55${num}&text=${msg}`, '_blank');
     }
 
@@ -355,14 +339,26 @@
             "AGENDAMENTO NO COLETA": ""
         };
         await fetch(API_URL, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify([dados]) });
+        
+        // OK DO REGISTRO NO PÁTIO RESTAURADO
+        alert("REGISTRO NO PÁTIO EFETUADO COM SUCESSO!");
         location.reload();
     };
 
     async function sincronizarFila() {
         const corpo = document.getElementById('dadosFila');
+        corpo.innerHTML = "<tr><td colspan='7'>ATUALIZANDO...</td></tr>";
         const res = await fetch(API_URL + "?t=" + Date.now());
         const json = await res.json();
+        
+        // LÓGICA DE PRIORIDADE: AGENDAMENTO COLETA NO TOPO
         let ativos = json.filter(x => x.PLACA && !x.SAIDA);
+        ativos.sort((a, b) => {
+            let agendaA = a['AGENDAMENTO NO COLETA'] || '9999-99-99T99:99';
+            let agendaB = b['AGENDAMENTO NO COLETA'] || '9999-99-99T99:99';
+            return agendaA.localeCompare(agendaB);
+        });
+
         corpo.innerHTML = "";
         ativos.forEach(item => {
             let classeProd = "";
@@ -379,7 +375,10 @@
                 <td>${item.TELEFONE}</td>
                 <td>${item.JORNADA}</td>
                 <td>${item.ENTRADA}</td>
-                <td style="background:#fffde7;"><input type="datetime-local" id="ag-${item.PLACA}" value="${item['AGENDAMENTO NO COLETA'] || ''}"><button onclick="salvarAgenda('${item.PLACA}')">OK</button></td>
+                <td style="background:#fffde7;">
+                    <input type="datetime-local" id="ag-${item.PLACA}" value="${item['AGENDAMENTO NO COLETA'] || ''}" style="width:auto; font-size:16px;">
+                    <button onclick="salvarAgenda('${item.PLACA}')" style="background:var(--verde-raizen); color:white; border:none; padding:10px; border-radius:10px; cursor:pointer;">FIXAR</button>
+                </td>
                 <td>
                     <button class="btn-w-whatsapp" onclick="chamarMotorista('${item.TELEFONE}','${item.PLACA}')">CONVOCAR</button>
                     <button class="btn-f-finalizar" onclick="finalizar('${item.PLACA}')">FINALIZAR</button>
@@ -392,7 +391,7 @@
     async function salvarAgenda(placa) {
         const val = document.getElementById(`ag-${placa}`).value;
         await fetch(`${API_URL}/PLACA/${placa}`, { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({"AGENDAMENTO NO COLETA": val}) });
-        alert("PRIORIDADE DEFINIDA!");
+        alert("PRIORIDADE ATUALIZADA NO COLETA!");
         sincronizarFila();
     }
 
