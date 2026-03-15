@@ -178,6 +178,24 @@
         .tag-hidratado { background: #ffffff; color: #0056b3; border: 5px solid #0056b3; } 
         .tag-s10 { background: #ffffff; color: #5d4037; border: 5px solid #5d4037; } 
 
+        /* SEMÁFOROS */
+        .box-semaforo {
+            padding: 18px 25px;
+            border-radius: 60px;
+            font-size: 14px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            text-transform: uppercase;
+        }
+        .semaforo-verde { background: #dcfce7; color: #166534; border: 3px solid var(--cor-sucesso); }
+        .semaforo-vermelho { background: #fee2e2; color: #991b1b; border: 3px solid var(--cor-alerta); }
+        .circulo-led { width: 15px; height: 15px; border-radius: 50%; }
+        .led-g { background: #10b981; box-shadow: 0 0 12px #10b981; }
+        .led-r { background: #ef4444; box-shadow: 0 0 12px #ef4444; }
+
         .btn-principal { 
             width: 100%; 
             padding: 40px; 
@@ -324,6 +342,17 @@
         }
     }
 
+    // SEMÁFORO DE JORNADA
+    function gerarSemaforo(valor) {
+        if(valor === "24 HORAS") return `<div class="box-semaforo semaforo-vermelho"><span class="circulo-led led-r"></span> CRÍTICO (24H)</div>`;
+        const agora = new Date();
+        const t = valor.split(':');
+        if(t.length < 2) return valor;
+        const limite = new Date(); limite.setHours(t[0], t[1], 0);
+        if(agora > limite) return `<div class="box-semaforo semaforo-vermelho"><span class="circulo-led led-r"></span> FORA DE JORNADA</div>`;
+        return `<div class="box-semaforo semaforo-verde"><span class="circulo-led led-g"></span> DENTRO DA JORNADA</div>`;
+    }
+
     document.getElementById('formDescarga').onsubmit = async e => {
         e.preventDefault();
         const btn = document.getElementById('btn_registrar');
@@ -339,20 +368,19 @@
             "AGENDAMENTO NO COLETA": ""
         };
         await fetch(API_URL, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify([dados]) });
-        
-        // OK DO REGISTRO NO PÁTIO RESTAURADO
         alert("REGISTRO NO PÁTIO EFETUADO COM SUCESSO!");
         location.reload();
     };
 
     async function sincronizarFila() {
         const corpo = document.getElementById('dadosFila');
-        corpo.innerHTML = "<tr><td colspan='7'>ATUALIZANDO...</td></tr>";
+        corpo.innerHTML = "<tr><td colspan='7'>ATUALIZANDO PAINEL...</td></tr>";
         const res = await fetch(API_URL + "?t=" + Date.now());
         const json = await res.json();
         
-        // LÓGICA DE PRIORIDADE: AGENDAMENTO COLETA NO TOPO
         let ativos = json.filter(x => x.PLACA && !x.SAIDA);
+        
+        // ORDENAÇÃO POR PRIORIDADE COLETA
         ativos.sort((a, b) => {
             let agendaA = a['AGENDAMENTO NO COLETA'] || '9999-99-99T99:99';
             let agendaB = b['AGENDAMENTO NO COLETA'] || '9999-99-99T99:99';
@@ -373,7 +401,7 @@
                 <td style="color:var(--roxo-raizen); font-size:32px;">${item.PLACA}</td>
                 <td><span class="tag-prod ${classeProd}">${item.PRODUTO}</span></td>
                 <td>${item.TELEFONE}</td>
-                <td>${item.JORNADA}</td>
+                <td>${gerarSemaforo(item.JORNADA)}</td>
                 <td>${item.ENTRADA}</td>
                 <td style="background:#fffde7;">
                     <input type="datetime-local" id="ag-${item.PLACA}" value="${item['AGENDAMENTO NO COLETA'] || ''}" style="width:auto; font-size:16px;">
