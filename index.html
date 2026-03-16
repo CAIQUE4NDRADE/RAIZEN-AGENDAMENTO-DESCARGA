@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RAÍZEN - GESTÃO OPERACIONAL V40.0</title>
+    <title>RAÍZEN - GESTÃO OPERACIONAL V20.0</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
@@ -75,10 +75,10 @@
             max-width: 100%; 
             margin: 0 auto;
             background: var(--branco);
-            padding: 15px; 
+            padding: 15px;
             border-radius: 20px;
             box-shadow: 0 40px 80px rgba(0,0,0,0.2);
-            zoom: 0.8; 
+            zoom: 0.8;
         }
 
         h2 { 
@@ -93,49 +93,139 @@
         }
 
         .wrapper-campo { margin-bottom: 40px; position: relative; }
+        
         label { 
-            display: block; margin-bottom: 15px; font-weight: 900; 
-            color: var(--verde-raizen); font-size: 16px; text-transform: uppercase;
-            display: flex; align-items: center; gap: 12px;
+            display: block; 
+            margin-bottom: 15px; 
+            font-weight: 900; 
+            color: var(--verde-raizen); 
+            font-size: 16px; 
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
+
+        label i { color: var(--roxo-raizen); font-size: 20px; }
 
         input, select { 
-            width: 100%; padding: 28px; border: 5px solid #e2e8f0; border-radius: 30px; 
-            font-size: 24px; font-weight: 700; background: #f8fafc;
+            width: 100%; 
+            padding: 28px; 
+            border: 5px solid #e2e8f0; 
+            border-radius: 30px; 
+            font-size: 24px; 
+            font-weight: 700;
+            background: #f8fafc;
+            color: #334155;
+            transition: all 0.3s;
         }
 
-        .container-jornada-exp { background: #fffbeb; padding: 50px; border-radius: 50px; border: 6px solid var(--ouro-raizen); margin: 40px 0; }
-        .check-box-24h { display: flex; align-items: center; gap: 25px; cursor: pointer; background: #ffffff; padding: 25px; border-radius: 30px; margin-top: 35px; border: 3px solid #fde68a; }
+        .container-jornada-exp {
+            background: #fffbeb;
+            padding: 50px;
+            border-radius: 50px;
+            border: 6px solid var(--ouro-raizen);
+            margin: 40px 0;
+        }
+
+        .check-box-24h {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            cursor: pointer;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 30px;
+            margin-top: 35px;
+            border: 3px solid #fde68a;
+        }
+
         .check-box-24h input { width: 45px; height: 45px; accent-color: var(--cor-alerta); }
+
         .txt-check { font-weight: 900; color: var(--cor-alerta); font-size: 22px; }
 
-        .moldura-tabela { overflow-x: auto; border-radius: 20px; border: 2px solid #e2e8f0; }
-        table { width: 100%; border-collapse: collapse; min-width: 1200px; } 
-        th { background: #0f172a; color: #ffffff; padding: 15px; font-size: 12px; text-transform: uppercase; }
+        .moldura-tabela { 
+            overflow-x: auto; 
+            border-radius: 20px; 
+            border: 2px solid #e2e8f0; 
+        }
+
+        table { width: 100%; border-collapse: collapse; min-width: 1200px; }
+        
+        th { 
+            background: #0f172a; 
+            color: #ffffff; 
+            padding: 15px; 
+            font-size: 12px; 
+            text-transform: uppercase; 
+            letter-spacing: 2px;
+        }
+
         td { padding: 15px; border-bottom: 4px solid #f1f5f9; text-align: center; font-weight: 800; font-size: 16px; }
 
-        .tag-prod { padding: 10px 15px; border-radius: 15px; font-size: 12px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 5px; min-width: 180px; text-transform: uppercase; }
+        .tag-prod {
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            min-width: 180px;
+            text-transform: uppercase;
+        }
+        
         .tag-gasosa { background: #ff8c00; color: #fff; border: 2px solid #e67e00; } 
         .tag-b100 { background: #5d4037; color: #fff; border: 2px solid #3e2723; } 
         .tag-anidro { background: #0056b3; color: #fff; border: 2px solid #003d80; } 
         .tag-hidratado { background: #ffffff; color: #0056b3; border: 5px solid #0056b3; } 
         .tag-s10 { background: #ffffff; color: #5d4037; border: 5px solid #5d4037; } 
 
-        .box-semaforo { padding: 10px 15px; border-radius: 30px; font-size: 13px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 8px; text-transform: uppercase; }
+        .box-semaforo {
+            padding: 10px 15px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-transform: uppercase;
+        }
         .semaforo-verde { background: #dcfce7; color: #166534; border: 3px solid var(--cor-sucesso); }
         .semaforo-vermelho { background: #fee2e2; color: #991b1b; border: 3px solid var(--cor-alerta); }
         .circulo-led { width: 12px; height: 12px; border-radius: 50%; }
         .led-g { background: #10b981; box-shadow: 0 0 12px #10b981; }
         .led-r { background: #ef4444; box-shadow: 0 0 12px #ef4444; }
 
-        .btn-principal { width: 100%; padding: 30px; background: var(--roxo-raizen); color: white; border: none; border-radius: 25px; font-size: 24px; font-weight: 900; cursor: pointer; text-transform: uppercase; }
-        .btn-reabrir-jornada { background: var(--verde-raizen); margin-top: 25px; }
+        .btn-principal { 
+            width: 100%; 
+            padding: 30px; 
+            background: var(--roxo-raizen); 
+            color: white; 
+            border: none; 
+            border-radius: 25px; 
+            font-size: 24px; 
+            font-weight: 900; 
+            cursor: pointer; 
+            text-transform: uppercase;
+        }
 
         .btn-w-whatsapp { background: #22c55e; color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; margin-bottom: 8px; font-weight: 900; font-size: 13px; }
         .btn-f-finalizar { background: #3b82f6; color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 900; font-size: 13px; }
 
-        .loader-raizen { border: 6px solid rgba(255,255,255,0.2); border-top: 6px solid #ffffff; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; display: inline-block; }
+        .loader-raizen {
+            border: 6px solid rgba(255,255,255,0.2);
+            border-top: 6px solid #ffffff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
     </style>
 </head>
 <body>
@@ -146,57 +236,41 @@
 </header>
 
 <div class="card-industrial" id="modulo-entrada">
-    <div id="container-normal">
-        <h2><i class="fa-solid fa-file-signature"></i> REGISTRO DE ENTRADA</h2>
-        <form id="formDescarga">
-            <div class="wrapper-campo">
-                <label><i class="fa-solid fa-truck-front"></i> PLACA DO VEÍCULO</label>
-                <input type="text" id="campo_placa" placeholder="ABC-1234" maxlength="8" required oninput="formatarPlaca(this)">
+    <h2><i class="fa-solid fa-file-signature"></i> REGISTRO DE ENTRADA</h2>
+    <form id="formDescarga">
+        <div class="wrapper-campo">
+            <label><i class="fa-solid fa-truck-front"></i> PLACA DO VEÍCULO</label>
+            <input type="text" id="campo_placa" placeholder="ABC-1234" maxlength="8" required>
+        </div>
+        <div class="wrapper-campo">
+            <label><i class="fa-solid fa-droplet"></i> PRODUTO CARREGADO</label>
+            <select id="campo_produto" required>
+                <option value="">-- SELECIONE O PRODUTO --</option>
+                <option value="GASOLINA COMUM / ADITIVADA">GASOLINA COMUM / ADITIVADA</option>
+                <option value="BIODIESEL (B100)">BIODIESEL (B100)</option>
+                <option value="ETANOL ANIDRO">ETANOL ANIDRO</option>
+                <option value="ETANOL HIDRATADO">ETANOL HIDRATADO</option>
+                <option value="DIESEL S10">DIESEL S10</option>
+            </select>
+        </div>
+        <div class="wrapper-campo">
+            <label><i class="fa-brands fa-whatsapp"></i> NÚMERO DO WHATSAPP</label>
+            <input type="tel" id="campo_whatsapp" placeholder="(19) 99999-9999" maxlength="15" required>
+        </div>
+        <div class="container-jornada-exp">
+            <div id="box-horario-input">
+                <label><i class="fa-solid fa-clock-rotate-left"></i> TÉRMINO DA JORNADA</label>
+                <input type="time" id="campo_hora_limite">
             </div>
-            <div class="wrapper-campo">
-                <label><i class="fa-solid fa-droplet"></i> PRODUTO CARREGADO</label>
-                <select id="campo_produto" required>
-                    <option value="">-- SELECIONE O PRODUTO --</option>
-                    <option value="GASOLINA">GASOLINA</option>
-                    <option value="BIODIESEL (B100)">BIODIESEL (B100)</option>
-                    <option value="ETANOL ANIDRO">ETANOL ANIDRO</option>
-                    <option value="ETANOL HIDRATADO">ETANOL HIDRATADO</option>
-                    <option value="DIESEL S10">DIESEL S10</option>
-                </select>
-            </div>
-            <div class="wrapper-campo">
-                <label><i class="fa-brands fa-whatsapp"></i> NÚMERO DO WHATSAPP</label>
-                <input type="tel" id="campo_whatsapp" placeholder="(19) 99999-9999" maxlength="15" required>
-            </div>
-            <div class="container-jornada-exp">
-                <div id="box-horario-input">
-                    <label><i class="fa-solid fa-clock-rotate-left"></i> TÉRMINO DA JORNADA</label>
-                    <input type="time" id="campo_hora_limite">
-                </div>
-                <label class="check-box-24h">
-                    <input type="checkbox" id="check_jornada_24h">
-                    <span class="txt-check"><i class="fa-solid fa-triangle-exclamation"></i> ESTOU EM JORNADA 24 HORAS</span>
-                </label>
-            </div>
+            <label class="check-box-24h">
+                <input type="checkbox" id="check_jornada_24h">
+                <span class="txt-check"><i class="fa-solid fa-triangle-exclamation"></i> ESTOU EM JORNADA 24 HORAS</span>
+            </label>
+        </div>
+        <div style="margin-top:70px;">
             <button type="submit" class="btn-principal" id="btn_registrar">EFETUAR REGISTRO NO PÁTIO</button>
-            <button type="button" onclick="mudarParaReabrir()" class="btn-principal btn-reabrir-jornada">REABRIR JORNADA (JÁ ESTOU NO PÁTIO)</button>
-        </form>
-    </div>
-
-    <div id="container-reabrir" style="display:none;">
-        <h2 style="color:var(--verde-raizen)"><i class="fa-solid fa-clock"></i> REABRIR JORNADA</h2>
-        <div class="wrapper-campo">
-            <label>CONFIRME SUA PLACA</label>
-            <input type="text" id="reabrir_placa" placeholder="ABC-1234" maxlength="8" oninput="formatarPlaca(this)">
         </div>
-        <div class="wrapper-campo">
-            <label>NOVA HORA DE TÉRMINO</label>
-            <input type="time" id="reabrir_hora">
-        </div>
-        <button onclick="salvarReabertura()" class="btn-principal" style="background:var(--verde-raizen)">ATUALIZAR JORNADA</button>
-        <button onclick="mudarParaNormal()" style="width:100%; margin-top:20px; background:none; border:none; text-decoration:underline; font-weight:900; color:gray;">VOLTAR</button>
-    </div>
-
+    </form>
     <div style="text-align:center; margin-top:60px; border-top:4px dashed #ccc; padding-top:40px;">
         <button onclick="acessoOperador()" style="background:none; border:none; color:var(--roxo-raizen); font-weight:900; cursor:pointer; font-size:18px; text-decoration:underline;">MÓDULO DE GESTÃO DO OPERADOR</button>
     </div>
@@ -207,7 +281,7 @@
     <div style="margin-bottom:30px;">
         <div style="position:relative;">
             <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:20px; top:25px; font-size:20px; color:var(--roxo-raizen);"></i>
-            <input type="text" id="filtroFila" placeholder="FILTRAR POR PLACA OU PRODUTO..." onkeyup="filtrarTabela()" style="padding-left:55px; border:4px solid var(--roxo-raizen); padding: 15px 15px 15px 55px; font-size: 18px;">
+            <input type="text" id="filtroFila" placeholder="FILTRAR..." onkeyup="filtrarTabela()" style="padding-left:55px; border:4px solid var(--roxo-raizen); padding: 15px 15px 15px 55px; font-size: 18px;">
         </div>
     </div>
     <div class="moldura-tabela">
@@ -226,6 +300,7 @@
             <tbody id="dadosFila"></tbody>
         </table>
     </div>
+
     <div style="margin-top:40px; display:flex; gap:20px;">
         <button class="btn-principal" style="background:#475569; padding: 20px; font-size: 18px;" onclick="location.reload()">SAIR</button>
         <button class="btn-principal" style="background:var(--verde-raizen); padding: 20px; font-size: 18px;" onclick="sincronizarFila()">ATUALIZAR</button>
@@ -235,30 +310,23 @@
 <script>
     const API_URL = 'https://sheetdb.io/api/v1/p9z83v5m0dxq5';
     const SENHA_OP = 'raizen2026';
+    let ultimaQuantidade = 0; // Para monitorar novos registros
 
-    // MÁSCARA DE PLACA (IGUAL AO REGISTRO INICIAL)
-    function formatarPlaca(input) {
-        let v = input.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
-        if (v.length > 3 && !isNaN(v[3])) v = v.substring(0,3) + "-" + v.substring(3,7);
-        input.value = v.substring(0,8);
-    }
-
-    function mudarParaReabrir() { document.getElementById('container-normal').style.display='none'; document.getElementById('container-reabrir').style.display='block'; }
-    function mudarParaNormal() { document.getElementById('container-normal').style.display='block'; document.getElementById('container-reabrir').style.display='none'; }
-
-    async function salvarReabertura() {
-        const placa = document.getElementById('reabrir_placa').value.toUpperCase();
-        const hora = document.getElementById('reabrir_hora').value;
-        if(!placa || !hora) return alert("Preencha Placa e Hora!");
-        await fetch(`${API_URL}/PLACA/${placa}`, { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({"JORNADA": hora}) });
-        alert("JORNADA ATUALIZADA!");
-        location.reload();
+    // PEDE PERMISSÃO PARA NOTIFICAR LOGO QUE ABRE
+    if (Notification.permission !== "granted") {
+        Notification.requestPermission();
     }
 
     document.getElementById('check_jornada_24h').addEventListener('change', function() {
         const boxHora = document.getElementById('box-horario-input');
         if (this.checked) { boxHora.style.display = 'none'; } else { boxHora.style.display = 'block'; }
     });
+
+    document.getElementById('campo_placa').oninput = e => {
+        let v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+        if (v.length > 3 && !isNaN(v[3])) v = v.substring(0,3) + "-" + v.substring(3,7);
+        e.target.value = v.substring(0,8);
+    };
 
     document.getElementById('campo_whatsapp').oninput = e => {
         let v = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
@@ -274,6 +342,14 @@
         window.open(`https://api.whatsapp.com/send?phone=55${num}&text=${msg}`, '_blank');
     }
 
+    function filtrarTabela() {
+        const termo = document.getElementById("filtroFila").value.toUpperCase();
+        const linhas = document.getElementById("tabelaMaster").getElementsByTagName("tr");
+        for (let i = 1; i < linhas.length; i++) {
+            linhas[i].style.display = linhas[i].innerText.toUpperCase().includes(termo) ? "" : "none";
+        }
+    }
+
     function gerarSemaforo(valor) {
         if(valor === "24 HORAS") return `<div class="box-semaforo semaforo-vermelho"><span class="circulo-led led-r"></span> 24H</div>`;
         const agora = new Date();
@@ -281,7 +357,9 @@
         if(t.length < 2) return valor;
         const limite = new Date(); 
         limite.setHours(t[0], t[1], 0);
-        if(agora > limite) return `<div class="box-semaforo semaforo-vermelho"><span class="circulo-led led-r"></span> ${valor}</div>`;
+        if(agora > limite) {
+            return `<div class="box-semaforo semaforo-vermelho"><span class="circulo-led led-r"></span> ${valor}</div>`;
+        }
         return `<div class="box-semaforo semaforo-verde"><span class="circulo-led led-g"></span> ${valor}</div>`;
     }
 
@@ -306,31 +384,42 @@
 
     async function sincronizarFila() {
         const corpo = document.getElementById('dadosFila');
-        corpo.innerHTML = "<tr><td colspan='7'>Sincronizando...</td></tr>";
         const res = await fetch(API_URL + "?t=" + Date.now());
         const json = await res.json();
         let ativos = json.filter(x => x.PLACA && !x.SAIDA);
+
+        // LÓGICA DE NOTIFICAÇÃO: Se o número de ativos aumentou, notifica!
+        if (ativos.length > ultimaQuantidade && ultimaQuantidade !== 0) {
+            const novo = ativos[ativos.length - 1];
+            if (Notification.permission === "granted") {
+                new Notification("NOVA CHEGADA NO PÁTIO!", {
+                    body: `Veículo Placa: ${novo.PLACA}\nProduto: ${novo.PRODUTO}`,
+                    icon: "https://lh3.googleusercontent.com/pw/AP1GczPrU_K0hO..." // Link icon Raizen se tiver
+                });
+            }
+        }
+        ultimaQuantidade = ativos.length;
+
         ativos.sort((a, b) => (a['AGENDAMENTO NO COLETA'] || '9').localeCompare(b['AGENDAMENTO NO COLETA'] || '9'));
         corpo.innerHTML = "";
         ativos.forEach(item => {
-            let cl = "";
-            const p = item.PRODUTO.toUpperCase();
-            if(p.includes("GASOLINA")) cl = "tag-gasosa";
-            else if(p.includes("BIODIESEL")) cl = "tag-b100";
-            else if(p.includes("ANIDRO")) cl = "tag-anidro";
-            else if(p.includes("HIDRATADO")) cl = "tag-hidratado";
-            else if(p.includes("DIESEL")) cl = "tag-s10";
+            let classeProd = "";
+            if(item.PRODUTO.includes("GASOLINA")) classeProd = "tag-gasosa";
+            else if(item.PRODUTO.includes("BIODIESEL")) classeProd = "tag-b100";
+            else if(item.PRODUTO.includes("ANIDRO")) classeProd = "tag-anidro";
+            else if(item.PRODUTO.includes("HIDRATADO")) classeProd = "tag-hidratado";
+            else if(item.PRODUTO.includes("DIESEL")) classeProd = "tag-s10";
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td style="color:var(--roxo-raizen); font-size:20px;">${item.PLACA}</td>
-                <td><span class="tag-prod ${cl}">${item.PRODUTO}</span></td>
+                <td><span class="tag-prod ${classeProd}">${item.PRODUTO}</span></td>
                 <td style="font-size:14px;">${item.TELEFONE}</td>
                 <td>${gerarSemaforo(item.JORNADA)}</td>
                 <td style="font-size:14px;">${item.ENTRADA}</td>
                 <td style="background:#fffde7;">
                     <input type="datetime-local" id="ag-${item.PLACA}" value="${item['AGENDAMENTO NO COLETA'] || ''}" style="width:130px; font-size:12px; padding:10px;">
-                    <button onclick="salvarAgenda('${item.PLACA}')" style="background:var(--verde-raizen); color:white; border:none; padding:5px; border-radius:5px;">OK</button>
+                    <button onclick="salvarAgenda('${item.PLACA}')" style="background:var(--verde-raizen); color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">OK</button>
                 </td>
                 <td>
                     <button class="btn-w-whatsapp" onclick="chamarMotorista('${item.TELEFONE}','${item.PLACA}')">CONVOCAR</button>
@@ -341,9 +430,13 @@
         });
     }
 
+    // AUTO-ATUALIZA A CADA 30 SEGUNDOS PARA CHECAR NOVOS MOTORISTAS
+    setInterval(sincronizarFila, 30000);
+
     async function salvarAgenda(placa) {
         const val = document.getElementById(`ag-${placa}`).value;
         await fetch(`${API_URL}/PLACA/${placa}`, { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({"AGENDAMENTO NO COLETA": val}) });
+        alert("OK!");
         sincronizarFila();
     }
 
@@ -354,20 +447,12 @@
         }
     }
 
-    function filtrarTabela() {
-        const termo = document.getElementById("filtroFila").value.toUpperCase();
-        const linhas = document.getElementById("tabelaMaster").getElementsByTagName("tr");
-        for (let i = 1; i < linhas.length; i++) {
-            linhas[i].style.display = linhas[i].innerText.toUpperCase().includes(termo) ? "" : "none";
-        }
-    }
-
     function acessoOperador() {
         if(prompt("SENHA:") === SENHA_OP) {
             document.getElementById('modulo-entrada').style.display = 'none';
             document.getElementById('secao-operador').style.display = 'block';
             sincronizarFila();
-        }
+        } else { alert("ERRO!"); }
     }
 </script>
 </body>
