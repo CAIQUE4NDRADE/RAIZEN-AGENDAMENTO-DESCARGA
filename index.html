@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RAÍZEN - GESTÃO OPERACIONAL V20.0</title>
+    <title>RAÍZEN - GESTÃO OPERACIONAL V21.0</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
@@ -159,28 +159,21 @@
             margin-bottom: 20px;
         }
 
-        .btn-reabrir-jornada {
-            background: var(--verde-botao-reabrir);
-            color: white;
-        }
+        .btn-reabrir-jornada { background: var(--verde-botao-reabrir); color: white; }
 
         .moldura-tabela { overflow-x: auto; border-radius: 20px; border: 2px solid #e2e8f0; }
         table { width: 100%; border-collapse: collapse; min-width: 1200px; }
         th { background: #0f172a; color: #ffffff; padding: 15px; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
         td { padding: 15px; border-bottom: 4px solid #f1f5f9; text-align: center; font-weight: 800; font-size: 16px; }
 
-        .tag-prod {
-            padding: 10px 15px; border-radius: 15px; font-size: 12px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 5px; min-width: 180px; text-transform: uppercase;
-        }
+        .tag-prod { padding: 10px 15px; border-radius: 15px; font-size: 12px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 5px; min-width: 180px; text-transform: uppercase; }
         .tag-gasosa { background: #ff8c00; color: #fff; border: 2px solid #e67e00; } 
         .tag-b100 { background: #5d4037; color: #fff; border: 2px solid #3e2723; } 
         .tag-anidro { background: #0056b3; color: #fff; border: 2px solid #003d80; } 
         .tag-hidratado { background: #ffffff; color: #0056b3; border: 5px solid #0056b3; } 
         .tag-s10 { background: #ffffff; color: #5d4037; border: 5px solid #5d4037; } 
 
-        .box-semaforo {
-            padding: 10px 15px; border-radius: 30px; font-size: 13px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 8px; text-transform: uppercase;
-        }
+        .box-semaforo { padding: 10px 15px; border-radius: 30px; font-size: 13px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 8px; text-transform: uppercase; }
         .semaforo-verde { background: #dcfce7; color: #166534; border: 3px solid var(--cor-sucesso); }
         .semaforo-vermelho { background: #fee2e2; color: #991b1b; border: 3px solid var(--cor-alerta); }
         .circulo-led { width: 12px; height: 12px; border-radius: 50%; }
@@ -280,17 +273,21 @@
 </div>
 
 <script>
-    // URL DO SEU GOOGLE APPS SCRIPT
-    const API_URL = 'https://script.google.com/macros/s/AKfycbyKtpuUrOMpKLFrVluKI8FoG0SLZ0FYsx1otucrkUdnx62SuK9XMIJGz0JvvFXEbp0u/exec';
+    // CONFIGURAÇÃO SUPABASE
+    const SUPABASE_URL = 'https://rbbkjuiizmvatiawfzuv.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X';
+    const HEADERS = { 
+        "apikey": SUPABASE_KEY, 
+        "Authorization": `Bearer ${SUPABASE_KEY}`, 
+        "Content-Type": "application/json",
+        "Prefer": "return=minimal"
+    };
+
     const SENHA_OP = 'raizen2026';
     let ultimaQuantidade = 0;
     let monitorAtivo = false;
 
-    // --- SERVICE WORKER PARA MOBILE ---
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('data:text/javascript;base64,c2VsZi5hZGRFdmVudExpc3RlbmVyKCdpbnN0YWxsJywgKCkpID0+IHNlbGYuc2tpcFdhaXRpbmcoKSk7').catch(() => {});
-    }
-
+    // --- INTERFACE ---
     function mudarParaReabrir() {
         document.getElementById('container-registro').style.display = 'none';
         document.getElementById('container-reabrir').style.display = 'block';
@@ -300,6 +297,7 @@
         document.getElementById('container-registro').style.display = 'block';
     }
 
+    // --- MÁSCARAS ---
     function formatarPlaca(el) {
         let v = el.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
         if (v.length > 3 && !isNaN(v[3])) v = v.substring(0,3) + "-" + v.substring(3,7);
@@ -316,6 +314,7 @@
         document.getElementById('box-horario-input').style.display = this.checked ? 'none' : 'block';
     });
 
+    // --- LÓGICA DE NEGÓCIO ---
     function gerarSemaforo(valor) {
         if(valor === "24 HORAS") return `<div class="box-semaforo semaforo-verde"><span class="circulo-led led-g"></span> 24H</div>`;
         const agora = new Date();
@@ -328,26 +327,26 @@
 
     function enviarNotificacao(placa) {
         if (Notification.permission === "granted") {
-            const options = {
+            new Notification("NOVA DESCARGA!", {
                 body: `Nova placa registrada: ${placa}`,
-                icon: 'https://cdn-icons-png.flaticon.com/512/71/71240.png',
-                vibrate: [200, 100, 200],
-                tag: 'nova-descarga'
-            };
-            navigator.serviceWorker.ready.then(registration => {
-                registration.showNotification("NOVA DESCARGA!", options);
-            }).catch(() => {
-                new Notification("NOVA DESCARGA!", options);
+                icon: 'https://cdn-icons-png.flaticon.com/512/71/71240.png'
             });
         }
     }
 
-    // --- FUNÇÕES DE API ADAPTADAS PARA GOOGLE SCRIPT ---
+    // --- FUNÇÕES SUPABASE ---
     async function sincronizarFila() {
         try {
-            const res = await fetch(`${API_URL}?action=read&t=${Date.now()}`);
-            const json = await res.json();
-            let ativos = json.filter(x => x.PLACA && !x.SAIDA);
+            const res = await fetch(`${SUPABASE_URL}/rest/v1/registros?SAIDA=is.null&select=*`, { headers: HEADERS });
+            let ativos = await res.json();
+
+            // Ordenação: Agendados no topo, depois por ID (ordem de chegada)
+            ativos.sort((a, b) => {
+                if (a.AGENDAMENTO && !b.AGENDAMENTO) return -1;
+                if (!a.AGENDAMENTO && b.AGENDAMENTO) return 1;
+                if (a.AGENDAMENTO && b.AGENDAMENTO) return new Date(a.AGENDAMENTO) - new Date(b.AGENDAMENTO);
+                return a.id - b.id;
+            });
 
             if (monitorAtivo && ativos.length > ultimaQuantidade) {
                 enviarNotificacao(ativos[ativos.length-1].PLACA);
@@ -362,7 +361,7 @@
                 else if(item.PRODUTO.includes("BIODIESEL")) cl = "tag-b100";
                 else if(item.PRODUTO.includes("ANIDRO")) cl = "tag-anidro";
                 else if(item.PRODUTO.includes("HIDRATADO")) cl = "tag-hidratado";
-                else if(item.PRODUTO.includes("DIESEL")) cl = "tag-s10";
+                else cl = "tag-s10";
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -372,54 +371,56 @@
                     <td>${gerarSemaforo(item.JORNADA)}</td>
                     <td style="font-size:14px;">${item.ENTRADA}</td>
                     <td style="background:#fffde7;">
-                        <input type="datetime-local" id="ag-${item.PLACA}" value="${item['AGENDAMENTO NO COLETA'] || ''}" style="width:130px; font-size:12px; padding:10px;">
-                        <button onclick="salvarAgenda('${item.PLACA}')" style="background:var(--verde-raizen); color:white; border:none; padding:8px; border-radius:8px; cursor:pointer; font-weight:900;">OK</button>
+                        <input type="datetime-local" id="ag-${item.id}" value="${item.AGENDAMENTO || ''}" style="width:170px; font-size:12px; padding:10px;">
+                        <button onclick="salvarAgenda('${item.id}')" style="background:var(--verde-raizen); color:white; border:none; padding:8px; border-radius:8px; cursor:pointer; font-weight:900;">OK</button>
                     </td>
                     <td>
                         <button class="btn-w-whatsapp" onclick="chamarMotorista('${item.TELEFONE}','${item.PLACA}')">CONVOCAR</button>
-                        <button class="btn-f-finalizar" onclick="finalizar('${item.PLACA}')">FIM</button>
+                        <button class="btn-f-finalizar" onclick="finalizar('${item.id}')">FIM</button>
                     </td>
                 `;
                 corpo.appendChild(tr);
             });
             document.getElementById('status-atualizacao').innerHTML = "Sincronizado: " + new Date().toLocaleTimeString();
-        } catch (e) { }
+        } catch (e) { console.error(e); }
     }
 
     async function salvarReabertura() {
-        const placa = document.getElementById('reabrir_placa').value;
+        const placa = document.getElementById('reabrir_placa').value.toUpperCase();
         const hora = document.getElementById('reabrir_hora').value;
         if(!placa || !hora) return alert("Preencha Placa e Hora!");
         
-        await fetch(API_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ "action": "update", "PLACA": placa, "JORNADA": hora, "SAIDA": "" })
-        });
-        alert("SOLICITAÇÃO DE REABERTURA ENVIADA!"); location.reload();
-    }
+        const resCheck = await fetch(`${SUPABASE_URL}/rest/v1/registros?PLACA=eq.${placa}&SAIDA=is.null&select=id`, { headers: HEADERS });
+        const data = await resCheck.json();
 
-    async function salvarAgenda(placa) {
-        const val = document.getElementById(`ag-${placa}`).value;
-        await fetch(API_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ "action": "update", "PLACA": placa, "AGENDAMENTO": val })
-        });
-        alert("AGENDAMENTO SALVO!"); setTimeout(sincronizarFila, 1500);
-    }
-
-    async function finalizar(placa) {
-        if(confirm("FINALIZAR " + placa + "?")) {
-            await fetch(API_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ "action": "update", "PLACA": placa, "SAIDA": new Date().toLocaleString('pt-BR') })
+        if(data.length > 0) {
+            await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${data[0].id}`, {
+                method: 'PATCH',
+                headers: HEADERS,
+                body: JSON.stringify({ "JORNADA": hora })
             });
-            setTimeout(sincronizarFila, 1500);
+            alert("JORNADA REABERTA!"); location.reload();
+        } else alert("PLACA NÃO ENCONTRADA NO PÁTIO!");
+    }
+
+    async function salvarAgenda(id) {
+        const val = document.getElementById(`ag-${id}`).value;
+        await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${id}`, {
+            method: 'PATCH',
+            headers: HEADERS,
+            body: JSON.stringify({ "AGENDAMENTO": val || null })
+        });
+        alert("AGENDAMENTO SALVO!"); sincronizarFila();
+    }
+
+    async function finalizar(id) {
+        if(confirm("FINALIZAR VEÍCULO?")) {
+            await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${id}`, {
+                method: 'PATCH',
+                headers: HEADERS,
+                body: JSON.stringify({ "SAIDA": new Date().toLocaleString('pt-BR') })
+            });
+            sincronizarFila();
         }
     }
 
@@ -433,9 +434,7 @@
         if(prompt("SENHA:") === SENHA_OP) {
             document.getElementById('modulo-entrada').style.display = 'none';
             document.getElementById('secao-operador').style.display = 'block';
-            if (Notification.permission !== "granted") {
-                Notification.requestPermission();
-            }
+            if (Notification.permission !== "granted") { Notification.requestPermission(); }
             sincronizarFila();
             setInterval(sincronizarFila, 15000);
         } else { alert("Senha Incorreta!"); }
@@ -444,17 +443,15 @@
     document.getElementById('formDescarga').onsubmit = async e => {
         e.preventDefault();
         const dados = {
-            "action": "insert",
-            "PLACA": document.getElementById('campo_placa').value,
+            "PLACA": document.getElementById('campo_placa').value.toUpperCase(),
             "PRODUTO": document.getElementById('campo_produto').value,
             "TELEFONE": document.getElementById('campo_whatsapp').value,
             "JORNADA": document.getElementById('check_jornada_24h').checked ? "24 HORAS" : document.getElementById('campo_hora_limite').value,
             "ENTRADA": new Date().toLocaleString('pt-BR')
         };
-        await fetch(API_URL, {
+        await fetch(`${SUPABASE_URL}/rest/v1/registros`, {
             method: 'POST',
-            mode: 'no-cors',
-            headers: {'Content-Type': 'application/json'},
+            headers: HEADERS,
             body: JSON.stringify(dados)
         });
         alert("REGISTRO ENVIADO!"); location.reload();
