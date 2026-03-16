@@ -18,7 +18,6 @@
             --cor-alerta: #e11d48;
             --cor-sucesso: #10b981;
             --cor-texto: #1e293b;
-            --verde-botao-reabrir: #3d5446; 
         }
 
         * { box-sizing: border-box; font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; }
@@ -46,93 +45,38 @@
             font-weight: 900;
             letter-spacing: 15px;
             text-transform: uppercase;
-            text-shadow: 4px 4px 0px rgba(0,0,0,0.2);
         }
 
-        header h1 { 
-            color: var(--branco); 
-            font-size: 24px; 
-            letter-spacing: 6px; 
-            font-weight: 300;
-            margin-top: 15px;
-            text-transform: uppercase;
-        }
+        header h1 { color: var(--branco); font-size: 24px; letter-spacing: 6px; font-weight: 300; margin-top: 15px; text-transform: uppercase; }
 
         .card-industrial { 
-            width: 94%; 
-            max-width: 1100px; 
-            margin: 60px auto; 
-            background: var(--branco); 
-            padding: 70px; 
-            border-radius: 60px; 
-            box-shadow: 0 40px 80px rgba(0,0,0,0.2); 
-            border-left: 35px solid var(--roxo-raizen);
-            position: relative;
+            width: 94%; max-width: 1100px; margin: 60px auto; background: var(--branco); 
+            padding: 70px; border-radius: 60px; box-shadow: 0 40px 80px rgba(0,0,0,0.2); 
+            border-left: 35px solid var(--roxo-raizen); position: relative;
         }
 
         #secao-operador { 
-            display: none; 
-            width: 100%; 
-            max-width: 100%; 
-            margin: 0 auto;
-            background: var(--branco);
-            padding: 15px;
-            border-radius: 20px;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.2);
-            zoom: 0.8;
+            display: none; width: 100%; max-width: 100%; margin: 0 auto;
+            background: var(--branco); padding: 15px; border-radius: 20px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.2); zoom: 0.8;
         }
 
-        h2 { 
-            color: var(--roxo-raizen); 
-            text-align: center; 
-            font-weight: 900; 
-            text-transform: uppercase; 
-            margin-bottom: 50px; 
-            font-size: 38px;
-            border-bottom: 12px solid #f1f5f9;
-            padding-bottom: 30px;
-        }
+        h2 { color: var(--roxo-raizen); text-align: center; font-weight: 900; text-transform: uppercase; margin-bottom: 50px; font-size: 38px; border-bottom: 12px solid #f1f5f9; padding-bottom: 30px; }
 
         .wrapper-campo { margin-bottom: 40px; position: relative; }
-        label { 
-            display: flex; align-items: center; gap: 12px; margin-bottom: 15px; 
-            font-weight: 900; color: var(--verde-raizen); font-size: 16px; text-transform: uppercase;
-        }
+        label { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; font-weight: 900; color: var(--verde-raizen); font-size: 16px; text-transform: uppercase; }
 
-        input, select { 
-            width: 100%; padding: 28px; border: 5px solid #e2e8f0; border-radius: 30px; 
-            font-size: 24px; font-weight: 700; background: #f8fafc; color: #334155;
-        }
+        input, select { width: 100%; padding: 28px; border: 5px solid #e2e8f0; border-radius: 30px; font-size: 24px; font-weight: 700; background: #f8fafc; color: #334155; }
 
-        .container-jornada-exp {
-            background: #fffbeb; padding: 50px; border-radius: 50px;
-            border: 6px solid var(--ouro-raizen); margin: 40px 0;
-        }
-
-        .check-box-24h {
-            display: flex; align-items: center; gap: 25px; cursor: pointer;
-            background: #ffffff; padding: 25px; border-radius: 30px; border: 3px solid #fde68a;
-        }
-
+        .container-jornada-exp { background: #fffbeb; padding: 50px; border-radius: 50px; border: 6px solid var(--ouro-raizen); margin: 40px 0; }
+        .check-box-24h { display: flex; align-items: center; gap: 25px; cursor: pointer; background: #ffffff; padding: 25px; border-radius: 30px; border: 3px solid #fde68a; }
         .check-box-24h input { width: 45px; height: 45px; accent-color: var(--cor-alerta); }
         .txt-check { font-weight: 900; color: var(--cor-alerta); font-size: 22px; }
 
-        .btn-principal { 
-            width: 100%; padding: 30px; background: var(--roxo-raizen); color: white; border: none; 
-            border-radius: 25px; font-size: 24px; font-weight: 900; cursor: pointer; text-transform: uppercase;
-        }
+        .btn-principal { width: 100%; padding: 30px; background: var(--roxo-raizen); color: white; border: none; border-radius: 25px; font-size: 24px; font-weight: 900; cursor: pointer; text-transform: uppercase; }
 
-        /* --- ESTILOS DO OPERADOR --- */
-        .filtros-container {
-            display: flex; gap: 10px; justify-content: center; margin-bottom: 30px;
-            background: #f8fafc; padding: 20px; border-radius: 20px;
-        }
-
-        .btn-filtro {
-            padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer;
-            font-weight: 900; background: #cbd5e1; color: #475569; transition: 0.3s;
-        }
-
+        .filtros-container { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; background: #f8fafc; padding: 20px; border-radius: 20px; }
+        .btn-filtro { padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: 900; background: #cbd5e1; color: #475569; }
         .btn-filtro.ativo { background: var(--roxo-raizen); color: white; }
 
         .moldura-tabela { overflow-x: auto; border-radius: 20px; border: 2px solid #e2e8f0; }
@@ -157,9 +101,6 @@
         .btn-w-whatsapp { background: #22c55e; color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; margin-bottom: 8px; font-weight: 900; }
         .btn-f-finalizar { background: #3b82f6; color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 900; }
         #status-atualizacao { text-align: center; font-size: 14px; color: #64748b; margin: 15px 0; font-weight: bold; }
-        
-        /* Destaque para agendados */
-        .linha-agendada { background-color: #fff9c4 !important; border-left: 10px solid var(--ouro-raizen); }
     </style>
 </head>
 <body>
@@ -265,10 +206,11 @@
     let dadosCache = [];
     let filtroAtual = 'TODOS';
 
-    // --- MÁSCARAS ---
+    // --- FUNÇÕES DE NAVEGAÇÃO ---
     function mudarParaReabrir() { document.getElementById('container-registro').style.display = 'none'; document.getElementById('container-reabrir').style.display = 'block'; }
     function mudarParaNormal() { document.getElementById('container-reabrir').style.display = 'none'; document.getElementById('container-registro').style.display = 'block'; }
 
+    // --- MÁSCARAS ---
     document.getElementById('campo_placa').oninput = function() {
         let v = this.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
         if (v.length > 3 && !isNaN(v[3])) v = v.substring(0,3) + "-" + v.substring(3,7);
@@ -292,27 +234,24 @@
         return (agora > limite) ? `<div class="box-semaforo semaforo-vermelho"><span class="circulo-led led-r"></span> ${valor}</div>` : `<div class="box-semaforo semaforo-verde"><span class="circulo-led led-g"></span> ${valor}</div>`;
     }
 
-    // --- CORE LOGIC (SUPABASE) ---
+    // --- CORE (SUPABASE) ---
     async function sincronizarFila() {
         try {
             const res = await fetch(`${SUPABASE_URL}/rest/v1/registros?SAIDA=is.null&select=*`, { headers: HEADERS });
             dadosCache = await res.json();
             renderizarTabela();
             document.getElementById('status-atualizacao').innerHTML = "Sincronizado: " + new Date().toLocaleTimeString();
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error("Erro sincronização:", e); }
     }
 
     function renderizarTabela() {
         const corpo = document.getElementById('dadosFila');
         corpo.innerHTML = "";
 
-        // ORDENAÇÃO MATEMÁTICA: 
-        // Timestamptz (agendamento) menor/existente vai para o topo.
-        // Quem não tem agendamento recebe Infinity.
+        // ORDENAÇÃO: Agendados no topo por horário, depois por ordem de entrada
         let ativos = [...dadosCache].sort((a, b) => {
             const timeA = (a.AGENDAMENTO) ? new Date(a.AGENDAMENTO).getTime() : Infinity;
             const timeB = (b.AGENDAMENTO) ? new Date(b.AGENDAMENTO).getTime() : Infinity;
-            
             if (timeA !== timeB) return timeA - timeB; 
             return new Date(a.created_at) - new Date(b.created_at);
         });
@@ -325,18 +264,17 @@
             let cl = item.PRODUTO.includes("GASOLINA") ? "tag-gasosa" : item.PRODUTO.includes("BIODIESEL") ? "tag-b100" : item.PRODUTO.includes("ANIDRO") ? "tag-anidro" : item.PRODUTO.includes("HIDRATADO") ? "tag-hidratado" : "tag-s10";
             
             const tr = document.createElement('tr');
-            if(item.AGENDAMENTO) tr.classList.add('linha-agendada');
+            if(item.AGENDAMENTO) tr.style.backgroundColor = "#fff9c4"; 
 
-            // Formatamos a data para exibição no input local
-            let dataFormatada = "";
-            if(item.AGENDAMENTO) {
-                const d = new Date(item.AGENDAMENTO);
-                // Ajuste manual para o formato YYYY-MM-DDTHH:MM exigido pelo input
-                dataFormatada = d.getFullYear() + "-" + 
-                               String(d.getMonth()+1).padStart(2, '0') + "-" + 
-                               String(d.getDate()).padStart(2, '0') + "T" + 
-                               String(d.getHours()).padStart(2, '0') + ":" + 
-                               String(d.getMinutes()).padStart(2, '0');
+            // Conversão de data para o formato do INPUT (YYYY-MM-DDTHH:MM)
+            let dataInput = "";
+            if (item.AGENDAMENTO) {
+                const dt = new Date(item.AGENDAMENTO);
+                dataInput = dt.getFullYear() + '-' + 
+                           String(dt.getMonth() + 1).padStart(2, '0') + '-' + 
+                           String(dt.getDate()).padStart(2, '0') + 'T' + 
+                           String(dt.getHours()).padStart(2, '0') + ':' + 
+                           String(dt.getMinutes()).padStart(2, '0');
             }
 
             tr.innerHTML = `
@@ -345,11 +283,11 @@
                 <td style="font-size:14px;">${item.TELEFONE}</td>
                 <td>${gerarSemaforo(item.JORNADA)}</td>
                 <td style="font-size:14px;">${item.ENTRADA}</td>
-                <td style="background:#fffde7; border: 2px solid #ffd600; padding:10px;">
-                    <input type="datetime-local" id="ag-${item.id}" value="${dataFormatada}" 
-                           style="width:100%; font-size:12px; padding:8px; border-radius:8px; border:1px solid #ccc; margin-bottom:5px;">
+                <td style="background:#fffde7; border: 2px solid #ffd600; padding: 10px;">
+                    <input type="datetime-local" id="ag-${item.id}" value="${dataInput}" 
+                           style="width:100%; font-size:14px; padding:10px; border-radius:8px; border:1px solid #ccc; margin-bottom:5px;">
                     <button onclick="salvarAgenda('${item.id}')" 
-                            style="background:var(--verde-raizen); color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; font-weight:900; width:100%;">OK</button>
+                            style="background:var(--verde-raizen); color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; font-weight:900; width:100%;">OK</button>
                 </td>
                 <td>
                     <button class="btn-w-whatsapp" onclick="chamarMotorista('${item.TELEFONE}','${item.PLACA}')">CONVOCAR</button>
@@ -361,30 +299,30 @@
     }
 
     async function salvarAgenda(id) {
-        const input = document.getElementById(`ag-${id}`);
-        const val = input.value; 
+        const inputVal = document.getElementById(`ag-${id}`).value;
         const btn = document.querySelector(`button[onclick="salvarAgenda('${id}')"]`);
         
         btn.innerText = "OK...";
         btn.disabled = true;
 
         try {
-            // Se o valor estiver vazio, enviamos null para "limpar" o agendamento
-            const dataISO = val ? new Date(val).toISOString() : null;
+            // Converte o valor do input local para ISO (o que o timestamptz espera)
+            const valorParaBanco = inputVal ? new Date(inputVal).toISOString() : null;
 
             const res = await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${id}`, {
                 method: 'PATCH',
                 headers: HEADERS,
-                body: JSON.stringify({ "AGENDAMENTO": dataISO })
+                body: JSON.stringify({ "AGENDAMENTO": valorParaBanco })
             });
 
             if(res.ok) {
-                await sincronizarFila(); // Força a reordenação na tela
+                await sincronizarFila();
             } else {
-                alert("Erro ao salvar no banco.");
+                const erro = await res.json();
+                console.error(erro);
+                alert("Erro ao salvar no banco. Verifique se a coluna AGENDAMENTO aceita nulos.");
             }
         } catch (e) {
-            console.error(e);
             alert("Erro de conexão.");
         } finally {
             btn.innerText = "OK";
@@ -415,7 +353,7 @@
             document.getElementById('modulo-entrada').style.display = 'none';
             document.getElementById('secao-operador').style.display = 'block';
             sincronizarFila();
-            setInterval(sincronizarFila, 30000); 
+            setInterval(sincronizarFila, 20000); 
         }
     }
 
