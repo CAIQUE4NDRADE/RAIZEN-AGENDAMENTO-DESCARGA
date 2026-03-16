@@ -122,7 +122,7 @@
             border-radius: 25px; font-size: 24px; font-weight: 900; cursor: pointer; text-transform: uppercase;
         }
 
-        /* --- FILTROS E TABELA --- */
+        /* --- ESTILOS DO OPERADOR --- */
         .filtros-container {
             display: flex; gap: 10px; justify-content: center; margin-bottom: 30px;
             background: #f8fafc; padding: 20px; border-radius: 20px;
@@ -157,6 +157,9 @@
         .btn-w-whatsapp { background: #22c55e; color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; margin-bottom: 8px; font-weight: 900; }
         .btn-f-finalizar { background: #3b82f6; color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 900; }
         #status-atualizacao { text-align: center; font-size: 14px; color: #64748b; margin: 15px 0; font-weight: bold; }
+        
+        /* Destaque para agendados */
+        .linha-agendada { background-color: #fff9c4 !important; border-left: 10px solid var(--ouro-raizen); }
     </style>
 </head>
 <body>
@@ -262,25 +265,24 @@
     let dadosCache = [];
     let filtroAtual = 'TODOS';
 
-    // --- MÁSCARAS E NAVEGAÇÃO ---
+    // --- MÁSCARAS ---
     function mudarParaReabrir() { document.getElementById('container-registro').style.display = 'none'; document.getElementById('container-reabrir').style.display = 'block'; }
     function mudarParaNormal() { document.getElementById('container-reabrir').style.display = 'none'; document.getElementById('container-registro').style.display = 'block'; }
 
-    function aplicarMascaras() {
-        document.getElementById('campo_placa').oninput = function() {
-            let v = this.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
-            if (v.length > 3 && !isNaN(v[3])) v = v.substring(0,3) + "-" + v.substring(3,7);
-            this.value = v.substring(0,8);
-        };
-        document.getElementById('campo_whatsapp').oninput = e => {
-            let v = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
-            e.target.value = !v[2] ? v[1] : '(' + v[1] + ') ' + v[2] + (v[3] ? '-' + v[3] : '');
-        };
-        document.getElementById('check_jornada_24h').onchange = function() {
-            document.getElementById('box-horario-input').style.display = this.checked ? 'none' : 'block';
-        };
-    }
-    aplicarMascaras();
+    document.getElementById('campo_placa').oninput = function() {
+        let v = this.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+        if (v.length > 3 && !isNaN(v[3])) v = v.substring(0,3) + "-" + v.substring(3,7);
+        this.value = v.substring(0,8);
+    };
+
+    document.getElementById('campo_whatsapp').oninput = e => {
+        let v = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+        e.target.value = !v[2] ? v[1] : '(' + v[1] + ') ' + v[2] + (v[3] ? '-' + v[3] : '');
+    };
+
+    document.getElementById('check_jornada_24h').onchange = function() {
+        document.getElementById('box-horario-input').style.display = this.checked ? 'none' : 'block';
+    };
 
     function gerarSemaforo(valor) {
         if(valor === "24 HORAS") return `<div class="box-semaforo semaforo-verde"><span class="circulo-led led-g"></span> 24H</div>`;
@@ -290,28 +292,28 @@
         return (agora > limite) ? `<div class="box-semaforo semaforo-vermelho"><span class="circulo-led led-r"></span> ${valor}</div>` : `<div class="box-semaforo semaforo-verde"><span class="circulo-led led-g"></span> ${valor}</div>`;
     }
 
-    // --- LÓGICA DE DADOS (SUPABASE) ---
+    // --- CORE LOGIC (SUPABASE) ---
     async function sincronizarFila() {
         try {
             const res = await fetch(`${SUPABASE_URL}/rest/v1/registros?SAIDA=is.null&select=*`, { headers: HEADERS });
             dadosCache = await res.json();
             renderizarTabela();
             document.getElementById('status-atualizacao').innerHTML = "Sincronizado: " + new Date().toLocaleTimeString();
-        } catch (e) { console.error("Erro sincronização:", e); }
+        } catch (e) { console.error(e); }
     }
 
     function renderizarTabela() {
         const corpo = document.getElementById('dadosFila');
         corpo.innerHTML = "";
 
-        // ORDENAÇÃO CRÍTICA: AGENDADOS NO TOPO
+        // ORDENAÇÃO MATEMÁTICA: 
+        // Timestamptz (agendamento) menor/existente vai para o topo.
+        // Quem não tem agendamento recebe Infinity.
         let ativos = [...dadosCache].sort((a, b) => {
-            // Se o valor de AGENDAMENTO existir e não for vazio, gera o timestamp, senão Infinity (vai pro final)
-            const timeA = (a.AGENDAMENTO && a.AGENDAMENTO !== "") ? new Date(a.AGENDAMENTO).getTime() : Infinity;
-            const timeB = (b.AGENDAMENTO && b.AGENDAMENTO !== "") ? new Date(b.AGENDAMENTO).getTime() : Infinity;
+            const timeA = (a.AGENDAMENTO) ? new Date(a.AGENDAMENTO).getTime() : Infinity;
+            const timeB = (b.AGENDAMENTO) ? new Date(b.AGENDAMENTO).getTime() : Infinity;
             
             if (timeA !== timeB) return timeA - timeB; 
-            // Se empatar (ou ambos sem agenda), ordena por quem chegou primeiro no pátio (created_at)
             return new Date(a.created_at) - new Date(b.created_at);
         });
 
@@ -323,8 +325,19 @@
             let cl = item.PRODUTO.includes("GASOLINA") ? "tag-gasosa" : item.PRODUTO.includes("BIODIESEL") ? "tag-b100" : item.PRODUTO.includes("ANIDRO") ? "tag-anidro" : item.PRODUTO.includes("HIDRATADO") ? "tag-hidratado" : "tag-s10";
             
             const tr = document.createElement('tr');
-            // Destaque visual se estiver agendado
-            if(item.AGENDAMENTO) tr.style.backgroundColor = "#fff9c4"; 
+            if(item.AGENDAMENTO) tr.classList.add('linha-agendada');
+
+            // Formatamos a data para exibição no input local
+            let dataFormatada = "";
+            if(item.AGENDAMENTO) {
+                const d = new Date(item.AGENDAMENTO);
+                // Ajuste manual para o formato YYYY-MM-DDTHH:MM exigido pelo input
+                dataFormatada = d.getFullYear() + "-" + 
+                               String(d.getMonth()+1).padStart(2, '0') + "-" + 
+                               String(d.getDate()).padStart(2, '0') + "T" + 
+                               String(d.getHours()).padStart(2, '0') + ":" + 
+                               String(d.getMinutes()).padStart(2, '0');
+            }
 
             tr.innerHTML = `
                 <td style="color:var(--roxo-raizen); font-size:22px;">${item.PLACA}</td>
@@ -332,11 +345,11 @@
                 <td style="font-size:14px;">${item.TELEFONE}</td>
                 <td>${gerarSemaforo(item.JORNADA)}</td>
                 <td style="font-size:14px;">${item.ENTRADA}</td>
-                <td style="background:#fffde7; border: 2px solid #ffd600;">
-                    <input type="datetime-local" id="ag-${item.id}" value="${item.AGENDAMENTO || ''}" 
-                           style="width:170px; font-size:12px; padding:8px; border-radius:8px; border:1px solid #ccc;">
+                <td style="background:#fffde7; border: 2px solid #ffd600; padding:10px;">
+                    <input type="datetime-local" id="ag-${item.id}" value="${dataFormatada}" 
+                           style="width:100%; font-size:12px; padding:8px; border-radius:8px; border:1px solid #ccc; margin-bottom:5px;">
                     <button onclick="salvarAgenda('${item.id}')" 
-                            style="background:var(--verde-raizen); color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; font-weight:900; margin-top:5px; width:100%;">OK</button>
+                            style="background:var(--verde-raizen); color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; font-weight:900; width:100%;">OK</button>
                 </td>
                 <td>
                     <button class="btn-w-whatsapp" onclick="chamarMotorista('${item.TELEFONE}','${item.PLACA}')">CONVOCAR</button>
@@ -348,15 +361,34 @@
     }
 
     async function salvarAgenda(id) {
-        const val = document.getElementById(`ag-${id}`).value;
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${id}`, {
-            method: 'PATCH',
-            headers: HEADERS,
-            body: JSON.stringify({ "AGENDAMENTO": val || null })
-        });
-        if(res.ok) {
-            alert("AGENDAMENTO SALVO! REORGANIZANDO FILA...");
-            await sincronizarFila(); // Recarrega e move para o topo
+        const input = document.getElementById(`ag-${id}`);
+        const val = input.value; 
+        const btn = document.querySelector(`button[onclick="salvarAgenda('${id}')"]`);
+        
+        btn.innerText = "OK...";
+        btn.disabled = true;
+
+        try {
+            // Se o valor estiver vazio, enviamos null para "limpar" o agendamento
+            const dataISO = val ? new Date(val).toISOString() : null;
+
+            const res = await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${id}`, {
+                method: 'PATCH',
+                headers: HEADERS,
+                body: JSON.stringify({ "AGENDAMENTO": dataISO })
+            });
+
+            if(res.ok) {
+                await sincronizarFila(); // Força a reordenação na tela
+            } else {
+                alert("Erro ao salvar no banco.");
+            }
+        } catch (e) {
+            console.error(e);
+            alert("Erro de conexão.");
+        } finally {
+            btn.innerText = "OK";
+            btn.disabled = false;
         }
     }
 
@@ -368,7 +400,7 @@
     }
 
     async function finalizar(id) {
-        if(confirm("CONFIRMA A SAÍDA DO VEÍCULO?")) {
+        if(confirm("CONFIRMA A SAÍDA?")) {
             await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${id}`, {
                 method: 'PATCH',
                 headers: HEADERS,
@@ -379,24 +411,21 @@
     }
 
     function acessoOperador() {
-        if(prompt("DIGITE A SENHA DE ACESSO:") === SENHA_OP) {
+        if(prompt("SENHA:") === SENHA_OP) {
             document.getElementById('modulo-entrada').style.display = 'none';
             document.getElementById('secao-operador').style.display = 'block';
             sincronizarFila();
-            setInterval(sincronizarFila, 20000); // Auto-update a cada 20s
+            setInterval(sincronizarFila, 30000); 
         }
     }
 
     function chamarMotorista(tel, placa) {
-        const baia = prompt("PARA QUAL BAIA O VEÍCULO " + placa + " DEVE IR?");
-        if(baia) window.open(`https://api.whatsapp.com/send?phone=55${tel.replace(/\D/g, "")}&text=Olá%20motorista!%20Sua%20vez%20chegou.%20Por%20favor,%20dirija-se%20à%20BAIA%20${baia}`, '_blank');
+        const baia = prompt("QUAL BAIA?");
+        if(baia) window.open(`https://api.whatsapp.com/send?phone=55${tel.replace(/\D/g, "")}&text=Olá%20motorista!%20Baia%20${baia}`, '_blank');
     }
 
     document.getElementById('formDescarga').onsubmit = async e => {
         e.preventDefault();
-        const btn = document.getElementById('btn_registrar');
-        btn.disabled = true; btn.innerText = "ENVIANDO...";
-        
         const dados = {
             "PLACA": document.getElementById('campo_placa').value.toUpperCase(),
             "PRODUTO": document.getElementById('campo_produto').value,
@@ -404,9 +433,7 @@
             "JORNADA": document.getElementById('check_jornada_24h').checked ? "24 HORAS" : document.getElementById('campo_hora_limite').value,
             "ENTRADA": new Date().toLocaleString('pt-BR')
         };
-
         await fetch(`${SUPABASE_URL}/rest/v1/registros`, { method: 'POST', headers: HEADERS, body: JSON.stringify(dados) });
-        alert("REGISTRO REALIZADO COM SUCESSO!");
         location.reload();
     };
 
@@ -417,10 +444,9 @@
         const d = await res.json();
         if(d.length > 0) {
             await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${d[0].id}`, { method: 'PATCH', headers: HEADERS, body: JSON.stringify({"JORNADA": h}) });
-            alert("JORNADA ATUALIZADA!"); location.reload();
-        } else alert("PLACA NÃO ENCONTRADA NO PÁTIO!");
+            location.reload();
+        }
     }
 </script>
-
 </body>
 </html>
