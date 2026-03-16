@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RAÍZEN - GESTÃO OPERACIONAL V22.0</title>
+    <title>RAÍZEN - GESTÃO OPERACIONAL V24.0</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
@@ -18,101 +18,172 @@
             --cor-alerta: #e11d48;
             --cor-sucesso: #10b981;
             --cor-texto: #1e293b;
+            --sombra-forte: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
 
-        * { box-sizing: border-box; font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; }
+        * { box-sizing: border-box; font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; outline: none; }
 
         body { 
             background-color: var(--fundo-base); 
             display: flex; flex-direction: column; min-height: 100vh;
-            color: var(--cor-texto); padding-bottom: 100px;
+            color: var(--cor-texto); padding-bottom: 40px;
         }
 
+        /* --- HEADER --- */
         header { 
             background: linear-gradient(135deg, var(--verde-raizen) 0%, #1a241f 100%); 
-            padding: 90px 20px; text-align: center; border-bottom: 25px solid var(--roxo-raizen);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            padding: 70px 20px; text-align: center; border-bottom: 20px solid var(--roxo-raizen);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            position: relative;
+        }
+
+        .logo-container {
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
         }
 
         .logo-raizen-master {
-            color: var(--branco); font-size: 85px; font-weight: 900;
-            letter-spacing: 15px; text-transform: uppercase;
+            color: var(--branco); font-size: clamp(35px, 7vw, 80px); font-weight: 900;
+            letter-spacing: 12px; text-transform: uppercase;
+            text-shadow: 3px 3px 0px rgba(0,0,0,0.3);
         }
 
-        header h1 { color: var(--branco); font-size: 24px; letter-spacing: 6px; font-weight: 300; margin-top: 15px; text-transform: uppercase; }
+        .sub-header { 
+            color: var(--branco); font-size: 18px; letter-spacing: 4px; 
+            font-weight: 300; text-transform: uppercase; opacity: 0.9;
+        }
 
+        /* --- CONTAINER PRINCIPAL --- */
         .card-industrial { 
-            width: 94%; max-width: 1100px; margin: 60px auto; background: var(--branco); 
-            padding: 70px; border-radius: 60px; box-shadow: 0 40px 80px rgba(0,0,0,0.2); 
-            border-left: 35px solid var(--roxo-raizen); position: relative;
+            width: 92%; max-width: 1000px; margin: -40px auto 40px; background: var(--branco); 
+            padding: 50px; border-radius: 30px; box-shadow: var(--sombra-forte); 
+            border-top: 15px solid var(--roxo-raizen); z-index: 10;
         }
 
         #secao-operador { 
-            display: none; width: 100%; max-width: 100%; margin: 0 auto;
-            background: var(--branco); padding: 15px; border-radius: 20px;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.2); zoom: 0.8;
+            display: none; width: 98%; max-width: 1550px; margin: 20px auto;
+            background: var(--branco); padding: 25px; border-radius: 20px;
+            box-shadow: var(--sombra-forte); zoom: 0.85;
         }
 
-        h2 { color: var(--roxo-raizen); text-align: center; font-weight: 900; text-transform: uppercase; margin-bottom: 50px; font-size: 38px; border-bottom: 12px solid #f1f5f9; padding-bottom: 30px; }
+        h2 { 
+            color: var(--roxo-raizen); text-align: center; font-weight: 900; 
+            text-transform: uppercase; margin-bottom: 35px; font-size: 30px; 
+            border-bottom: 6px solid var(--fundo-base); padding-bottom: 15px; 
+        }
 
-        .wrapper-campo { margin-bottom: 40px; position: relative; }
-        label { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; font-weight: 900; color: var(--verde-raizen); font-size: 16px; text-transform: uppercase; }
+        /* --- INPUTS --- */
+        .wrapper-campo { margin-bottom: 25px; }
+        label { 
+            display: flex; align-items: center; gap: 8px; margin-bottom: 10px; 
+            font-weight: 900; color: var(--verde-raizen); font-size: 13px; text-transform: uppercase; 
+        }
 
-        input, select { width: 100%; padding: 28px; border: 5px solid #e2e8f0; border-radius: 30px; font-size: 24px; font-weight: 700; background: #f8fafc; color: #334155; }
+        input, select { 
+            width: 100%; padding: 20px; border: 3px solid #e2e8f0; border-radius: 15px; 
+            font-size: 18px; font-weight: 700; background: #f8fafc; color: #334155;
+            transition: all 0.3s ease;
+        }
 
-        .container-jornada-exp { background: #fffbeb; padding: 50px; border-radius: 50px; border: 6px solid var(--ouro-raizen); margin: 40px 0; }
-        .check-box-24h { display: flex; align-items: center; gap: 25px; cursor: pointer; background: #ffffff; padding: 25px; border-radius: 30px; border: 3px solid #fde68a; }
-        .check-box-24h input { width: 45px; height: 45px; accent-color: var(--cor-alerta); }
-        .txt-check { font-weight: 900; color: var(--cor-alerta); font-size: 22px; }
+        input:focus { border-color: var(--roxo-raizen); background: #fff; box-shadow: 0 0 0 4px rgba(132, 32, 125, 0.1); }
 
-        .btn-principal { width: 100%; padding: 30px; background: var(--roxo-raizen); color: white; border: none; border-radius: 25px; font-size: 24px; font-weight: 900; cursor: pointer; text-transform: uppercase; }
+        .container-jornada-exp { 
+            background: #fffbeb; padding: 35px; border-radius: 25px; 
+            border: 3px solid var(--ouro-raizen); margin: 25px 0; 
+        }
 
-        .filtros-container { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; background: #f8fafc; padding: 20px; border-radius: 20px; }
-        .btn-filtro { padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: 900; background: #cbd5e1; color: #475569; }
+        .check-box-24h { 
+            display: flex; align-items: center; gap: 15px; cursor: pointer; 
+            background: #ffffff; padding: 18px; border-radius: 15px; border: 2px solid #fde68a; 
+        }
+
+        .check-box-24h input { width: 30px; height: 30px; accent-color: var(--cor-alerta); cursor: pointer; }
+        .txt-check { font-weight: 900; color: var(--cor-alerta); font-size: 16px; }
+
+        /* --- BOTÕES --- */
+        .btn-principal { 
+            width: 100%; padding: 22px; background: var(--roxo-raizen); color: white; 
+            border: none; border-radius: 15px; font-size: 18px; font-weight: 900; 
+            cursor: pointer; text-transform: uppercase; transition: all 0.2s;
+            box-shadow: 0 8px 0 #5e1659; margin-bottom: 10px;
+        }
+
+        .btn-principal:active { transform: translateY(4px); box-shadow: 0 4px 0 #5e1659; }
+        .btn-principal:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; opacity: 0.7; }
+
+        /* --- PAINEL OPERACIONAL --- */
+        .filtros-container { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+        .btn-filtro { 
+            padding: 10px 20px; border: none; border-radius: 10px; cursor: pointer; 
+            font-weight: 900; background: #e2e8f0; color: #475569; transition: 0.2s;
+        }
         .btn-filtro.ativo { background: var(--roxo-raizen); color: white; }
 
-        .moldura-tabela { overflow-x: auto; border-radius: 20px; border: 2px solid #e2e8f0; }
-        table { width: 100%; border-collapse: collapse; min-width: 1250px; }
-        th { background: #0f172a; color: #ffffff; padding: 20px; font-size: 13px; text-transform: uppercase; }
-        td { padding: 20px; border-bottom: 4px solid #f1f5f9; text-align: center; font-weight: 800; font-size: 16px; }
+        .moldura-tabela { 
+            overflow-x: auto; border-radius: 12px; border: 1px solid #e2e8f0; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
 
-        .tag-prod { padding: 10px; border-radius: 12px; font-size: 12px; font-weight: 900; display: block; text-transform: uppercase; }
+        table { width: 100%; border-collapse: collapse; min-width: 1300px; background: white; }
+        th { background: #1e293b; color: #ffffff; padding: 15px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+        td { padding: 15px; border-bottom: 1px solid #f1f5f9; text-align: center; font-weight: 700; font-size: 14px; }
+
+        .linha-destaque { background-color: #fff9c4 !important; }
+        
+        /* TAGS PRODUTOS */
+        .tag-prod { padding: 6px 10px; border-radius: 8px; font-size: 10px; font-weight: 900; display: inline-block; text-transform: uppercase; min-width: 110px; }
         .tag-gasosa { background: #ff8c00; color: #fff; } 
         .tag-b100 { background: #5d4037; color: #fff; } 
         .tag-anidro { background: #0056b3; color: #fff; } 
-        .tag-hidratado { background: #ffffff; color: #0056b3; border: 2px solid #0056b3; } 
-        .tag-s10 { background: #ffffff; color: #5d4037; border: 2px solid #5d4037; } 
+        .tag-hidratado { background: #ffffff; color: #0056b3; border: 1.5px solid #0056b3; } 
+        .tag-s10 { background: #ffffff; color: #5d4037; border: 1.5px solid #5d4037; } 
 
-        .box-semaforo { padding: 10px; border-radius: 30px; font-size: 13px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .semaforo-verde { background: #dcfce7; color: #166534; border: 2px solid var(--cor-sucesso); }
-        .semaforo-vermelho { background: #fee2e2; color: #991b1b; border: 2px solid var(--cor-alerta); }
-        .circulo-led { width: 12px; height: 12px; border-radius: 50%; }
+        /* SEMÁFORO */
+        .box-semaforo { padding: 6px 12px; border-radius: 15px; font-size: 11px; font-weight: 900; display: inline-flex; align-items: center; gap: 6px; }
+        .semaforo-verde { background: #dcfce7; color: #166534; border: 1px solid var(--cor-sucesso); }
+        .semaforo-vermelho { background: #fee2e2; color: #991b1b; border: 1px solid var(--cor-alerta); }
+        .circulo-led { width: 8px; height: 8px; border-radius: 50%; }
         .led-g { background: #10b981; }
         .led-r { background: #ef4444; }
 
-        .btn-w-whatsapp { background: #22c55e; color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; margin-bottom: 8px; font-weight: 900; }
-        .btn-f-finalizar { background: #3b82f6; color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 900; }
-        #status-atualizacao { text-align: center; font-size: 14px; color: #64748b; margin: 15px 0; font-weight: bold; }
+        /* AÇÕES */
+        .btn-acao-zap { background: #22c55e; color: white; border: none; padding: 10px; border-radius: 8px; width: 100%; cursor: pointer; margin-bottom: 4px; font-weight: 900; }
+        .btn-acao-fim { background: #3b82f6; color: white; border: none; padding: 10px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: 900; }
+        
+        #status-sync { text-align: center; font-size: 11px; color: #94a3b8; margin: 10px 0; font-weight: 800; text-transform: uppercase; }
+
+        /* FEEDBACK VISUAL */
+        #loader-global {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.9); z-index: 10000; justify-content: center; align-items: center;
+            font-weight: 900; color: var(--roxo-raizen); flex-direction: column; gap: 15px;
+        }
     </style>
 </head>
 <body>
 
+<div id="loader-global">
+    <i class="fas fa-circle-notch fa-spin fa-4x"></i>
+    <span>PROCESSANDO REQUISIÇÃO...</span>
+</div>
+
 <header>
-    <div class="logo-raizen-master">RAÍZEN</div>
-    <h1>CONTROLE DE DESCARGAS | TERMINAL PAULÍNIA</h1>
+    <div class="logo-container">
+        <div class="logo-raizen-master">RAÍZEN</div>
+        <div class="sub-header">TERMINAL PAULÍNIA | GESTÃO DE PÁTIO</div>
+    </div>
 </header>
 
-<div class="card-industrial" id="modulo-entrada">
-    <div id="container-registro">
-        <h2><i class="fa-solid fa-file-signature"></i> REGISTRO DE ENTRADA</h2>
-        <form id="formDescarga">
+<div class="card-industrial" id="tela-entrada">
+    <div id="form-container">
+        <h2><i class="fa-solid fa-clipboard-list"></i> REGISTRAR CHEGADA</h2>
+        <form id="mainForm">
             <div class="wrapper-campo">
-                <label><i class="fa-solid fa-truck-front"></i> PLACA DO VEÍCULO</label>
-                <input type="text" id="campo_placa" placeholder="ABC-1234" maxlength="8" required>
+                <label><i class="fa-solid fa-truck"></i> PLACA DO VEÍCULO</label>
+                <input type="text" id="p_placa" placeholder="AAA-0000" maxlength="8" required>
             </div>
             <div class="wrapper-campo">
-                <label><i class="fa-solid fa-droplet"></i> PRODUTO CARREGADO</label>
-                <select id="campo_produto" required>
+                <label><i class="fa-solid fa-flask"></i> PRODUTO PARA DESCARGA</label>
+                <select id="p_produto" required>
                     <option value="">-- SELECIONE O PRODUTO --</option>
                     <option value="GASOLINA COMUM / ADITIVADA">GASOLINA COMUM / ADITIVADA</option>
                     <option value="BIODIESEL (B100)">BIODIESEL (B100)</option>
@@ -122,52 +193,59 @@
                 </select>
             </div>
             <div class="wrapper-campo">
-                <label><i class="fa-brands fa-whatsapp"></i> NÚMERO DO WHATSAPP</label>
-                <input type="tel" id="campo_whatsapp" placeholder="(19) 99999-9999" maxlength="15" required>
+                <label><i class="fa-brands fa-whatsapp"></i> CELULAR DO MOTORISTA</label>
+                <input type="tel" id="p_whatsapp" placeholder="(00) 00000-0000" maxlength="15" required>
             </div>
+            
             <div class="container-jornada-exp">
-                <div id="box-horario-input">
-                    <label><i class="fa-solid fa-clock-rotate-left"></i> TÉRMINO DA JORNADA</label>
-                    <input type="time" id="campo_hora_limite">
+                <div id="jornada-timer-box">
+                    <label><i class="fa-solid fa-hourglass-half"></i> HORÁRIO LIMITE DE JORNADA</label>
+                    <input type="time" id="p_hora_limite">
                 </div>
-                <label class="check-box-24h" style="margin-top:20px;">
-                    <input type="checkbox" id="check_jornada_24h">
-                    <span class="txt-check"><i class="fa-solid fa-triangle-exclamation"></i> ESTOU EM JORNADA 24 HORAS</span>
+                <label class="check-box-24h" style="margin-top:15px;">
+                    <input type="checkbox" id="p_jornada_livre">
+                    <span class="txt-check"><i class="fa-solid fa-infinity"></i> MOTORISTA EM JORNADA 24 HORAS</span>
                 </label>
             </div>
-            <button type="submit" class="btn-principal" id="btn_registrar">EFETUAR REGISTRO NO PÁTIO</button>
-            <button type="button" onclick="mudarParaReabrir()" class="btn-principal" style="background:#3d5446; margin-top:20px;">REABRIR JORNADA</button>
+
+            <button type="submit" class="btn-principal" id="btn_submit">CONFIRMAR REGISTRO</button>
+            <button type="button" onclick="abaReabertura()" class="btn-principal" style="background:#475569; box-shadow: 0 8px 0 #2d3748;">REABRIR REGISTRO ANTIGO</button>
         </form>
     </div>
 
-    <div id="container-reabrir" style="display:none;">
-        <h2 style="color:#3d5446"><i class="fa-solid fa-clock"></i> REABRIR JORNADA</h2>
+    <div id="reabertura-container" style="display:none;">
+        <h2 style="color:#475569"><i class="fa-solid fa-clock-rotate-left"></i> REABERTURA DE JORNADA</h2>
         <div class="wrapper-campo">
-            <label>PLACA</label>
-            <input type="text" id="reabrir_placa" placeholder="ABC-1234">
+            <label>PLACA DO VEÍCULO</label>
+            <input type="text" id="r_placa" placeholder="AAA-0000">
         </div>
         <div class="wrapper-campo">
-            <label>NOVA HORA</label>
-            <input type="time" id="reabrir_hora">
+            <label>NOVA HORA DE JORNADA</label>
+            <input type="time" id="r_hora">
         </div>
-        <button onclick="salvarReabertura()" class="btn-principal" style="background:#3d5446">ATUALIZAR</button>
-        <button onclick="mudarParaNormal()" style="width:100%; margin-top:20px; background:none; border:none; text-decoration:underline; cursor:pointer;">VOLTAR</button>
+        <button onclick="executarPatchReabertura()" class="btn-principal" style="background:#475569">ATUALIZAR HORÁRIO</button>
+        <button onclick="abaNormal()" style="width:100%; margin-top:15px; background:none; border:none; text-decoration:underline; cursor:pointer; font-weight:700; color:#64748b;">VOLTAR AO INÍCIO</button>
     </div>
 
-    <div style="text-align:center; margin-top:60px; border-top:4px dashed #ccc; padding-top:40px;">
-        <button onclick="acessoOperador()" style="background:none; border:none; color:var(--roxo-raizen); font-weight:900; cursor:pointer; font-size:18px; text-decoration:underline;">MÓDULO DO OPERADOR</button>
+    <div style="text-align:center; margin-top:40px; border-top:1px solid #ddd; padding-top:25px;">
+        <button onclick="validaAcessoOperador()" style="background:none; border:none; color:var(--roxo-raizen); font-weight:900; cursor:pointer; font-size:14px; letter-spacing:1px; text-transform:uppercase;">
+            <i class="fa-solid fa-user-gear"></i> Área do Operador
+        </button>
     </div>
 </div>
 
 <div id="secao-operador">
-    <h2><i class="fa-solid fa-list-check"></i> FILA DE DESCARGA ATIVA</h2>
+    <h2><i class="fa-solid fa-list-ol"></i> FILA DE ESPERA E AGENDAMENTOS</h2>
+    
     <div class="filtros-container">
-        <button class="btn-filtro ativo" onclick="filtrar('TODOS', this)">TODOS</button>
-        <button class="btn-filtro" onclick="filtrar('GASOLINA', this)">GASOLINA</button>
-        <button class="btn-filtro" onclick="filtrar('DIESEL', this)">DIESEL</button>
-        <button class="btn-filtro" onclick="filtrar('ETANOL', this)">ETANOL</button>
+        <button class="btn-filtro ativo" onclick="filtrarPainel('TODOS', this)">VER TODOS</button>
+        <button class="btn-filtro" onclick="filtrarPainel('GASOLINA', this)">GASOLINA</button>
+        <button class="btn-filtro" onclick="filtrarPainel('DIESEL', this)">DIESEL</button>
+        <button class="btn-filtro" onclick="filtrarPainel('ETANOL', this)">ETANOL</button>
     </div>
-    <div id="status-atualizacao">Sincronizando...</div>
+
+    <div id="status-sync">SINCRONIZANDO...</div>
+
     <div class="moldura-tabela">
         <table>
             <thead>
@@ -177,180 +255,250 @@
                     <th>CONTATO</th>
                     <th>JORNADA</th>
                     <th>ENTRADA</th>
-                    <th style="background:#fff9c4; color:#000;">AGENDAMENTO</th>
+                    <th style="background:#fef3c7; color:#92400e;">AGENDAMENTO</th>
                     <th>AÇÕES</th>
                 </tr>
             </thead>
-            <tbody id="dadosFila"></tbody>
+            <tbody id="listaFila"></tbody>
         </table>
     </div>
-    <button class="btn-principal" style="background:#475569; margin-top:30px;" onclick="location.reload()">SAIR</button>
+
+    <div style="margin-top:25px; display:flex; gap:15px;">
+        <button class="btn-principal" style="background:#1e293b; box-shadow: 0 8px 0 #0f172a; flex:1;" onclick="location.reload()">FECHAR PAINEL</button>
+        <button class="btn-principal" style="background:var(--verde-raizen); box-shadow: 0 8px 0 #2d3e35; flex:1;" onclick="fetchBancoDados()">FORÇAR ATUALIZAÇÃO</button>
+    </div>
 </div>
 
 <script>
-    const SUPABASE_URL = 'https://rbbkjuiizmvatiawfzuv.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X';
-    const HEADERS = { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json" };
-    const SENHA_OP = 'raizen2026';
-    
-    let dadosCache = [];
-    let filtroAtual = 'TODOS';
+    // --- NÚCLEO DE CONFIGURAÇÃO (AJUSTADO) ---
+    const APP_CONFIG = {
+        API_URL: 'https://rbbkjuiizmvatiawfzuv.supabase.co',
+        API_KEY: 'sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X',
+        COL_ID: 'id', // SE DER ERRO DE ID, MUDE PARA 'id' ou 'ID' ou 'id_registro'
+        AUTH: { 
+            "apikey": 'sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X', 
+            "Authorization": `Bearer sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X`, 
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+        }
+    };
 
-    function mudarParaReabrir() { document.getElementById('container-registro').style.display = 'none'; document.getElementById('container-reabrir').style.display = 'block'; }
-    function mudarParaNormal() { document.getElementById('container-reabrir').style.display = 'none'; document.getElementById('container-registro').style.display = 'block'; }
+    let cacheDados = [];
+    let filtroLocal = 'TODOS';
 
-    // MÁSCARAS
-    document.getElementById('campo_placa').oninput = function() {
+    // --- CONTROLES DE UI ---
+    function abaReabertura() { document.getElementById('form-container').style.display = 'none'; document.getElementById('reabertura-container').style.display = 'block'; }
+    function abaNormal() { document.getElementById('reabertura-container').style.display = 'none'; document.getElementById('form-container').style.display = 'block'; }
+    function setLoader(state) { document.getElementById('loader-global').style.display = state ? 'flex' : 'none'; }
+
+    // --- MÁSCARAS E VALIDAÇÕES ---
+    document.getElementById('p_placa').oninput = function() {
         let v = this.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
         if (v.length > 3 && !isNaN(v[3])) v = v.substring(0,3) + "-" + v.substring(3,7);
         this.value = v.substring(0,8);
     };
-    document.getElementById('campo_whatsapp').oninput = e => {
+
+    document.getElementById('p_whatsapp').oninput = function(e) {
         let v = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
         e.target.value = !v[2] ? v[1] : '(' + v[1] + ') ' + v[2] + (v[3] ? '-' + v[3] : '');
     };
-    document.getElementById('check_jornada_24h').onchange = function() {
-        document.getElementById('box-horario-input').style.display = this.checked ? 'none' : 'block';
+
+    document.getElementById('p_jornada_livre').onchange = function() {
+        const box = document.getElementById('jornada-timer-box');
+        box.style.opacity = this.checked ? "0.4" : "1";
+        box.style.pointerEvents = this.checked ? "none" : "all";
     };
 
-    function gerarSemaforo(valor) {
-        if(valor === "24 HORAS") return `<div class="box-semaforo semaforo-verde"><span class="circulo-led led-g"></span> 24H</div>`;
-        const agora = new Date();
-        const t = valor.split(':'); if(t.length < 2) return valor;
-        const limite = new Date(); limite.setHours(t[0], t[1], 0);
-        return (agora > limite) ? `<div class="box-semaforo semaforo-vermelho"><span class="circulo-led led-r"></span> ${valor}</div>` : `<div class="box-semaforo semaforo-verde"><span class="circulo-led led-g"></span> ${valor}</div>`;
-    }
-
-    async function sincronizarFila() {
+    // --- COMUNICAÇÃO COM BANCO ---
+    async function fetchBancoDados() {
+        document.getElementById('status-sync').innerText = "ATUALIZANDO FILA...";
         try {
-            const res = await fetch(`${SUPABASE_URL}/rest/v1/registros?SAIDA=is.null&select=*`, { headers: HEADERS });
-            dadosCache = await res.json();
-            renderizarTabela();
-            document.getElementById('status-atualizacao').innerHTML = "Sincronizado: " + new Date().toLocaleTimeString();
-        } catch (e) { console.error(e); }
+            const res = await fetch(`${APP_CONFIG.API_URL}/rest/v1/registros?SAIDA=is.null&select=*`, { headers: APP_CONFIG.AUTH });
+            if (!res.ok) throw new Error("Erro na conexão");
+            cacheDados = await res.json();
+            montarTabela();
+            document.getElementById('status-sync').innerText = "SINCRONIZADO EM: " + new Date().toLocaleTimeString();
+        } catch (e) {
+            document.getElementById('status-sync').innerText = "ERRO DE SINCRONIZAÇÃO!";
+            console.error(e);
+        }
     }
 
-    function renderizarTabela() {
-        const corpo = document.getElementById('dadosFila');
+    function montarTabela() {
+        const corpo = document.getElementById('listaFila');
         corpo.innerHTML = "";
-        let ativos = [...dadosCache].sort((a, b) => {
-            const timeA = a.AGENDAMENTO ? new Date(a.AGENDAMENTO).getTime() : Infinity;
-            const timeB = b.AGENDAMENTO ? new Date(b.AGENDAMENTO).getTime() : Infinity;
-            return timeA !== timeB ? timeA - timeB : new Date(a.created_at) - new Date(b.created_at);
+
+        // ORDENAÇÃO: Agendamentos primeiro (por horário), depois por ordem de chegada
+        let lista = [...cacheDados].sort((a, b) => {
+            const tA = a.AGENDAMENTO ? new Date(a.AGENDAMENTO).getTime() : Infinity;
+            const tB = b.AGENDAMENTO ? new Date(b.AGENDAMENTO).getTime() : Infinity;
+            if (tA !== tB) return tA - tB;
+            return new Date(a.created_at) - new Date(b.created_at);
         });
 
-        if (filtroAtual !== 'TODOS') ativos = ativos.filter(x => x.PRODUTO.toUpperCase().includes(filtroAtual));
+        if (filtroLocal !== 'TODOS') {
+            lista = lista.filter(x => x.PRODUTO.toUpperCase().includes(filtroLocal));
+        }
 
-        ativos.forEach(item => {
-            let cl = item.PRODUTO.includes("GASOLINA") ? "tag-gasosa" : item.PRODUTO.includes("BIODIESEL") ? "tag-b100" : item.PRODUTO.includes("ANIDRO") ? "tag-anidro" : item.PRODUTO.includes("HIDRATADO") ? "tag-hidratado" : "tag-s10";
-            let dataInput = "";
+        lista.forEach(item => {
+            const idLinha = item[APP_CONFIG.COL_ID];
+            let tagCss = item.PRODUTO.includes("GASOLINA") ? "tag-gasosa" : item.PRODUTO.includes("BIODIESEL") ? "tag-b100" : item.PRODUTO.includes("ANIDRO") ? "tag-anidro" : item.PRODUTO.includes("HIDRATADO") ? "tag-hidratado" : "tag-s10";
+            
+            let valAg = "";
             if (item.AGENDAMENTO) {
-                const dt = new Date(item.AGENDAMENTO);
-                dataInput = dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0') + 'T' + String(dt.getHours()).padStart(2, '0') + ':' + String(dt.getMinutes()).padStart(2, '0');
+                const d = new Date(item.AGENDAMENTO);
+                valAg = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0') + 'T' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
             }
+
             const tr = document.createElement('tr');
-            if(item.AGENDAMENTO) tr.style.backgroundColor = "#fff9c4";
+            if(item.AGENDAMENTO) tr.className = "linha-destaque";
+
             tr.innerHTML = `
-                <td style="color:var(--roxo-raizen); font-size:22px;">${item.PLACA}</td>
-                <td><span class="tag-prod ${cl}">${item.PRODUTO}</span></td>
-                <td style="font-size:14px;">${item.TELEFONE}</td>
-                <td>${gerarSemaforo(item.JORNADA)}</td>
-                <td style="font-size:14px;">${item.ENTRADA}</td>
-                <td style="background:#fffde7; border: 2px solid #ffd600; padding:10px;">
-                    <input type="datetime-local" id="ag-${item.id}" value="${dataInput}" style="width:100%; font-size:14px; padding:10px; border-radius:8px; border:1px solid #ccc; margin-bottom:5px;">
-                    <button onclick="salvarAgenda('${item.id}')" style="background:var(--verde-raizen); color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; font-weight:900; width:100%;">OK</button>
+                <td style="color:var(--roxo-raizen); font-weight:900;">${item.PLACA}</td>
+                <td><span class="tag-prod ${tagCss}">${item.PRODUTO}</span></td>
+                <td style="font-size:11px;">${item.TELEFONE}</td>
+                <td>${formatSemaforo(item.JORNADA)}</td>
+                <td style="font-size:11px; color:#64748b;">${item.ENTRADA}</td>
+                <td style="background:#fffde7; padding:12px; border:1px solid #fde68a;">
+                    <input type="datetime-local" id="input-ag-${idLinha}" value="${valAg}" style="font-size:11px; padding:6px; margin-bottom:4px;">
+                    <button onclick="salvarUpdateAgendamento('${idLinha}')" style="background:var(--verde-raizen); color:white; border:none; padding:8px; border-radius:6px; cursor:pointer; width:100%; font-weight:900; font-size:10px;">OK / ATUALIZAR</button>
                 </td>
                 <td>
-                    <button class="btn-w-whatsapp" onclick="chamarMotorista('${item.TELEFONE}','${item.PLACA}')">CONVOCAR</button>
-                    <button class="btn-f-finalizar" onclick="finalizar('${item.id}')">FINALIZAR</button>
+                    <button class="btn-acao-zap" onclick="chamarZap('${item.TELEFONE}','${item.PLACA}')"><i class="fa-brands fa-whatsapp"></i> CONVOCAR</button>
+                    <button class="btn-acao-fim" onclick="finalizarRegistro('${idLinha}')">FINALIZAR</button>
                 </td>
             `;
             corpo.appendChild(tr);
         });
     }
 
-    async function salvarAgenda(id) {
-        const inputVal = document.getElementById(`ag-${id}`).value;
-        const btn = document.querySelector(`button[onclick="salvarAgenda('${id}')"]`);
-        btn.innerText = "Salvando..."; btn.disabled = true;
+    function formatSemaforo(hora) {
+        if(hora === "24 HORAS") return `<div class="box-semaforo semaforo-verde"><span class="circulo-led led-g"></span> 24 HORAS</div>`;
+        if(!hora) return "---";
+        const agora = new Date();
+        const [h, m] = hora.split(':');
+        const limite = new Date(); limite.setHours(h, m, 0);
+        return (agora > limite) ? `<div class="box-semaforo semaforo-vermelho"><span class="circulo-led led-r"></span> ATRASADO</div>` : `<div class="box-semaforo semaforo-verde"><span class="circulo-led led-g"></span> OK</div>`;
+    }
 
+    // --- OPERAÇÕES DE ESCRETA ---
+    async function salvarUpdateAgendamento(id) {
+        const val = document.getElementById(`input-ag-${id}`).value;
+        setLoader(true);
         try {
-            let valorParaBanco = null;
-            if (inputVal && inputVal.trim() !== "") {
-                const dt = new Date(inputVal);
-                if (!isNaN(dt.getTime())) valorParaBanco = dt.toISOString();
+            let payload = null;
+            if (val && val.trim() !== "") {
+                const dt = new Date(val);
+                if (!isNaN(dt.getTime())) payload = dt.toISOString();
             }
 
-            const res = await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${id}`, {
+            const res = await fetch(`${APP_CONFIG.API_URL}/rest/v1/registros?${APP_CONFIG.COL_ID}=eq.${id}`, {
                 method: 'PATCH',
-                headers: HEADERS,
-                body: JSON.stringify({ "AGENDAMENTO": valorParaBanco })
+                headers: APP_CONFIG.AUTH,
+                body: JSON.stringify({ "AGENDAMENTO": payload })
             });
 
-            if(res.ok) {
-                alert("AGENDAMENTO ATUALIZADO!");
-                await sincronizarFila();
-            } else {
-                const err = await res.json();
-                alert("Erro: " + err.message);
+            if(!res.ok) {
+                const error = await res.json();
+                throw new Error(error.message);
             }
-        } catch (e) { alert("Erro de conexão."); }
-        finally { btn.innerText = "OK"; btn.disabled = false; }
+            await fetchBancoDados();
+        } catch (e) {
+            alert("ERRO NO BANCO: " + e.message);
+        } finally {
+            setLoader(false);
+        }
     }
 
-    function filtrar(tipo, btn) {
-        filtroAtual = tipo;
-        document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('ativo'));
-        btn.classList.add('ativo');
-        renderizarTabela();
-    }
-
-    async function finalizar(id) {
-        if(confirm("CONFIRMA A SAÍDA?")) {
-            await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${id}`, {
-                method: 'PATCH', headers: HEADERS,
+    async function finalizarRegistro(id) {
+        if(!confirm("CONFIRMAR SAÍDA DO VEÍCULO?")) return;
+        setLoader(true);
+        try {
+            await fetch(`${APP_CONFIG.API_URL}/rest/v1/registros?${APP_CONFIG.COL_ID}=eq.${id}`, {
+                method: 'PATCH',
+                headers: APP_CONFIG.AUTH,
                 body: JSON.stringify({ "SAIDA": new Date().toLocaleString('pt-BR') })
             });
-            sincronizarFila();
+            await fetchBancoDados();
+        } catch (e) { alert("Erro ao finalizar."); }
+        finally { setLoader(false); }
+    }
+
+    function chamarZap(tel, placa) {
+        const baia = prompt("INFORME A BAIA DE DESCARGA:");
+        if(baia) {
+            const msg = `Raízen informa: Veículo ${placa}, por favor dirija-se à BAIA ${baia} para iniciar a descarga agora.`;
+            window.open(`https://api.whatsapp.com/send?phone=55${tel.replace(/\D/g, "")}&text=${encodeURIComponent(msg)}`, '_blank');
         }
     }
 
-    function acessoOperador() {
-        if(prompt("SENHA:") === SENHA_OP) {
-            document.getElementById('modulo-entrada').style.display = 'none';
+    function filtrarPainel(tipo, btn) {
+        filtroLocal = tipo;
+        document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('ativo'));
+        btn.classList.add('ativo');
+        montarTabela();
+    }
+
+    function validaAcessoOperador() {
+        const pass = prompt("SENHA DO SISTEMA:");
+        if (pass === "raizen2026") {
+            document.getElementById('tela-entrada').style.display = 'none';
             document.getElementById('secao-operador').style.display = 'block';
-            sincronizarFila();
-            setInterval(sincronizarFila, 20000); 
-        }
+            fetchBancoDados();
+            setInterval(fetchBancoDados, 40000); 
+        } else if(pass !== null) alert("ACESSO NEGADO!");
     }
 
-    function chamarMotorista(tel, placa) {
-        const baia = prompt("QUAL BAIA?");
-        if(baia) window.open(`https://api.whatsapp.com/send?phone=55${tel.replace(/\D/g, "")}&text=Olá%20motorista!%20Sua%20vez%20chegou.%20Por%20favor,%20dirija-se%20à%20BAIA%20${baia}`, '_blank');
-    }
-
-    document.getElementById('formDescarga').onsubmit = async e => {
+    // --- EVENTOS DE FORMULÁRIO ---
+    document.getElementById('mainForm').onsubmit = async e => {
         e.preventDefault();
+        setLoader(true);
+
         const dados = {
-            "PLACA": document.getElementById('campo_placa').value.toUpperCase(),
-            "PRODUTO": document.getElementById('campo_produto').value,
-            "TELEFONE": document.getElementById('campo_whatsapp').value,
-            "JORNADA": document.getElementById('check_jornada_24h').checked ? "24 HORAS" : document.getElementById('campo_hora_limite').value,
+            "PLACA": document.getElementById('p_placa').value.toUpperCase(),
+            "PRODUTO": document.getElementById('p_produto').value,
+            "TELEFONE": document.getElementById('p_whatsapp').value,
+            "JORNADA": document.getElementById('p_jornada_livre').checked ? "24 HORAS" : document.getElementById('p_hora_limite').value,
             "ENTRADA": new Date().toLocaleString('pt-BR')
         };
-        await fetch(`${SUPABASE_URL}/rest/v1/registros`, { method: 'POST', headers: HEADERS, body: JSON.stringify(dados) });
-        alert("REGISTRO OK!"); location.reload();
+
+        try {
+            const res = await fetch(`${APP_CONFIG.API_URL}/rest/v1/registros`, {
+                method: 'POST',
+                headers: APP_CONFIG.AUTH,
+                body: JSON.stringify(dados)
+            });
+            if(res.ok) {
+                alert("MOTORISTA CADASTRADO COM SUCESSO!");
+                location.reload();
+            } else throw new Error("Falha ao registrar");
+        } catch (e) {
+            alert("ERRO AO SALVAR REGISTRO.");
+        } finally { setLoader(false); }
     };
 
-    async function salvarReabertura() {
-        const p = document.getElementById('reabrir_placa').value.toUpperCase();
-        const h = document.getElementById('reabrir_hora').value;
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/registros?PLACA=eq.${p}&SAIDA=is.null`, { headers: HEADERS });
-        const d = await res.json();
-        if(d.length > 0) {
-            await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${d[0].id}`, { method: 'PATCH', headers: HEADERS, body: JSON.stringify({"JORNADA": h}) });
-            alert("JORNADA OK!"); location.reload();
-        } else alert("PLACA NÃO ENCONTRADA!");
+    async function executarPatchReabertura() {
+        const p = document.getElementById('r_placa').value.toUpperCase();
+        const h = document.getElementById('r_hora').value;
+        if(!p || !h) return alert("PREENCHA TODOS OS CAMPOS!");
+        
+        setLoader(true);
+        try {
+            const res = await fetch(`${APP_CONFIG.API_URL}/rest/v1/registros?PLACA=eq.${p}&SAIDA=is.null`, { headers: APP_CONFIG.AUTH });
+            const data = await res.json();
+            
+            if(data.length > 0) {
+                const idR = data[0][APP_CONFIG.COL_ID];
+                await fetch(`${APP_CONFIG.API_URL}/rest/v1/registros?${APP_CONFIG.COL_ID}=eq.${idR}`, {
+                    method: 'PATCH',
+                    headers: APP_CONFIG.AUTH,
+                    body: JSON.stringify({"JORNADA": h})
+                });
+                alert("JORNADA ATUALIZADA COM SUCESSO!");
+                location.reload();
+            } else alert("PLACA NÃO ENCONTRADA NO PÁTIO!");
+        } catch (e) { alert("Erro de comunicação."); }
+        finally { setLoader(false); }
     }
 </script>
 </body>
