@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     
     <style>
-        /* --- DESIGN SYSTEM INDUSTRIAL RAÍZEN (VERSÃO COMPLETA) --- */
+        /* --- DESIGN SYSTEM INDUSTRIAL RAÍZEN --- */
         :root {
             --verde-raizen: #4d6d5d;
             --roxo-raizen: #84207d;
@@ -18,192 +18,76 @@
             --branco: #ffffff;
             --cor-erro: #e11d48;
             --cor-sucesso: #10b981;
-            --sombra-premium: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --sombra-premium: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
-        
-        body { 
-            background-color: var(--fundo-base); 
-            color: #1e293b; 
-            min-height: 100vh; 
-            padding-bottom: 80px;
-            overflow-x: hidden;
-        }
+        body { background-color: var(--fundo-base); color: #1e293b; min-height: 100vh; padding-bottom: 80px; overflow-x: hidden; }
 
         /* --- CABEÇALHO --- */
         header { 
             background: linear-gradient(135deg, var(--verde-raizen) 0%, #1a241f 100%); 
-            padding: 100px 20px; 
-            text-align: center; 
-            border-bottom: 30px solid var(--roxo-raizen);
+            padding: 100px 20px; text-align: center; border-bottom: 30px solid var(--roxo-raizen);
             box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-            position: relative;
         }
-
-        .logo-display {
-            color: var(--branco); 
-            font-size: clamp(50px, 12vw, 110px); 
-            font-weight: 900;
-            letter-spacing: 25px; 
-            text-transform: uppercase;
-            text-shadow: 5px 5px 0px rgba(0,0,0,0.2);
-        }
+        .logo-display { color: var(--branco); font-size: clamp(50px, 12vw, 110px); font-weight: 900; letter-spacing: 25px; text-transform: uppercase; text-shadow: 5px 5px 0px rgba(0,0,0,0.2); }
 
         /* --- CONTAINERS --- */
         .card-master { 
-            width: 94%; 
-            max-width: 1150px; 
-            margin: -60px auto 60px; 
-            background: var(--branco); 
-            padding: 70px; 
-            border-radius: 45px; 
-            box-shadow: var(--sombra-premium); 
+            width: 94%; max-width: 1150px; margin: -60px auto 60px; background: var(--branco); 
+            padding: 70px; border-radius: 45px; box-shadow: var(--sombra-premium); 
             border-left: 35px solid var(--roxo-raizen);
-            position: relative;
-            z-index: 10;
         }
 
         #modulo-operador-full { 
-            display: none; 
-            width: 98%; 
-            max-width: 1900px; 
-            margin: 40px auto;
-            background: var(--branco); 
-            padding: 45px; 
-            border-radius: 35px;
-            box-shadow: var(--sombra-premium); 
-            zoom: 0.75;
+            display: none; width: 98%; max-width: 1900px; margin: 40px auto;
+            background: var(--branco); padding: 45px; border-radius: 35px;
+            box-shadow: var(--sombra-premium); zoom: 0.75;
         }
 
-        h2 { 
-            color: var(--roxo-raizen); 
-            text-align: center; 
-            font-weight: 900; 
-            text-transform: uppercase; 
-            margin-bottom: 50px; 
-            font-size: 38px; 
-            border-bottom: 12px solid #f8fafc;
-            padding-bottom: 25px;
-        }
+        h2 { color: var(--roxo-raizen); text-align: center; font-weight: 900; text-transform: uppercase; margin-bottom: 50px; font-size: 38px; border-bottom: 12px solid #f8fafc; padding-bottom: 25px; }
 
         /* --- ENTRADA DE DADOS --- */
         .wrapper-input { margin-bottom: 40px; }
-        
-        label { 
-            display: flex; 
-            align-items: center; 
-            gap: 15px; 
-            margin-bottom: 18px; 
-            font-weight: 900; 
-            color: var(--verde-raizen); 
-            font-size: 16px; 
-            text-transform: uppercase;
-        }
+        label { display: flex; align-items: center; gap: 15px; margin-bottom: 18px; font-weight: 900; color: var(--verde-raizen); font-size: 16px; text-transform: uppercase; }
+        input, select { width: 100%; padding: 28px; border: 5px solid #f1f5f9; border-radius: 25px; font-size: 24px; font-weight: 700; background: #f8fafc; transition: 0.3s; }
+        input:focus { border-color: var(--roxo-raizen); background: white; outline: none; box-shadow: 0 0 0 15px rgba(132, 32, 125, 0.08); }
 
-        input, select { 
-            width: 100%; 
-            padding: 28px; 
-            border: 5px solid #f1f5f9; 
-            border-radius: 25px; 
-            font-size: 24px; 
-            font-weight: 700; 
-            background: #f8fafc; 
-            transition: all 0.3s ease;
-        }
+        .painel-jornada { background: #fffbeb; padding: 40px; border-radius: 40px; border: 4px dashed var(--ouro-raizen); margin: 45px 0; }
 
-        input:focus { 
-            border-color: var(--roxo-raizen); 
-            background: white; 
-            outline: none; 
-            box-shadow: 0 0 0 15px rgba(132, 32, 125, 0.08);
-        }
-
-        .painel-jornada { 
-            background: #fffbeb; 
-            padding: 40px; 
-            border-radius: 40px; 
-            border: 4px dashed var(--ouro-raizen); 
-            margin: 45px 0;
-        }
-
-        /* --- TABELA DE CONTROLE --- */
+        /* --- FILTROS --- */
         .filtros-top { display: flex; gap: 20px; margin-bottom: 40px; justify-content: center; flex-wrap: wrap; }
-        .chip-filtro { 
-            padding: 18px 40px; border-radius: 20px; border: none; background: #e2e8f0;
-            font-weight: 900; cursor: pointer; color: #64748b; font-size: 14px;
-        }
+        .chip-filtro { padding: 18px 40px; border-radius: 20px; border: none; background: #e2e8f0; font-weight: 900; cursor: pointer; color: #64748b; font-size: 14px; }
         .chip-filtro.active { background: var(--roxo-raizen); color: white; transform: scale(1.1); }
 
-        .moldura-tabela { 
-            overflow-x: auto; 
-            border-radius: 30px; 
-            border: 3px solid #f1f5f9; 
-        }
-
+        /* --- TABELA E RESPONSIVIDADE --- */
+        .moldura-tabela { overflow-x: auto; border-radius: 30px; border: 3px solid #f1f5f9; }
         table { width: 100%; border-collapse: collapse; min-width: 1750px; background: white; }
         th { background: #1e293b; color: white; padding: 25px; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; }
         td { padding: 20px; border-bottom: 3px solid #f8fafc; text-align: center; font-weight: 700; font-size: 17px; }
 
-        /* Tags de Produto */
+        /* AJUSTE MOBILE: TRANSFORMA LINHAS EM CARTÕES */
+        @media (max-width: 768px) {
+            #modulo-operador-full { zoom: 1; padding: 15px; width: 95%; }
+            table, thead, tbody, th, td, tr { display: block; width: 100% !important; min-width: 100% !important; }
+            thead { display: none; }
+            tr { margin-bottom: 30px; border: 4px solid var(--roxo-raizen); border-radius: 30px; padding: 15px; background: white; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+            td { text-align: left !important; padding: 12px 10px !important; border-bottom: 2px solid #f1f5f9; display: flex; flex-direction: column; gap: 5px; }
+            td::before { content: attr(data-label); font-size: 11px; color: var(--roxo-raizen); font-weight: 900; text-transform: uppercase; opacity: 0.7; }
+            .tag-p { width: 100%; text-align: center; }
+            .btn-master { padding: 25px; font-size: 20px; border-radius: 20px; }
+        }
+
         .tag-p { padding: 12px 20px; border-radius: 15px; font-size: 13px; font-weight: 900; color: white; display: inline-block; min-width: 160px; }
-        .bg-gas { background: #ff8c00; } 
-        .bg-b100 { background: #5d4037; } 
-        .bg-ani { background: #0056b3; } 
-        .bg-hid { background: #00a8ff; border: 2px solid #0056b3; } 
-        .bg-die { background: #334155; }
+        .bg-gas { background: #ff8c00; } .bg-b100 { background: #5d4037; } .bg-ani { background: #0056b3; } .bg-hid { background: #00a8ff; } .bg-die { background: #334155; }
 
-        /* Edição na Tabela */
-        .input-edit-table {
-            padding: 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 700;
-            width: 100%;
-            text-align: center;
-            background: #f8fafc;
-        }
+        .input-edit-table { padding: 12px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 14px; font-weight: 700; width: 100%; text-align: center; background: #f8fafc; }
+        .btn-acao-tabela { padding: 12px; border: none; border-radius: 10px; cursor: pointer; font-weight: 900; font-size: 12px; text-transform: uppercase; width: 100%; margin-top: 5px; }
 
-        .btn-acao-tabela {
-            padding: 10px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 900;
-            font-size: 12px;
-            text-transform: uppercase;
-            width: 100%;
-            margin-top: 5px;
-            transition: 0.2s;
-        }
-
-        /* --- BOTÕES --- */
-        .btn-master { 
-            width: 100%; 
-            padding: 35px; 
-            background: var(--roxo-raizen); 
-            color: white; 
-            border: none; 
-            border-radius: 30px; 
-            font-size: 26px; 
-            font-weight: 900; 
-            cursor: pointer; 
-            text-transform: uppercase; 
-            box-shadow: 0 15px 0 #5e1659; 
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-        }
+        .btn-master { width: 100%; padding: 35px; background: var(--roxo-raizen); color: white; border: none; border-radius: 30px; font-size: 26px; font-weight: 900; cursor: pointer; text-transform: uppercase; box-shadow: 0 15px 0 #5e1659; margin-bottom: 25px; display: flex; justify-content: center; align-items: center; gap: 20px; transition: 0.2s; }
         .btn-master:active { transform: translateY(10px); box-shadow: 0 5px 0 #5e1659; }
 
-        /* --- LOADER --- */
-        #loader-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.95); z-index: 10000; flex-direction: column; align-items: center; justify-content: center;
-        }
+        #loader-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; }
         .raizen-spinner { width: 90px; height: 90px; border: 12px solid #f3f3f3; border-top: 12px solid var(--roxo-raizen); border-radius: 50%; animation: girar 1s linear infinite; }
         @keyframes girar { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -226,7 +110,7 @@
                 <label><i class="fa-solid fa-gas-pump"></i> PRODUTO</label>
                 <select id="produto" required>
                     <option value="">-- SELECIONE --</option>
-                    <option value="GASOLINA">GASOLINA</option>
+                    <option value="GASOLINA COMUM / ADITIVADA">GASOLINA COMUM / ADITIVADA</option>
                     <option value="BIODIESEL (B100)">BIODIESEL (B100)</option>
                     <option value="ETANOL ANIDRO">ETANOL ANIDRO</option>
                     <option value="ETANOL HIDRATADO">ETANOL HIDRATADO</option>
@@ -237,42 +121,30 @@
                 <label><i class="fa-brands fa-whatsapp"></i> WHATSAPP MOTORISTA</label>
                 <input type="tel" id="whatsapp" placeholder="(19) 99999-9999" required>
             </div>
-            
             <div class="painel-jornada">
                 <div id="area-tempo">
-                    <label><i class="fa-solid fa-clock"></i> HORÁRIO LIMITE JORNADA</label>
+                    <label><i class="fa-solid fa-clock"></i> LIMITE JORNADA</label>
                     <input type="time" id="limite">
                 </div>
-                <label style="margin-top:25px; display:flex; align-items:center; gap:20px; cursor:pointer; font-size: 20px; font-weight: 900; color: var(--roxo-raizen);">
-                    <input type="checkbox" id="jornada24" style="width:35px; height:35px;"> HABILITAR JORNADA 24 HORAS
+                <label style="margin-top:20px; display:flex; align-items:center; gap:20px; cursor:pointer; font-size: 20px; font-weight:900; color:var(--roxo-raizen);">
+                    <input type="checkbox" id="jornada24" style="width:35px; height:35px;"> JORNADA 24 HORAS
                 </label>
             </div>
-
             <button type="submit" class="btn-master">CONFIRMAR REGISTRO</button>
-            <button type="button" onclick="abrirReabertura()" class="btn-master" style="background:#475569; box-shadow: 0 15px 0 #2d3748; font-size:18px;">
-                <i class="fa-solid fa-clock-rotate-left"></i> REABRIR JORNADA EXISTENTE
-            </button>
+            <button type="button" onclick="abrirReabertura()" class="btn-master" style="background:#475569; box-shadow: 0 15px 0 #2d3748; font-size:18px;"><i class="fa-solid fa-clock-rotate-left"></i> REABRIR JORNADA EXISTENTE</button>
         </form>
     </div>
 
     <div id="form-reabertura-wrapper" style="display:none;">
-        <h2 style="color:#475569">REABRIR REGISTRO</h2>
-        <div class="wrapper-input">
-            <label>PLACA</label>
-            <input type="text" id="re_placa" placeholder="AAA-0000" maxlength="8">
-        </div>
-        <div class="wrapper-input">
-            <label>NOVA HORA LIMITE</label>
-            <input type="time" id="re_hora">
-        </div>
+        <h2 style="color:#475569">REABRIR JORNADA</h2>
+        <div class="wrapper-input"><label>PLACA</label><input type="text" id="re_placa" placeholder="AAA-0000" maxlength="8"></div>
+        <div class="wrapper-input"><label>NOVA HORA LIMITE</label><input type="time" id="re_hora"></div>
         <button onclick="processarReabertura()" class="btn-master" style="background:#475569">ATUALIZAR JORNADA</button>
         <button onclick="fecharReabertura()" style="width:100%; background:none; border:none; color:var(--roxo-raizen); font-weight:900; cursor:pointer; padding:20px;">CANCELAR</button>
     </div>
 
     <div style="text-align:center; margin-top:50px;">
-        <button onclick="ativarOperador()" style="background:none; border:none; color:var(--roxo-raizen); font-weight:900; cursor:pointer; text-transform:uppercase; letter-spacing:2px;">
-            <i class="fa-solid fa-lock"></i> ACESSO OPERACIONAL
-        </button>
+        <button onclick="ativarOperador()" style="background:none; border:none; color:var(--roxo-raizen); font-weight:900; cursor:pointer; text-transform:uppercase; letter-spacing:2px;"><i class="fa-solid fa-lock"></i> ACESSO OPERACIONAL</button>
     </div>
 </div>
 
@@ -295,10 +167,10 @@
                     <th>PRODUTO</th>
                     <th>STATUS JORNADA</th>
                     <th>HORA ENTRADA</th>
-                    <th style="background:#fff7ed; color:#c2410c;">AGENDAMENTO</th>
-                    <th style="background:#f0fdf4; color:#166534;">TELEFONE (AJUSTAR)</th>
-                    <th>AÇÕES WHATSAPP</th>
-                    <th>FINALIZAR</th>
+                    <th>AGENDAMENTO</th>
+                    <th>TELEFONE (AJUSTAR)</th>
+                    <th>WHATSAPP</th>
+                    <th>AÇÕES</th>
                 </tr>
             </thead>
             <tbody id="listaFila"></tbody>
@@ -311,11 +183,8 @@
 </div>
 
 <script>
-    /* --- CONFIGURAÇÕES DO BANCO --- */
     const RAÍZEN_DB = {
         URL: 'https://rbbkjuiizmvatiawfzuv.supabase.co',
-        KEY: 'sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X',
-        ID_COL: 'ID',
         HEADERS: { 
             "apikey": 'sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X', 
             "Authorization": `Bearer sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X`, 
@@ -327,7 +196,6 @@
     let memoriaFila = [];
     let filtroAtivo = 'TODOS';
 
-    /* --- COMPONENTES DE INTERFACE --- */
     function setLoader(v) { document.getElementById('loader-overlay').style.display = v ? 'flex' : 'none'; }
     function abrirReabertura() { document.getElementById('form-principal-wrapper').style.display = 'none'; document.getElementById('form-reabertura-wrapper').style.display = 'block'; }
     function fecharReabertura() { document.getElementById('form-reabertura-wrapper').style.display = 'none'; document.getElementById('form-principal-wrapper').style.display = 'block'; }
@@ -355,10 +223,9 @@
     async function carregarDados() {
         try {
             const res = await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?SAIDA=is.null&select=*`, { headers: RAÍZEN_DB.HEADERS });
-            if(!res.ok) throw new Error("Erro de resposta");
             memoriaFila = await res.json();
             renderTabela();
-        } catch(e) { console.error("Falha na sincronização", e); }
+        } catch(e) { console.error(e); }
     }
 
     function renderTabela() {
@@ -369,71 +236,71 @@
             const agB = b.AGENDAMENTO ? new Date(b.AGENDAMENTO) : new Date(8640000000000000);
             return agA - agB;
         });
+
         if (filtroAtivo !== 'TODOS') lista = lista.filter(i => i.PRODUTO.toUpperCase().includes(filtroAtivo));
 
         lista.forEach(item => {
-            const id = item[RAÍZEN_DB.ID_COL];
+            const id = item.ID;
             const corTag = item.PRODUTO.includes("GASOLINA") ? "bg-gas" : item.PRODUTO.includes("BIODIESEL") ? "bg-b100" : item.PRODUTO.includes("ANIDRO") ? "bg-ani" : item.PRODUTO.includes("HIDRATADO") ? "bg-hid" : "bg-die";
+
             corpo.innerHTML += `
                 <tr>
-                    <td style="color:var(--roxo-raizen); font-weight:900; font-size:22px;">${item.PLACA}</td>
-                    <td><span class="tag-p ${corTag}">${item.PRODUTO}</span></td>
-                    <td>${verificarJornada(item.JORNADA)}</td>
-                    <td style="font-size:12px; color:#64748b;">${item.ENTRADA}</td>
-                    <td style="background:#fffbeb;">
+                    <td data-label="VEÍCULO" style="color:var(--roxo-raizen); font-weight:900; font-size:22px;">${item.PLACA}</td>
+                    <td data-label="PRODUTO"><span class="tag-p ${corTag}">${item.PRODUTO}</span></td>
+                    <td data-label="STATUS JORNADA">${verificarJornada(item.JORNADA)}</td>
+                    <td data-label="HORA ENTRADA" style="font-size:12px; color:#64748b;">${item.ENTRADA}</td>
+                    <td data-label="AGENDAMENTO" style="background:#fff7ed;">
                         <input type="datetime-local" id="ag-${id}" value="${item.AGENDAMENTO ? item.AGENDAMENTO.slice(0,16) : ''}" class="input-edit-table">
-                        <button onclick="salvarCampo('${id}', 'AGENDAMENTO')" class="btn-acao-tabela" style="background:var(--verde-raizen); color:white;">SALVAR AG.</button>
+                        <button onclick="salvarCampo('${id}', 'AGENDAMENTO')" class="btn-acao-tabela" style="background:var(--verde-raizen); color:white;">SALVAR DATA</button>
                     </td>
-                    <td style="background:#f0fdf4;">
+                    <td data-label="TELEFONE" style="background:#f0fdf4;">
                         <input type="text" id="tel-${id}" value="${item.TELEFONE}" class="input-edit-table">
-                        <button onclick="salvarCampo('${id}', 'TELEFONE')" class="btn-acao-tabela" style="background:#166534; color:white;">ATUALIZAR TEL.</button>
+                        <button onclick="salvarCampo('${id}', 'TELEFONE')" class="btn-acao-tabela" style="background:#166534; color:white;">CORRIGIR TEL</button>
                     </td>
-                    <td><button onclick="chamarWhatsApp('${item.TELEFONE}')" style="background:#25d366; color:white; border:none; padding:15px; border-radius:15px; cursor:pointer; font-weight:900; width:100%; display:flex; align-items:center; justify-content:center; gap:8px;"><i class="fa-brands fa-whatsapp"></i> CONVOCAR</button></td>
-                    <td><button onclick="finalizar('${id}')" style="background:#3b82f6; color:white; border:none; padding:15px; border-radius:15px; cursor:pointer; font-weight:900; width:100%;">SAÍDA</button></td>
+                    <td data-label="WHATSAPP">
+                        <button onclick="chamarWhatsApp('${item.TELEFONE}')" style="background:#25d366; color:white; border:none; padding:15px; border-radius:15px; cursor:pointer; font-weight:900; width:100%; display:flex; align-items:center; justify-content:center; gap:8px;">
+                            <i class="fa-brands fa-whatsapp"></i> CONVOCAR
+                        </button>
+                    </td>
+                    <td data-label="AÇÕES">
+                        <button onclick="finalizar('${id}')" style="background:#3b82f6; color:white; border:none; padding:15px; border-radius:15px; cursor:pointer; font-weight:900; width:100%;">SAÍDA</button>
+                    </td>
                 </tr>`;
         });
     }
 
     function verificarJornada(h) {
         if(h === "24 HORAS") return "<b style='color:green'>● 24H LIBERADA</b>";
-        if(!h) return "<span style='color:#ccc'>---</span>";
+        if(!h) return "---";
         const limite = new Date(); const [hr, min] = h.split(':');
         limite.setHours(parseInt(hr), parseInt(min), 0);
-        return (new Date() > limite) ? `<b style="color:var(--cor-erro)">● EXPIRADA (${h})</b>` : `<b style="color:var(--cor-sucesso)">● EM DIA (${h})</b>`;
+        return new Date() > limite ? `<b style="color:var(--cor-erro)">● EXPIRADA (${h})</b>` : `<b style="color:var(--cor-sucesso)">● EM DIA (${h})</b>`;
     }
 
-    /* --- CORREÇÃO DO ERRO DE 3 HORAS --- */
     async function salvarCampo(id, campo) {
-        let valor = document.getElementById(campo === 'AGENDAMENTO' ? `ag-${id}` : `tel-${id}`).value;
-        
-        // Envia a string pura para o banco, evitando que o JS converta o fuso horário
-        if(campo === 'AGENDAMENTO') valor = valor ? valor.replace("T", " ") : null;
-        
+        let val = document.getElementById(campo === 'AGENDAMENTO' ? `ag-${id}` : `tel-${id}`).value;
+        if(campo === 'AGENDAMENTO') val = val ? val.replace("T", " ") : null;
         setLoader(true);
         try {
-            const res = await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?${RAÍZEN_DB.ID_COL}=eq.${id}`, {
-                method: 'PATCH',
-                headers: RAÍZEN_DB.HEADERS,
-                body: JSON.stringify({ [campo]: valor })
+            await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${id}`, {
+                method: 'PATCH', headers: RAÍZEN_DB.HEADERS, body: JSON.stringify({ [campo]: val })
             });
-            if(res.ok) { alert("DADO ATUALIZADO!"); carregarDados(); } 
-            else throw new Error();
-        } catch(e) { alert("ERRO AO SALVAR"); }
-        finally { setLoader(false); }
+            alert("ATUALIZADO COM SUCESSO!"); carregarDados();
+        } finally { setLoader(false); }
     }
 
     function chamarWhatsApp(tel) {
         const baia = prompt("Motorista vamos descarregar?\nInforme a BAIA ou ÁREA:");
         if(!baia) return;
-        const msg = encodeURIComponent(`Olá\nMotorista vamos descarregar?\nBaia ${baia}\nObrigado!\n\nObs: aguarde a instrução do operador para entrar na baia!`);
+        const msg = encodeURIComponent(`Olá\nMotorista vamos descarregar?\nBaia ${baia}\nObrigado!`);
         window.open(`https://wa.me/55${tel.replace(/\D/g, "")}?text=${msg}`, '_blank');
     }
 
     async function finalizar(id) {
-        if(!confirm("DESEJA FINALIZAR A SAÍDA?")) return;
+        if(!confirm("CONFIRMA SAÍDA?")) return;
         setLoader(true);
         try {
-            await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?${RAÍZEN_DB.ID_COL}=eq.${id}`, {
+            await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${id}`, {
                 method: 'PATCH', headers: RAÍZEN_DB.HEADERS, body: JSON.stringify({ "SAIDA": new Date().toLocaleString('pt-BR') })
             });
             carregarDados();
@@ -448,11 +315,11 @@
             const res = await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?PLACA=eq.${p}&SAIDA=is.null`, { headers: RAÍZEN_DB.HEADERS });
             const data = await res.json();
             if(data.length > 0) {
-                await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?${RAÍZEN_DB.ID_COL}=eq.${data[0][RAÍZEN_DB.ID_COL]}`, {
+                await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${data[0].ID}`, {
                     method: 'PATCH', headers: RAÍZEN_DB.HEADERS, body: JSON.stringify({"JORNADA": h})
                 });
                 alert("JORNADA REABERTA!"); location.reload();
-            } else alert("NÃO LOCALIZADO!");
+            } else alert("PLACA NÃO ENCONTRADA NO PÁTIO!");
         } finally { setLoader(false); }
     }
 
@@ -475,7 +342,7 @@
     document.getElementById('formMaster').onsubmit = async e => {
         e.preventDefault();
         setLoader(true);
-        const data = {
+        const d = {
             "PLACA": document.getElementById('placa').value.toUpperCase(),
             "PRODUTO": document.getElementById('produto').value,
             "TELEFONE": document.getElementById('whatsapp').value,
@@ -483,8 +350,8 @@
             "ENTRADA": new Date().toLocaleString('pt-BR')
         };
         try {
-            const res = await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros`, { method: 'POST', headers: RAÍZEN_DB.HEADERS, body: JSON.stringify(data) });
-            if(res.ok) { alert("REGISTRADO!"); location.reload(); }
+            await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros`, { method: 'POST', headers: RAÍZEN_DB.HEADERS, body: JSON.stringify(d) });
+            alert("REGISTRADO!"); location.reload();
         } finally { setLoader(false); }
     };
 </script>
