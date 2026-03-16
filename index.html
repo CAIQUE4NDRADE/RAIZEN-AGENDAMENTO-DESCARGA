@@ -72,9 +72,13 @@
 
         #secao-operador { 
             display: none; 
-            width: 100%; 
-            padding: 20px;
-            zoom: 0.8;
+            width: 98%; 
+            max-width: 1400px; 
+            margin: 40px auto;
+            background: var(--branco);
+            padding: 30px;
+            border-radius: 40px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.2);
         }
 
         h2 { 
@@ -102,6 +106,8 @@
             gap: 12px;
         }
 
+        label i { color: var(--roxo-raizen); font-size: 20px; }
+
         input, select { 
             width: 100%; 
             padding: 28px; 
@@ -110,6 +116,8 @@
             font-size: 24px; 
             font-weight: 700;
             background: #f8fafc;
+            color: #334155;
+            transition: all 0.3s;
         }
 
         .container-jornada-exp {
@@ -120,30 +128,64 @@
             margin: 40px 0;
         }
 
+        .check-box-24h {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            cursor: pointer;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 30px;
+            margin-top: 35px;
+            border: 3px solid #fde68a;
+        }
+
+        .check-box-24h input { width: 45px; height: 45px; accent-color: var(--cor-alerta); }
+        .txt-check { font-weight: 900; color: var(--cor-alerta); font-size: 22px; }
+
         .btn-principal { 
             width: 100%; padding: 30px; background: var(--roxo-raizen); 
             color: white; border: none; border-radius: 25px; 
             font-size: 24px; font-weight: 900; cursor: pointer; text-transform: uppercase;
             margin-bottom: 20px;
+            transition: transform 0.2s;
         }
+        .btn-principal:active { transform: scale(0.98); }
 
-        .btn-reabrir-jornada { background: var(--verde-botao-reabrir); }
+        .btn-reabrir-jornada { background: var(--verde-botao-reabrir); color: white; }
 
-        .moldura-tabela { overflow-x: auto; border-radius: 20px; border: 2px solid #e2e8f0; background: white; }
+        .moldura-tabela { overflow-x: auto; border-radius: 20px; border: 2px solid #e2e8f0; }
         table { width: 100%; border-collapse: collapse; min-width: 1200px; }
-        th { background: #0f172a; color: #ffffff; padding: 20px; font-size: 14px; }
-        td { padding: 15px; border-bottom: 4px solid #f1f5f9; text-align: center; font-weight: 800; }
+        th { background: #0f172a; color: #ffffff; padding: 15px; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+        td { padding: 15px; border-bottom: 4px solid #f1f5f9; text-align: center; font-weight: 800; font-size: 16px; }
 
+        /* TAGS DE PRODUTO */
         .tag-prod {
-            padding: 10px 15px; border-radius: 15px; font-size: 12px; font-weight: 900;
-            display: inline-block; min-width: 150px;
+            padding: 10px 15px; border-radius: 15px; font-size: 12px; font-weight: 900; 
+            display: flex; align-items: center; justify-content: center; gap: 5px; 
+            min-width: 180px; text-transform: uppercase;
         }
-        .tag-gasosa { background: #ff8c00; color: #fff; } 
-        .tag-b100 { background: #5d4037; color: #fff; } 
-        .tag-anidro { background: #0056b3; color: #fff; } 
+        .tag-gasosa { background: #ff8c00; color: #fff; border: 2px solid #e67e00; } 
+        .tag-b100 { background: #5d4037; color: #fff; border: 2px solid #3e2723; } 
+        .tag-anidro { background: #0056b3; color: #fff; border: 2px solid #003d80; } 
+        .tag-hidratado { background: #ffffff; color: #0056b3; border: 5px solid #0056b3; } 
+        .tag-s10 { background: #ffffff; color: #5d4037; border: 5px solid #5d4037; } 
 
-        .btn-w-whatsapp { background: #22c55e; color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 900; width: 100%; margin-bottom: 5px; }
-        .btn-f-finalizar { background: #ef4444; color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 900; width: 100%; }
+        /* SEMÁFORO */
+        .box-semaforo {
+            padding: 10px 15px; border-radius: 30px; font-size: 13px; font-weight: 900; 
+            display: flex; align-items: center; justify-content: center; gap: 8px; text-transform: uppercase;
+        }
+        .semaforo-verde { background: #dcfce7; color: #166534; border: 3px solid var(--cor-sucesso); }
+        .semaforo-vermelho { background: #fee2e2; color: #991b1b; border: 3px solid var(--cor-alerta); }
+        .circulo-led { width: 12px; height: 12px; border-radius: 50%; }
+        .led-g { background: #10b981; box-shadow: 0 0 12px #10b981; }
+        .led-r { background: #ef4444; box-shadow: 0 0 12px #ef4444; }
+
+        .btn-w-whatsapp { background: #22c55e; color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; margin-bottom: 8px; font-weight: 900; font-size: 13px; }
+        .btn-f-finalizar { background: #3b82f6; color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 900; font-size: 13px; }
+
+        #status-atualizacao { text-align: center; font-size: 14px; color: #64748b; margin-bottom: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -158,11 +200,11 @@
         <h2><i class="fa-solid fa-file-signature"></i> REGISTRO DE ENTRADA</h2>
         <form id="formDescarga">
             <div class="wrapper-campo">
-                <label>PLACA DO VEÍCULO</label>
+                <label><i class="fa-solid fa-truck-front"></i> PLACA DO VEÍCULO</label>
                 <input type="text" id="campo_placa" placeholder="ABC-1234" maxlength="8" required>
             </div>
             <div class="wrapper-campo">
-                <label>PRODUTO CARREGADO</label>
+                <label><i class="fa-solid fa-droplet"></i> PRODUTO CARREGADO</label>
                 <select id="campo_produto" required>
                     <option value="">-- SELECIONE O PRODUTO --</option>
                     <option value="GASOLINA COMUM / ADITIVADA">GASOLINA COMUM / ADITIVADA</option>
@@ -173,37 +215,46 @@
                 </select>
             </div>
             <div class="wrapper-campo">
-                <label>NÚMERO DO WHATSAPP</label>
-                <input type="tel" id="campo_whatsapp" placeholder="(19) 99999-9999" required>
+                <label><i class="fa-brands fa-whatsapp"></i> NÚMERO DO WHATSAPP</label>
+                <input type="tel" id="campo_whatsapp" placeholder="(19) 99999-9999" maxlength="15" required>
             </div>
             <div class="container-jornada-exp">
-                <label>TÉRMINO DA JORNADA</label>
-                <input type="time" id="campo_hora_limite">
-                <label style="margin-top:20px; cursor:pointer;">
-                    <input type="checkbox" id="check_jornada_24h"> EM JORNADA 24 HORAS
+                <div id="box-horario-input">
+                    <label><i class="fa-solid fa-clock-rotate-left"></i> TÉRMINO DA JORNADA</label>
+                    <input type="time" id="campo_hora_limite">
+                </div>
+                <label class="check-box-24h">
+                    <input type="checkbox" id="check_jornada_24h">
+                    <span class="txt-check"><i class="fa-solid fa-triangle-exclamation"></i> ESTOU EM JORNADA 24 HORAS</span>
                 </label>
             </div>
-            <button type="submit" class="btn-principal">EFETUAR REGISTRO</button>
-            <button type="button" onclick="mudarParaReabrir()" class="btn-principal btn-reabrir-jornada">REABRIR JORNADA</button>
+            <button type="submit" class="btn-principal" id="btn_registrar">EFETUAR REGISTRO NO PÁTIO</button>
+            <button type="button" onclick="mudarParaReabrir()" class="btn-principal btn-reabrir-jornada">REABRIR JORNADA (JÁ ESTOU NO PÁTIO)</button>
         </form>
     </div>
 
     <div id="container-reabrir" style="display:none;">
-        <h2>REABRIR JORNADA</h2>
-        <input type="text" id="reabrir_placa" placeholder="PLACA" style="margin-bottom:20px;">
-        <input type="time" id="reabrir_hora" style="margin-bottom:20px;">
-        <button onclick="salvarReabertura()" class="btn-principal" style="background:var(--verde-botao-reabrir)">ATUALIZAR</button>
-        <button onclick="mudarParaNormal()" style="width:100%; background:none; border:none; color:gray; cursor:pointer;">VOLTAR</button>
+        <h2 style="color:var(--verde-botao-reabrir)"><i class="fa-solid fa-clock"></i> REABRIR JORNADA</h2>
+        <div class="wrapper-campo">
+            <label>CONFIRME SUA PLACA</label>
+            <input type="text" id="reabrir_placa" placeholder="ABC-1234" maxlength="8">
+        </div>
+        <div class="wrapper-campo">
+            <label>NOVA HORA DE TÉRMINO</label>
+            <input type="time" id="reabrir_hora">
+        </div>
+        <button onclick="salvarReabertura()" class="btn-principal" style="background:var(--verde-botao-reabrir)">ATUALIZAR JORNADA</button>
+        <button onclick="mudarParaNormal()" style="width:100%; margin-top:20px; background:none; border:none; text-decoration:underline; font-weight:900; color:gray; cursor:pointer;">VOLTAR</button>
     </div>
 
-    <div style="text-align:center; margin-top:40px;">
-        <button onclick="acessoOperador()" style="color:var(--roxo-raizen); font-weight:bold; cursor:pointer; background:none; border:none; text-decoration:underline;">MÓDULO OPERADOR</button>
+    <div style="text-align:center; margin-top:60px; border-top:4px dashed #ccc; padding-top:40px;">
+        <button onclick="acessoOperador()" style="background:none; border:none; color:var(--roxo-raizen); font-weight:900; cursor:pointer; font-size:18px; text-decoration:underline;">MÓDULO DE GESTÃO DO OPERADOR</button>
     </div>
 </div>
 
-<div id="secao-operador" class="card-industrial">
-    <h2>FILA DE DESCARGA</h2>
-    <div id="status-sinc" style="text-align:center; margin-bottom:10px; font-size:12px; color:gray;"></div>
+<div id="secao-operador">
+    <h2><i class="fa-solid fa-list-check"></i> FILA DE DESCARGA - ÁREA 02</h2>
+    <div id="status-atualizacao">Sincronizando...</div>
     <div class="moldura-tabela">
         <table>
             <thead>
@@ -213,18 +264,17 @@
                     <th>CONTATO</th>
                     <th>JORNADA</th>
                     <th>ENTRADA</th>
-                    <th>AGENDAMENTO</th>
+                    <th style="background:#fff9c4; color:#000;">AGENDAMENTO</th>
                     <th>AÇÕES</th>
                 </tr>
             </thead>
             <tbody id="dadosFila"></tbody>
         </table>
     </div>
-    <button class="btn-principal" style="background:#64748b; margin-top:20px;" onclick="location.reload()">SAIR</button>
+    <button class="btn-principal" style="background:#475569; margin-top:30px;" onclick="location.reload()">VOLTAR AO INÍCIO</button>
 </div>
 
 <script>
-    // CONFIGURAÇÃO SUPABASE
     const SUPABASE_URL = 'https://rbbkjuiizmvatiawfzuv.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X';
     const HEADERS = {
@@ -237,96 +287,100 @@
     function mudarParaReabrir() { document.getElementById('container-registro').style.display = 'none'; document.getElementById('container-reabrir').style.display = 'block'; }
     function mudarParaNormal() { document.getElementById('container-reabrir').style.display = 'none'; document.getElementById('container-registro').style.display = 'block'; }
 
-    // INSERT - ENVIAR PARA O SUPABASE
+    // Formatação de Placa
+    function aplicarMascaraPlaca(el) {
+        let v = el.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+        if (v.length > 3 && !isNaN(v[3])) v = v.substring(0,3) + "-" + v.substring(3,7);
+        el.value = v.substring(0,8);
+    }
+    document.getElementById('campo_placa').oninput = function() { aplicarMascaraPlaca(this); };
+    document.getElementById('reabrir_placa').oninput = function() { aplicarMascaraPlaca(this); };
+
+    // Semáforo de Jornada
+    function gerarSemaforo(valor) {
+        if(valor === "24 HORAS") return `<div class="box-semaforo semaforo-verde"><span class="circulo-led led-g"></span> 24H</div>`;
+        const agora = new Date();
+        const t = valor.split(':');
+        if(t.length < 2) return valor;
+        const limite = new Date(); limite.setHours(t[0], t[1], 0);
+        return (agora > limite) ? `<div class="box-semaforo semaforo-vermelho"><span class="circulo-led led-r"></span> ${valor}</div>` : `<div class="box-semaforo semaforo-verde"><span class="circulo-led led-g"></span> ${valor}</div>`;
+    }
+
+    // REGISTRO (POST)
     document.getElementById('formDescarga').onsubmit = async e => {
         e.preventDefault();
-        
         const dados = {
-            PLACA: document.getElementById('campo_placa').value.toUpperCase(),
+            PLACA: document.getElementById('campo_placa').value,
             PRODUTO: document.getElementById('campo_produto').value,
             TELEFONE: document.getElementById('campo_whatsapp').value,
             JORNADA: document.getElementById('check_jornada_24h').checked ? "24 HORAS" : document.getElementById('campo_hora_limite').value,
             ENTRADA: new Date().toLocaleString('pt-BR')
         };
-
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/registros`, {
-            method: 'POST',
-            headers: HEADERS,
-            body: JSON.stringify(dados)
-        });
-
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/registros`, { method: 'POST', headers: HEADERS, body: JSON.stringify(dados) });
         if(res.ok) { alert("REGISTRO SALVO!"); location.reload(); }
-        else { const e = await res.json(); alert("ERRO: " + e.message); }
+        else { alert("ERRO AO SALVAR."); }
     };
 
-    // SELECT - BUSCAR FILA
+    // SINCRONIZAÇÃO (GET)
     async function sincronizarFila() {
         try {
             const res = await fetch(`${SUPABASE_URL}/rest/v1/registros?SAIDA=is.null&select=*`, { headers: HEADERS });
             const ativos = await res.json();
             const corpo = document.getElementById('dadosFila');
             corpo.innerHTML = "";
-
             ativos.forEach(item => {
-                let cl = item.PRODUTO.includes("GASOLINA") ? "tag-gasosa" : item.PRODUTO.includes("BIODIESEL") ? "tag-b100" : "tag-anidro";
+                let cl = "";
+                if(item.PRODUTO.includes("GASOLINA")) cl = "tag-gasosa";
+                else if(item.PRODUTO.includes("BIODIESEL")) cl = "tag-b100";
+                else if(item.PRODUTO.includes("ANIDRO")) cl = "tag-anidro";
+                else if(item.PRODUTO.includes("HIDRATADO")) cl = "tag-hidratado";
+                else if(item.PRODUTO.includes("DIESEL")) cl = "tag-s10";
+
                 corpo.innerHTML += `
                     <tr>
-                        <td style="color:var(--roxo-raizen); font-size:18px;">${item.PLACA}</td>
+                        <td style="color:var(--roxo-raizen); font-size:20px;">${item.PLACA}</td>
                         <td><span class="tag-prod ${cl}">${item.PRODUTO}</span></td>
                         <td>${item.TELEFONE}</td>
-                        <td>${item.JORNADA}</td>
+                        <td>${gerarSemaforo(item.JORNADA)}</td>
                         <td>${item.ENTRADA}</td>
-                        <td>
-                            <input type="time" id="ag-${item.id}" value="${item.AGENDAMENTO || ''}" style="padding:5px; border-radius:5px; border:1px solid #ccc;">
-                            <button onclick="salvarAgenda('${item.id}')" style="background:var(--verde-raizen); color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">OK</button>
+                        <td style="background:#fffde7;">
+                            <input type="time" id="ag-${item.id}" value="${item.AGENDAMENTO || ''}" style="width:100px; padding:5px;">
+                            <button onclick="salvarAgenda('${item.id}')" style="background:var(--verde-raizen); color:white; border:none; padding:8px; border-radius:8px; cursor:pointer;">OK</button>
                         </td>
                         <td>
-                            <button class="btn-w-whatsapp" onclick="chamar('${item.TELEFONE}','${item.PLACA}')">CHAMAR</button>
-                            <button class="btn-f-finalizar" onclick="finalizar('${item.id}')">FIM</button>
+                            <button class="btn-w-whatsapp" onclick="chamar('${item.TELEFONE}','${item.PLACA}')">CONVOCAR</button>
+                            <button class="btn-f-finalizar" onclick="finalizar('${item.id}')">FINALIZAR</button>
                         </td>
                     </tr>`;
             });
-            document.getElementById('status-sinc').innerText = "Última atualização: " + new Date().toLocaleTimeString();
+            document.getElementById('status-atualizacao').innerText = "Atualizado em: " + new Date().toLocaleTimeString();
         } catch (e) { console.error("Erro na sincronização"); }
     }
 
-    // UPDATE - FINALIZAR REGISTRO
+    // AÇÕES (PATCH)
     async function finalizar(id) {
-        if(!confirm("Encerrar descarga?")) return;
-        await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${id}`, {
-            method: 'PATCH',
-            headers: HEADERS,
-            body: JSON.stringify({ SAIDA: new Date().toLocaleString('pt-BR') })
-        });
-        sincronizarFila();
+        if(confirm("Encerrar atendimento?")) {
+            await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${id}`, { method: 'PATCH', headers: HEADERS, body: JSON.stringify({ SAIDA: new Date().toLocaleString('pt-BR') }) });
+            sincronizarFila();
+        }
     }
 
-    // UPDATE - SALVAR AGENDAMENTO
     async function salvarAgenda(id) {
         const val = document.getElementById(`ag-${id}`).value;
-        await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${id}`, {
-            method: 'PATCH',
-            headers: HEADERS,
-            body: JSON.stringify({ AGENDAMENTO: val })
-        });
+        await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${id}`, { method: 'PATCH', headers: HEADERS, body: JSON.stringify({ AGENDAMENTO: val }) });
         alert("AGENDADO!");
     }
 
-    // UPDATE - REABRIR JORNADA
     async function salvarReabertura() {
         const p = document.getElementById('reabrir_placa').value.toUpperCase();
         const h = document.getElementById('reabrir_hora').value;
-        await fetch(`${SUPABASE_URL}/rest/v1/registros?PLACA=eq.${p}&SAIDA=is.null`, {
-            method: 'PATCH',
-            headers: HEADERS,
-            body: JSON.stringify({ JORNADA: h })
-        });
+        await fetch(`${SUPABASE_URL}/rest/v1/registros?PLACA=eq.${p}&SAIDA=is.null`, { method: 'PATCH', headers: HEADERS, body: JSON.stringify({ JORNADA: h }) });
         alert("JORNADA ATUALIZADA!"); location.reload();
     }
 
     function chamar(tel, placa) {
         const baia = prompt("QUAL BAIA?");
-        if(baia) window.open(`https://api.whatsapp.com/send?phone=55${tel.replace(/\D/g, "")}&text=Placa ${placa} na Baia ${baia}`, '_blank');
+        if(baia) window.open(`https://api.whatsapp.com/send?phone=55${tel.replace(/\D/g, "")}&text=Olá!%0APlaca ${placa} na Baia ${baia}`, '_blank');
     }
 
     function acessoOperador() {
@@ -334,7 +388,7 @@
             document.getElementById('modulo-entrada').style.display = 'none';
             document.getElementById('secao-operador').style.display = 'block';
             sincronizarFila();
-            setInterval(sincronizarFila, 30000);
+            setInterval(sincronizarFila, 20000);
         }
     }
 </script>
