@@ -24,27 +24,19 @@
 
         body { 
             background-color: var(--fundo-base); 
-            display: flex; 
-            flex-direction: column; 
-            min-height: 100vh;
-            color: var(--cor-texto);
-            padding-bottom: 100px;
+            display: flex; flex-direction: column; min-height: 100vh;
+            color: var(--cor-texto); padding-bottom: 100px;
         }
 
         header { 
             background: linear-gradient(135deg, var(--verde-raizen) 0%, #1a241f 100%); 
-            padding: 90px 20px; 
-            text-align: center; 
-            border-bottom: 25px solid var(--roxo-raizen);
+            padding: 90px 20px; text-align: center; border-bottom: 25px solid var(--roxo-raizen);
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
 
         .logo-raizen-master {
-            color: var(--branco);
-            font-size: 85px;
-            font-weight: 900;
-            letter-spacing: 15px;
-            text-transform: uppercase;
+            color: var(--branco); font-size: 85px; font-weight: 900;
+            letter-spacing: 15px; text-transform: uppercase;
         }
 
         header h1 { color: var(--branco); font-size: 24px; letter-spacing: 6px; font-weight: 300; margin-top: 15px; text-transform: uppercase; }
@@ -169,14 +161,12 @@
 
 <div id="secao-operador">
     <h2><i class="fa-solid fa-list-check"></i> FILA DE DESCARGA ATIVA</h2>
-
     <div class="filtros-container">
         <button class="btn-filtro ativo" onclick="filtrar('TODOS', this)">TODOS</button>
         <button class="btn-filtro" onclick="filtrar('GASOLINA', this)">GASOLINA</button>
         <button class="btn-filtro" onclick="filtrar('DIESEL', this)">DIESEL</button>
         <button class="btn-filtro" onclick="filtrar('ETANOL', this)">ETANOL</button>
     </div>
-
     <div id="status-atualizacao">Sincronizando...</div>
     <div class="moldura-tabela">
         <table>
@@ -206,22 +196,19 @@
     let dadosCache = [];
     let filtroAtual = 'TODOS';
 
-    // --- FUNÇÕES DE NAVEGAÇÃO ---
     function mudarParaReabrir() { document.getElementById('container-registro').style.display = 'none'; document.getElementById('container-reabrir').style.display = 'block'; }
     function mudarParaNormal() { document.getElementById('container-reabrir').style.display = 'none'; document.getElementById('container-registro').style.display = 'block'; }
 
-    // --- MÁSCARAS ---
+    // MÁSCARAS
     document.getElementById('campo_placa').oninput = function() {
         let v = this.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
         if (v.length > 3 && !isNaN(v[3])) v = v.substring(0,3) + "-" + v.substring(3,7);
         this.value = v.substring(0,8);
     };
-
     document.getElementById('campo_whatsapp').oninput = e => {
         let v = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
         e.target.value = !v[2] ? v[1] : '(' + v[1] + ') ' + v[2] + (v[3] ? '-' + v[3] : '');
     };
-
     document.getElementById('check_jornada_24h').onchange = function() {
         document.getElementById('box-horario-input').style.display = this.checked ? 'none' : 'block';
     };
@@ -234,60 +221,44 @@
         return (agora > limite) ? `<div class="box-semaforo semaforo-vermelho"><span class="circulo-led led-r"></span> ${valor}</div>` : `<div class="box-semaforo semaforo-verde"><span class="circulo-led led-g"></span> ${valor}</div>`;
     }
 
-    // --- CORE (SUPABASE) ---
     async function sincronizarFila() {
         try {
             const res = await fetch(`${SUPABASE_URL}/rest/v1/registros?SAIDA=is.null&select=*`, { headers: HEADERS });
             dadosCache = await res.json();
             renderizarTabela();
             document.getElementById('status-atualizacao').innerHTML = "Sincronizado: " + new Date().toLocaleTimeString();
-        } catch (e) { console.error("Erro sincronização:", e); }
+        } catch (e) { console.error(e); }
     }
 
     function renderizarTabela() {
         const corpo = document.getElementById('dadosFila');
         corpo.innerHTML = "";
-
-        // ORDENAÇÃO: Agendados no topo por horário, depois por ordem de entrada
         let ativos = [...dadosCache].sort((a, b) => {
-            const timeA = (a.AGENDAMENTO) ? new Date(a.AGENDAMENTO).getTime() : Infinity;
-            const timeB = (b.AGENDAMENTO) ? new Date(b.AGENDAMENTO).getTime() : Infinity;
-            if (timeA !== timeB) return timeA - timeB; 
-            return new Date(a.created_at) - new Date(b.created_at);
+            const timeA = a.AGENDAMENTO ? new Date(a.AGENDAMENTO).getTime() : Infinity;
+            const timeB = b.AGENDAMENTO ? new Date(b.AGENDAMENTO).getTime() : Infinity;
+            return timeA !== timeB ? timeA - timeB : new Date(a.created_at) - new Date(b.created_at);
         });
 
-        if (filtroAtual !== 'TODOS') {
-            ativos = ativos.filter(x => x.PRODUTO.toUpperCase().includes(filtroAtual));
-        }
+        if (filtroAtual !== 'TODOS') ativos = ativos.filter(x => x.PRODUTO.toUpperCase().includes(filtroAtual));
 
         ativos.forEach(item => {
             let cl = item.PRODUTO.includes("GASOLINA") ? "tag-gasosa" : item.PRODUTO.includes("BIODIESEL") ? "tag-b100" : item.PRODUTO.includes("ANIDRO") ? "tag-anidro" : item.PRODUTO.includes("HIDRATADO") ? "tag-hidratado" : "tag-s10";
-            
-            const tr = document.createElement('tr');
-            if(item.AGENDAMENTO) tr.style.backgroundColor = "#fff9c4"; 
-
-            // Conversão de data para o formato do INPUT (YYYY-MM-DDTHH:MM)
             let dataInput = "";
             if (item.AGENDAMENTO) {
                 const dt = new Date(item.AGENDAMENTO);
-                dataInput = dt.getFullYear() + '-' + 
-                           String(dt.getMonth() + 1).padStart(2, '0') + '-' + 
-                           String(dt.getDate()).padStart(2, '0') + 'T' + 
-                           String(dt.getHours()).padStart(2, '0') + ':' + 
-                           String(dt.getMinutes()).padStart(2, '0');
+                dataInput = dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0') + 'T' + String(dt.getHours()).padStart(2, '0') + ':' + String(dt.getMinutes()).padStart(2, '0');
             }
-
+            const tr = document.createElement('tr');
+            if(item.AGENDAMENTO) tr.style.backgroundColor = "#fff9c4";
             tr.innerHTML = `
                 <td style="color:var(--roxo-raizen); font-size:22px;">${item.PLACA}</td>
                 <td><span class="tag-prod ${cl}">${item.PRODUTO}</span></td>
                 <td style="font-size:14px;">${item.TELEFONE}</td>
                 <td>${gerarSemaforo(item.JORNADA)}</td>
                 <td style="font-size:14px;">${item.ENTRADA}</td>
-                <td style="background:#fffde7; border: 2px solid #ffd600; padding: 10px;">
-                    <input type="datetime-local" id="ag-${item.id}" value="${dataInput}" 
-                           style="width:100%; font-size:14px; padding:10px; border-radius:8px; border:1px solid #ccc; margin-bottom:5px;">
-                    <button onclick="salvarAgenda('${item.id}')" 
-                            style="background:var(--verde-raizen); color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; font-weight:900; width:100%;">OK</button>
+                <td style="background:#fffde7; border: 2px solid #ffd600; padding:10px;">
+                    <input type="datetime-local" id="ag-${item.id}" value="${dataInput}" style="width:100%; font-size:14px; padding:10px; border-radius:8px; border:1px solid #ccc; margin-bottom:5px;">
+                    <button onclick="salvarAgenda('${item.id}')" style="background:var(--verde-raizen); color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; font-weight:900; width:100%;">OK</button>
                 </td>
                 <td>
                     <button class="btn-w-whatsapp" onclick="chamarMotorista('${item.TELEFONE}','${item.PLACA}')">CONVOCAR</button>
@@ -301,13 +272,14 @@
     async function salvarAgenda(id) {
         const inputVal = document.getElementById(`ag-${id}`).value;
         const btn = document.querySelector(`button[onclick="salvarAgenda('${id}')"]`);
-        
-        btn.innerText = "OK...";
-        btn.disabled = true;
+        btn.innerText = "Salvando..."; btn.disabled = true;
 
         try {
-            // Converte o valor do input local para ISO (o que o timestamptz espera)
-            const valorParaBanco = inputVal ? new Date(inputVal).toISOString() : null;
+            let valorParaBanco = null;
+            if (inputVal && inputVal.trim() !== "") {
+                const dt = new Date(inputVal);
+                if (!isNaN(dt.getTime())) valorParaBanco = dt.toISOString();
+            }
 
             const res = await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${id}`, {
                 method: 'PATCH',
@@ -316,18 +288,14 @@
             });
 
             if(res.ok) {
+                alert("AGENDAMENTO ATUALIZADO!");
                 await sincronizarFila();
             } else {
-                const erro = await res.json();
-                console.error(erro);
-                alert("Erro ao salvar no banco. Verifique se a coluna AGENDAMENTO aceita nulos.");
+                const err = await res.json();
+                alert("Erro: " + err.message);
             }
-        } catch (e) {
-            alert("Erro de conexão.");
-        } finally {
-            btn.innerText = "OK";
-            btn.disabled = false;
-        }
+        } catch (e) { alert("Erro de conexão."); }
+        finally { btn.innerText = "OK"; btn.disabled = false; }
     }
 
     function filtrar(tipo, btn) {
@@ -340,8 +308,7 @@
     async function finalizar(id) {
         if(confirm("CONFIRMA A SAÍDA?")) {
             await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${id}`, {
-                method: 'PATCH',
-                headers: HEADERS,
+                method: 'PATCH', headers: HEADERS,
                 body: JSON.stringify({ "SAIDA": new Date().toLocaleString('pt-BR') })
             });
             sincronizarFila();
@@ -359,7 +326,7 @@
 
     function chamarMotorista(tel, placa) {
         const baia = prompt("QUAL BAIA?");
-        if(baia) window.open(`https://api.whatsapp.com/send?phone=55${tel.replace(/\D/g, "")}&text=Olá%20motorista!%20Baia%20${baia}`, '_blank');
+        if(baia) window.open(`https://api.whatsapp.com/send?phone=55${tel.replace(/\D/g, "")}&text=Olá%20motorista!%20Sua%20vez%20chegou.%20Por%20favor,%20dirija-se%20à%20BAIA%20${baia}`, '_blank');
     }
 
     document.getElementById('formDescarga').onsubmit = async e => {
@@ -372,7 +339,7 @@
             "ENTRADA": new Date().toLocaleString('pt-BR')
         };
         await fetch(`${SUPABASE_URL}/rest/v1/registros`, { method: 'POST', headers: HEADERS, body: JSON.stringify(dados) });
-        location.reload();
+        alert("REGISTRO OK!"); location.reload();
     };
 
     async function salvarReabertura() {
@@ -382,8 +349,8 @@
         const d = await res.json();
         if(d.length > 0) {
             await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${d[0].id}`, { method: 'PATCH', headers: HEADERS, body: JSON.stringify({"JORNADA": h}) });
-            location.reload();
-        }
+            alert("JORNADA OK!"); location.reload();
+        } else alert("PLACA NÃO ENCONTRADA!");
     }
 </script>
 </body>
