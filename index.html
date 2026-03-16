@@ -226,6 +226,14 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        #status-atualizacao {
+            text-align: center;
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
@@ -278,10 +286,15 @@
 
 <div id="secao-operador">
     <h2><i class="fa-solid fa-list-check"></i> FILA DE DESCARGA - ÁREA 02</h2>
-    <div style="margin-bottom:30px;">
+    
+    <div id="status-atualizacao">
+        <i class="fa-solid fa-sync fa-spin"></i> Sincronizando com a planilha...
+    </div>
+
+    <div style="margin-bottom:30px; margin-top: 15px;">
         <div style="position:relative;">
             <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:20px; top:25px; font-size:20px; color:var(--roxo-raizen);"></i>
-            <input type="text" id="filtroFila" placeholder="FILTRAR..." onkeyup="filtrarTabela()" style="padding-left:55px; border:4px solid var(--roxo-raizen); padding: 15px 15px 15px 55px; font-size: 18px;">
+            <input type="text" id="filtroFila" placeholder="FILTRAR POR PLACA OU PRODUTO..." onkeyup="filtrarTabela()" style="padding-left:55px; border:4px solid var(--roxo-raizen); padding: 15px 15px 15px 55px; font-size: 18px;">
         </div>
     </div>
     <div class="moldura-tabela">
@@ -303,8 +316,9 @@
 
     <div style="margin-top:40px; display:flex; gap:20px;">
         <button class="btn-principal" style="background:#475569; padding: 20px; font-size: 18px;" onclick="location.reload()">SAIR</button>
-        <button class="btn-principal" style="background:var(--verde-raizen); padding: 20px; font-size: 18px;" onclick="sincronizarFila()">ATUALIZAR</button>
+        <button class="btn-principal" style="background:var(--verde-raizen); padding: 20px; font-size: 18px;" onclick="sincronizarFila()">FORÇAR ATUALIZAÇÃO</button>
     </div>
+
     <div style="margin-top: 30px; text-align: center;">
         <button onclick="testarNotificacao()" style="background:#ddd; border:1px solid #999; padding:10px; border-radius:10px; font-size:12px; cursor:pointer;">TESTAR ALERTA DO NAVEGADOR</button>
     </div>
@@ -314,22 +328,18 @@
     const API_URL = 'https://sheetdb.io/api/v1/p9z83v5m0dxq5';
     const SENHA_OP = 'raizen2026';
     let ultimaQuantidade = 0; 
+    let monitorAtivo = false;
 
-    // SOLICITAÇÃO REFORÇADA DE PERMISSÃO
-    function solicitarPermissao() {
-        if (!("Notification" in window)) {
-            alert("Este navegador não suporta notificações de desktop");
-        } else if (Notification.permission !== "granted") {
-            Notification.requestPermission();
-        }
+    // PEDE PERMISSÃO ASSIM QUE ENTRA
+    if (Notification.permission !== "granted") {
+        Notification.requestPermission();
     }
-    solicitarPermissao();
 
     function testarNotificacao() {
         if (Notification.permission === "granted") {
-            new Notification("RAÍZEN: Teste de Alerta", { body: "As notificações estão funcionando!" });
+            new Notification("SISTEMA RAÍZEN", { body: "As notificações automáticas estão ativadas!" });
         } else {
-            alert("Permissão de notificação negada. Ative no cadeado da URL.");
+            alert("Ative as notificações no cadeado da barra de endereço!");
             Notification.requestPermission();
         }
     }
@@ -400,54 +410,65 @@
     };
 
     async function sincronizarFila() {
+        const status = document.getElementById('status-atualizacao');
         const corpo = document.getElementById('dadosFila');
-        const res = await fetch(API_URL + "?t=" + Date.now());
-        const json = await res.json();
-        let ativos = json.filter(x => x.PLACA && !x.SAIDA);
+        
+        try {
+            status.innerHTML = '<i class="fa-solid fa-sync fa-spin"></i> Verificando novos motoristas...';
+            const res = await fetch(API_URL + "?t=" + Date.now());
+            const json = await res.json();
+            let ativos = json.filter(x => x.PLACA && !x.SAIDA);
 
-        // DISPARA NOTIFICAÇÃO SE HOUVER NOVOS
-        if (ativos.length > ultimaQuantidade && ultimaQuantidade !== 0) {
-            if (Notification.permission === "granted") {
-                new Notification("NOVA CHEGADA!", {
-                    body: `Placa: ${ativos[ativos.length-1].PLACA} chegou para descarga.`,
-                    requireInteraction: true // A notificação fica na tela até você fechar
-                });
+            // LOGICA DA NOTIFICAÇÃO
+            if (monitorAtivo && ativos.length > ultimaQuantidade) {
+                const ultimo = ativos[ativos.length - 1];
+                if (Notification.permission === "granted") {
+                    new Notification("NOVA DESCARGA!", {
+                        body: `Placa: ${ultimo.PLACA}\nProduto: ${ultimo.PRODUTO}`,
+                        requireInteraction: true
+                    });
+                }
             }
+
+            ultimaQuantidade = ativos.length;
+            monitorAtivo = true; // Só ativa a notificação depois da primeira leitura
+
+            ativos.sort((a, b) => (a['AGENDAMENTO NO COLETA'] || '9').localeCompare(b['AGENDAMENTO NO COLETA'] || '9'));
+            corpo.innerHTML = "";
+            ativos.forEach(item => {
+                let classeProd = "";
+                if(item.PRODUTO.includes("GASOLINA")) classeProd = "tag-gasosa";
+                else if(item.PRODUTO.includes("BIODIESEL")) classeProd = "tag-b100";
+                else if(item.PRODUTO.includes("ANIDRO")) classeProd = "tag-anidro";
+                else if(item.PRODUTO.includes("HIDRATADO")) classeProd = "tag-hidratado";
+                else if(item.PRODUTO.includes("DIESEL")) classeProd = "tag-s10";
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="color:var(--roxo-raizen); font-size:20px;">${item.PLACA}</td>
+                    <td><span class="tag-prod ${classeProd}">${item.PRODUTO}</span></td>
+                    <td style="font-size:14px;">${item.TELEFONE}</td>
+                    <td>${gerarSemaforo(item.JORNADA)}</td>
+                    <td style="font-size:14px;">${item.ENTRADA}</td>
+                    <td style="background:#fffde7;">
+                        <input type="datetime-local" id="ag-${item.PLACA}" value="${item['AGENDAMENTO NO COLETA'] || ''}" style="width:130px; font-size:12px; padding:10px;">
+                        <button onclick="salvarAgenda('${item.PLACA}')" style="background:var(--verde-raizen); color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">OK</button>
+                    </td>
+                    <td>
+                        <button class="btn-w-whatsapp" onclick="chamarMotorista('${item.TELEFONE}','${item.PLACA}')">CONVOCAR</button>
+                        <button class="btn-f-finalizar" onclick="finalizar('${item.PLACA}')">FIM</button>
+                    </td>
+                `;
+                corpo.appendChild(tr);
+            });
+            
+            const agora = new Date();
+            status.innerHTML = `<i class="fa-solid fa-check-circle" style="color:green"></i> Última atualização: ${agora.toLocaleTimeString()}`;
+
+        } catch (err) {
+            status.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:red"></i> Erro ao conectar. Tentando novamente...`;
         }
-        ultimaQuantidade = ativos.length;
-
-        ativos.sort((a, b) => (a['AGENDAMENTO NO COLETA'] || '9').localeCompare(b['AGENDAMENTO NO COLETA'] || '9'));
-        corpo.innerHTML = "";
-        ativos.forEach(item => {
-            let classeProd = "";
-            if(item.PRODUTO.includes("GASOLINA")) classeProd = "tag-gasosa";
-            else if(item.PRODUTO.includes("BIODIESEL")) classeProd = "tag-b100";
-            else if(item.PRODUTO.includes("ANIDRO")) classeProd = "tag-anidro";
-            else if(item.PRODUTO.includes("HIDRATADO")) classeProd = "tag-hidratado";
-            else if(item.PRODUTO.includes("DIESEL")) classeProd = "tag-s10";
-
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td style="color:var(--roxo-raizen); font-size:20px;">${item.PLACA}</td>
-                <td><span class="tag-prod ${classeProd}">${item.PRODUTO}</span></td>
-                <td style="font-size:14px;">${item.TELEFONE}</td>
-                <td>${gerarSemaforo(item.JORNADA)}</td>
-                <td style="font-size:14px;">${item.ENTRADA}</td>
-                <td style="background:#fffde7;">
-                    <input type="datetime-local" id="ag-${item.PLACA}" value="${item['AGENDAMENTO NO COLETA'] || ''}" style="width:130px; font-size:12px; padding:10px;">
-                    <button onclick="salvarAgenda('${item.PLACA}')" style="background:var(--verde-raizen); color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">OK</button>
-                </td>
-                <td>
-                    <button class="btn-w-whatsapp" onclick="chamarMotorista('${item.TELEFONE}','${item.PLACA}')">CONVOCAR</button>
-                    <button class="btn-f-finalizar" onclick="finalizar('${item.PLACA}')">FIM</button>
-                </td>
-            `;
-            corpo.appendChild(tr);
-        });
     }
-
-    // ATUALIZA A CADA 20 SEGUNDOS
-    setInterval(sincronizarFila, 20000);
 
     async function salvarAgenda(placa) {
         const val = document.getElementById(`ag-${placa}`).value;
@@ -468,6 +489,8 @@
             document.getElementById('modulo-entrada').style.display = 'none';
             document.getElementById('secao-operador').style.display = 'block';
             sincronizarFila();
+            // INICIA A ATUALIZAÇÃO AUTOMÁTICA A CADA 15 SEGUNDOS
+            setInterval(sincronizarFila, 15000);
         } else { alert("ERRO!"); }
     }
 </script>
