@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=1200"> 
-    <title>RAÍZEN - GESTÃO DE PÁTIO E ESTOQUE - V30.8 FULL</title>
+    <title>RAÍZEN - MONITORAMENTO OPERACIONAL V31.0 - FULL SYSTEM</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     
     <style>
         /* ============================================================
-           DESIGN SYSTEM PREMIUM RAÍZEN (CSS EXPANDIDO)
-           ============================================================ */
+           ESTILO VISUAL RAÍZEN - NÃO APAGAR NADA ABAIXO
+           ============================================================ 
+        */
         :root {
             --verde-raizen: #4d6d5d;
             --roxo-raizen: #84207d;
@@ -25,29 +26,21 @@
             --sombra-premium: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
 
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            font-family: 'Montserrat', sans-serif; 
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+        
         body { 
             background-color: var(--fundo-base); 
             color: #1e293b; 
             min-height: 100vh; 
-            padding-bottom: 150px;
-            overflow-x: auto;
+            padding-bottom: 200px;
         }
 
-        /* CABEÇALHO GIGANTE PARA OPERAÇÃO */
         header { 
             background: linear-gradient(135deg, var(--verde-raizen) 0%, #1a241f 100%); 
             padding: 130px 20px; 
             text-align: center; 
             border-bottom: 40px solid var(--roxo-raizen);
             box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-            position: relative;
         }
 
         .logo-display {
@@ -59,7 +52,7 @@
             text-shadow: 10px 10px 0px rgba(0,0,0,0.2);
         }
 
-        /* CARD PRINCIPAL DO MOTORISTA */
+        /* CONTAINER PRINCIPAL */
         .card-master { 
             width: 95%; 
             max-width: 1250px; 
@@ -73,15 +66,15 @@
             z-index: 10;
         }
 
-        /* PAINÉIS ADM E SUPERVISÃO */
+        /* MÓDULOS OCULTOS */
         #modulo-operador-full, #modulo-supervisao { 
             display: none; 
             width: 98%; 
-            max-width: 2100px; 
+            max-width: 2200px; 
             margin: 60px auto;
             background: var(--branco); 
             padding: 70px; 
-            border-radius: 50px;
+            border-radius: 60px;
             box-shadow: var(--sombra-premium); 
             zoom: 0.8; 
         }
@@ -92,191 +85,67 @@
             font-weight: 900; 
             text-transform: uppercase; 
             margin-bottom: 70px; 
-            font-size: 48px; 
-            border-bottom: 20px solid #f1f5f9;
-            padding-bottom: 35px;
-            letter-spacing: -1px;
+            font-size: 52px; 
+            border-bottom: 25px solid #f1f5f9;
+            padding-bottom: 40px;
         }
 
-        /* FORMULÁRIO E INPUTS */
-        .wrapper-input { 
-            margin-bottom: 50px; 
-        }
+        /* INPUTS E FORMULÁRIO */
+        .wrapper-input { margin-bottom: 55px; }
+        label { display: flex; align-items: center; gap: 25px; margin-bottom: 30px; font-weight: 900; color: var(--verde-raizen); font-size: 22px; text-transform: uppercase; }
+        input, select { width: 100%; padding: 40px; border: 8px solid #f1f5f9; border-radius: 40px; font-size: 30px; font-weight: 700; background: #f8fafc; }
 
-        label { 
-            display: flex; 
-            align-items: center; 
-            gap: 25px; 
-            margin-bottom: 25px; 
-            font-weight: 900; 
-            color: var(--verde-raizen); 
-            font-size: 20px; 
-            text-transform: uppercase;
-        }
+        .painel-jornada { background: #fffbeb; padding: 60px; border-radius: 65px; border: 8px dashed var(--ouro-raizen); margin: 80px 0; }
 
-        input, select { 
-            width: 100%; 
-            padding: 35px; 
-            border: 8px solid #f1f5f9; 
-            border-radius: 35px; 
-            font-size: 28px; 
-            font-weight: 700; 
-            background: #f8fafc; 
-            transition: all 0.3s ease;
-        }
-
-        input:focus { 
-            border-color: var(--roxo-raizen); 
-            background: white; 
-            outline: none;
-            box-shadow: 0 0 0 25px rgba(132, 32, 125, 0.1);
-        }
-
-        /* PAINEL AMARELO DE JORNADA */
-        .painel-jornada { 
-            background: #fffbeb; 
-            padding: 60px; 
-            border-radius: 60px; 
-            border: 6px dashed var(--ouro-raizen); 
-            margin: 70px 0;
-            box-shadow: inset 0 5px 15px rgba(0,0,0,0.05);
-        }
-
-        /* BOTÕES MESTRES */
+        /* BOTÕES */
         .btn-master { 
-            width: 100%; 
-            padding: 45px; 
-            background: var(--roxo-raizen); 
-            color: white; 
-            border: none; 
-            border-radius: 40px; 
-            font-size: 32px; 
-            font-weight: 900; 
-            cursor: pointer; 
-            text-transform: uppercase; 
-            box-shadow: 0 20px 0 #5e1659; 
-            margin-bottom: 35px; 
-            display: flex; 
-            justify-content: center;
-            align-items: center; 
-            gap: 30px;
-            transition: all 0.1s ease;
+            width: 100%; padding: 50px; background: var(--roxo-raizen); color: white; border: none; 
+            border-radius: 45px; font-size: 34px; font-weight: 900; cursor: pointer; 
+            text-transform: uppercase; box-shadow: 0 20px 0 #5e1659; margin-bottom: 40px; 
+            display: flex; justify-content: center; align-items: center; gap: 35px;
         }
-        
-        .btn-master:active { 
-            transform: translateY(15px); 
-            box-shadow: 0 5px 0 #5e1659; 
-        }
+        .btn-master:active { transform: translateY(18px); box-shadow: 0 2px 0 #5e1659; }
 
-        /* TABELA DE FILA (OPERACIONAL) */
-        .moldura-tabela { 
-            overflow-x: auto; 
-            border-radius: 50px; 
-            border: 8px solid #f1f5f9; 
-            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
-        }
+        /* TABELA E STATUS */
+        .moldura-tabela { overflow-x: auto; border-radius: 60px; border: 10px solid #f1f5f9; }
+        table { width: 100%; border-collapse: collapse; min-width: 2000px; }
+        th { background: var(--preto-painel); color: white; padding: 45px 30px; font-size: 18px; text-transform: uppercase; }
+        td { padding: 35px 30px; border-bottom: 6px solid #f8fafc; text-align: center; font-weight: 700; font-size: 24px; }
 
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            min-width: 1900px; 
-            background: white; 
-        }
-        
-        th { 
-            background: var(--preto-painel); 
-            color: white; 
-            padding: 40px 25px; 
-            font-size: 16px; 
-            text-transform: uppercase; 
-            letter-spacing: 4px;
-        }
-
-        td { 
-            padding: 30px 25px; 
-            border-bottom: 5px solid #f8fafc; 
-            text-align: center; 
-            font-weight: 700; 
-            font-size: 22px;
-        }
-
-        /* SEMÁFORO DE CORES */
+        /* SEMÁFORO DE JORNADA */
         .jor-24h { color: #3b82f6; font-weight: 900; }
         .jor-ok { color: var(--cor-sucesso); }
-        .jor-alerta { color: var(--cor-alerta); background: #fffbeb; animation: pisca 1.2s infinite; }
+        .jor-alerta { color: var(--cor-alerta); background: #fffbeb; animation: pisca 1s infinite; }
         .jor-vencida { color: var(--cor-erro); background: #fee2e2; font-weight: 900; }
+        @keyframes pisca { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-        @keyframes pisca { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        .status-ok { color: var(--cor-sucesso); font-weight: 900; background: #ecfdf5; padding: 15px 30px; border-radius: 25px; border: 4px solid var(--cor-sucesso); }
+        .status-erro { color: var(--cor-erro); font-weight: 900; background: #fff1f2; padding: 15px 30px; border-radius: 25px; border: 4px solid var(--cor-erro); font-size: 16px; }
 
-        /* STATUS DE TANQUE */
-        .status-ok { 
-            color: var(--cor-sucesso); 
-            background: #ecfdf5; 
-            padding: 12px 25px; 
-            border-radius: 20px; 
-            border: 3px solid var(--cor-sucesso); 
-            font-weight: 900;
-        }
-        .status-erro { 
-            color: var(--cor-erro); 
-            background: #fff1f2; 
-            padding: 12px 25px; 
-            border-radius: 20px; 
-            border: 3px solid var(--cor-erro); 
-            font-weight: 900;
-            font-size: 16px;
-        }
-
-        /* CARDS DE SUPERVISÃO */
-        .grid-tanques { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); 
-            gap: 50px; 
-            margin-top: 50px; 
-        }
-
-        .card-tanque { 
-            background: #ffffff; 
-            padding: 60px; 
-            border-radius: 50px; 
-            border: 8px solid #e2e8f0; 
-            text-align: center;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.05);
-        }
-
-        /* LOADER DE SISTEMA */
-        #loader-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.98); z-index: 10000; flex-direction: column; align-items: center; justify-content: center;
-        }
-        .raizen-spinner { width: 140px; height: 140px; border: 18px solid #f3f3f3; border-top: 18px solid var(--roxo-raizen); border-radius: 50%; animation: girar 1s linear infinite; }
+        /* LOADER */
+        #loader-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; }
+        .raizen-spinner { width: 150px; height: 150px; border: 20px solid #f3f3f3; border-top: 20px solid var(--roxo-raizen); border-radius: 50%; animation: girar 1s linear infinite; }
         @keyframes girar { 100% { transform: rotate(360deg); } }
+
+        .grid-tanques { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 60px; margin-top: 60px; }
+        .card-tanque { background: #ffffff; padding: 70px; border-radius: 60px; border: 10px solid #e2e8f0; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
 
-<div id="loader-overlay">
-    <div class="raizen-spinner"></div>
-    <h2 style="border:none; margin-top:40px;">ATUALIZANDO PÁTIO...</h2>
-</div>
+<div id="loader-overlay"><div class="raizen-spinner"></div><h2 style="border:none; margin-top:45px;">SINCRONIZANDO DADOS...</h2></div>
 
-<header>
-    <div class="logo-display">RAÍZEN</div>
-</header>
+<header><div class="logo-display">RAÍZEN</div></header>
 
 <div class="card-master" id="secao-entrada">
     <div id="form-principal-wrapper">
-        <h2><i class="fa-solid fa-truck-moving"></i> REGISTRO DE CHEGADA</h2>
+        <h2>REGISTRO DE MOTORISTA</h2>
         <form id="formMaster">
+            <div class="wrapper-input"><label>PLACA</label><input type="text" id="placa" placeholder="AAA-0000" maxlength="8" required></div>
             <div class="wrapper-input">
-                <label><i class="fa-solid fa-id-card"></i> PLACA DO VEÍCULO</label>
-                <input type="text" id="placa" placeholder="AAA-0000" maxlength="8" required>
-            </div>
-            
-            <div class="wrapper-input">
-                <label><i class="fa-solid fa-droplet"></i> PRODUTO CARREGADO</label>
+                <label>PRODUTO</label>
                 <select id="produto" required>
-                    <option value="">-- SELECIONE O PRODUTO --</option>
+                    <option value="">-- SELECIONE --</option>
                     <option value="GASOLINA">GASOLINA</option>
                     <option value="BIODIESEL">BIODIESEL (B100)</option>
                     <option value="ANIDRO">ETANOL ANIDRO</option>
@@ -284,51 +153,34 @@
                     <option value="DIESEL">DIESEL S10</option>
                 </select>
             </div>
-            
-            <div class="wrapper-input">
-                <label><i class="fa-brands fa-whatsapp"></i> WHATSAPP PARA AVISO</label>
-                <input type="tel" id="whatsapp" placeholder="(19) 99999-9999" required>
-            </div>
-            
+            <div class="wrapper-input"><label>WHATSAPP</label><input type="tel" id="whatsapp" placeholder="(19) 99999-9999" required></div>
             <div class="painel-jornada">
-                <div id="area-tempo">
-                    <label><i class="fa-solid fa-clock"></i> HORÁRIO LIMITE DE JORNADA</label>
-                    <input type="time" id="limite" required> 
-                </div>
-                <label style="margin-top:40px; display:flex; align-items:center; gap:30px; cursor:pointer; font-size: 24px; font-weight: 900; color: var(--roxo-raizen);">
-                    <input type="checkbox" id="jornada24" style="width:45px; height:45px;"> HABILITAR 24 HORAS
+                <div id="area-tempo"><label>HORA LIMITE</label><input type="time" id="limite" required></div>
+                <label style="margin-top:40px; display:flex; align-items:center; gap:30px; cursor:pointer; font-size: 26px; font-weight: 900; color: var(--roxo-raizen);">
+                    <input type="checkbox" id="jornada24" style="width:50px; height:50px;"> JORNADA 24 HORAS
                 </label>
             </div>
-
-            <button type="submit" class="btn-master"><i class="fa-solid fa-check-double"></i> CONFIRMAR ENTRADA</button>
-            <button type="button" onclick="abrirReabertura()" class="btn-master" style="background:#475569; box-shadow: 0 20px 0 #2d3748; font-size:22px;">
-                <i class="fa-solid fa-clock-rotate-left"></i> REABRIR JORNADA
-            </button>
+            <button type="submit" class="btn-master">CONFIRMAR CHEGADA</button>
+            <button type="button" onclick="abrirReabertura()" class="btn-master" style="background:#475569; font-size:24px;">REABRIR JORNADA</button>
         </form>
     </div>
 
     <div id="form-reabertura-wrapper" style="display:none;">
-        <h2 style="color:#475569">REABRIR REGISTRO</h2>
-        <div class="wrapper-input">
-            <label>PLACA</label>
-            <input type="text" id="re_placa" placeholder="AAA-0000">
-        </div>
-        <div class="wrapper-input">
-            <label>NOVA HORA</label>
-            <input type="time" id="re_hora">
-        </div>
-        <button onclick="processarReabertura()" class="btn-master" style="background:#475569">ATUALIZAR JORNADA</button>
-        <button onclick="fecharReabertura()" style="width:100%; background:none; border:none; color:var(--roxo-raizen); font-weight:900; cursor:pointer; padding:35px; font-size:20px;">CANCELAR</button>
+        <h2>REABRIR REGISTRO</h2>
+        <div class="wrapper-input"><label>PLACA</label><input type="text" id="re_placa" placeholder="AAA-0000"></div>
+        <div class="wrapper-input"><label>NOVA HORA</label><input type="time" id="re_hora"></div>
+        <button onclick="processarReabertura()" class="btn-master" style="background:#475569">ATUALIZAR HORA</button>
+        <button onclick="fecharReabertura()" style="width:100%; background:none; border:none; color:var(--roxo-raizen); font-weight:900; cursor:pointer; padding:40px; font-size:22px;">VOLTAR</button>
     </div>
 
-    <div style="text-align:center; margin-top:80px; display:flex; justify-content:center; gap:50px;">
-        <button onclick="acessoADM()" style="color:var(--roxo-raizen); font-weight:900; border:none; background:none; cursor:pointer; text-transform:uppercase; font-size:18px;"><i class="fa-solid fa-lock"></i> ADM PÁTIO</button>
-        <button onclick="acessoSuper()" style="color:var(--verde-raizen); font-weight:900; border:none; background:none; cursor:pointer; text-transform:uppercase; font-size:18px;"><i class="fa-solid fa-user-shield"></i> SUPERVISÃO</button>
+    <div style="text-align:center; margin-top:80px; display:flex; justify-content:center; gap:60px;">
+        <button onclick="acessoADM()" style="color:var(--roxo-raizen); font-weight:900; border:none; background:none; cursor:pointer; font-size:20px;">ADM PÁTIO</button>
+        <button onclick="acessoSuper()" style="color:var(--verde-raizen); font-weight:900; border:none; background:none; cursor:pointer; font-size:20px;">SUPERVISÃO</button>
     </div>
 </div>
 
 <div id="modulo-operador-full">
-    <h2><i class="fa-solid fa-list-check"></i> CONTROLE DE FILA OPERACIONAL</h2>
+    <h2>CONTROLE DE FILA OPERACIONAL</h2>
     <div class="moldura-tabela">
         <table>
             <thead>
@@ -337,340 +189,186 @@
                     <th>PRODUTO</th>
                     <th style="background:#fefce8;">VOLUME (L)</th>
                     <th>JORNADA</th>
-                    <th>STATUS TANQUE</th>
-                    <th>COMUNICAÇÃO</th>
-                    <th>AÇÃO FINAL</th>
+                    <th>ESTOQUE</th>
+                    <th>CHAMAR</th>
+                    <th>AÇÃO</th>
                 </tr>
             </thead>
             <tbody id="listaFila"></tbody>
         </table>
     </div>
-    <button class="btn-master" style="background:var(--preto-painel); margin-top:60px;" onclick="location.reload()">FECHAR E SAIR</button>
+    <button class="btn-master" style="background:var(--preto-painel); margin-top:70px;" onclick="location.reload()">SAIR</button>
 </div>
 
 <div id="modulo-supervisao">
-    <h2><i class="fa-solid fa-gears"></i> CAPACIDADE DE ESTOQUE</h2>
+    <h2>CONTROLE DE TANQUES</h2>
     <div id="gridSupervisao" class="grid-tanques"></div>
-    <button class="btn-master" style="background:var(--preto-painel); margin-top:60px;" onclick="location.reload()">FECHAR E SAIR</button>
+    <button class="btn-master" style="background:var(--preto-painel); margin-top:70px;" onclick="location.reload()">SAIR</button>
 </div>
 
 <script>
     /* ============================================================
-       CONFIGURAÇÕES E LÓGICA DO SISTEMA (JAVASCRIPT EXPANDIDO)
-       ============================================================ */
+       LÓGICA DO SISTEMA - FOCO NA TRAVA DO BIODIESEL
+       ============================================================ 
+    */
     const CONFIG = {
         URL: 'https://rbbkjuiizmvatiawfzuv.supabase.co/rest/v1',
-        HEADERS: { 
-            "apikey": 'sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X', 
-            "Authorization": `Bearer sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X`, 
-            "Content-Type": "application/json", 
-            "Prefer": "return=minimal"
-        }
+        HEADERS: { "apikey": 'sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X', "Authorization": `Bearer sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X`, "Content-Type": "application/json", "Prefer": "return=minimal" }
     };
 
-    let filaGlobal = [];
-    let tanquesGlobal = [];
+    let filaGlobal = [], tanquesGlobal = [];
 
-    // MÁSCARAS DE INPUT
-    function aplicarMascaras() {
-        const placaIn = document.getElementById('placa');
-        const rePlacaIn = document.getElementById('re_placa');
-        const zapIn = document.getElementById('whatsapp');
+    // MÁSCARAS
+    const mkP = el => { el.oninput = function() { let v = this.value.toUpperCase().replace(/[^A-Z0-9]/g, ""); if (v.length > 3 && !isNaN(v[3])) v = v.substring(0,3) + "-" + v.substring(3,7); this.value = v.substring(0,8); }; };
+    mkP(document.getElementById('placa')); mkP(document.getElementById('re_placa'));
+    document.getElementById('whatsapp').oninput = function(e) { let v = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/); e.target.value = !v[2] ? v[1] : '(' + v[1] + ') ' + v[2] + (v[3] ? '-' + v[3] : ''); };
+    document.getElementById('jornada24').onchange = function() { document.getElementById('limite').disabled = this.checked; document.getElementById('area-tempo').style.opacity = this.checked ? "0.3" : "1"; };
 
-        const mkPlaca = (el) => {
-            el.oninput = function() {
-                let v = this.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
-                if (v.length > 3 && !isNaN(v[3])) v = v.substring(0,3) + "-" + v.substring(3,7);
-                this.value = v.substring(0,8);
-            };
-        };
-
-        mkPlaca(placaIn);
-        mkPlaca(rePlacaIn);
-
-        zapIn.oninput = function(e) {
-            let v = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
-            e.target.value = !v[2] ? v[1] : '(' + v[1] + ') ' + v[2] + (v[3] ? '-' + v[3] : '');
-        };
-    }
-    aplicarMascaras();
-
-    document.getElementById('jornada24').onchange = function() {
-        const tempo = document.getElementById('limite');
-        tempo.disabled = this.checked;
-        document.getElementById('area-tempo').style.opacity = this.checked ? "0.3" : "1";
-    };
-
-    function setLoader(estado) {
-        document.getElementById('loader-overlay').style.display = estado ? 'flex' : 'none';
+    function setLoader(v) { document.getElementById('loader-overlay').style.display = v ? 'flex' : 'none'; }
+    
+    // LIMPEZA TOTAL DE TEXTO PARA COMPARAÇÃO
+    function limpar(t) { 
+        if(!t) return "";
+        return t.toString().toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Z0-9]/g, ""); 
     }
 
-    /* FUNÇÃO DE LIMPEZA DE TEXTO (A CHAVE PARA O S10 E BIODIESEL) */
-    function normalizarTexto(texto) {
-        if(!texto) return "";
-        return texto.toString()
-            .toUpperCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "") // Remove acentos
-            .replace(/[^A-Z0-9]/g, "");    // Remove espaços, barras e parênteses
+    // SEMAFORO CORES
+    function calcularSemaforo(h) {
+        if(h === "24 HORAS") return { c: 'jor-24h', i: 'fa-infinity' };
+        const agora = new Date(); const [hr, mn] = h.split(':'); const lim = new Date(); lim.setHours(hr, mn, 0);
+        const df = (lim - agora) / 60000;
+        if(df <= 0) return { c: 'jor-vencida', i: 'fa-triangle-exclamation' };
+        if(df <= 30) return { c: 'jor-alerta', i: 'fa-clock' };
+        return { c: 'jor-ok', i: 'fa-circle-check' };
     }
 
-    /* LÓGICA DO SEMÁFORO DE CORES */
-    function calcularSemaforo(horaLimite) {
-        if(horaLimite === "24 HORAS") return { classe: 'jor-24h', icone: 'fa-infinity' };
-        
-        const agora = new Date();
-        const [hora, minuto] = horaLimite.split(':');
-        const limite = new Date();
-        limite.setHours(hora, minuto, 0);
-
-        const diffMinutos = (limite - agora) / 60000;
-
-        if(diffMinutos <= 0) return { classe: 'jor-vencida', icone: 'fa-triangle-exclamation' };
-        if(diffMinutos <= 30) return { classe: 'jor-alerta', icone: 'fa-clock' };
-        return { classe: 'jor-ok', icone: 'fa-circle-check' };
-    }
-
-    /* CARREGAMENTO DE DADOS DO BANCO */
     async function carregarDados() {
-        try {
-            const [resFila, resEstoque] = await Promise.all([
-                fetch(`${CONFIG.URL}/registros?SAIDA=is.null&select=*&order=ENTRADA.asc`, { headers: CONFIG.HEADERS }),
-                fetch(`${CONFIG.URL}/ESTOQUE?select=*&order=TANQUE_NAME.asc`, { headers: CONFIG.HEADERS })
-            ]);
-            
-            filaGlobal = await resFila.json();
-            tanquesGlobal = await resEstoque.json();
-            
-            renderizarFila();
-            renderizarSupervisao();
-        } catch (erro) {
-            console.error("Erro na sincronização:", erro);
-        }
+        const [resF, resT] = await Promise.all([
+            fetch(`${CONFIG.URL}/registros?SAIDA=is.null&select=*&order=ENTRADA.asc`, { headers: CONFIG.HEADERS }),
+            fetch(`${CONFIG.URL}/ESTOQUE?select=*&order=TANQUE_NAME.asc`, { headers: CONFIG.HEADERS })
+        ]);
+        filaGlobal = await resF.json(); tanquesGlobal = await resT.json();
+        renderFila(); renderSuper();
     }
 
-    /* RENDERIZAÇÃO DA TABELA ADM */
-    function renderizarFila() {
-        const corpoTabela = document.getElementById('listaFila');
-        corpoTabela.innerHTML = "";
+    function renderFila() {
+        const corpo = document.getElementById('listaFila'); corpo.innerHTML = "";
         
         filaGlobal.forEach(item => {
-            const prodMotorista = normalizarTexto(item.PRODUTO);
+            const prodCaminhao = limpar(item.PRODUTO);
             
-            // BUSCA O TANQUE POR PALAVRA-CHAVE (S10 entra em DIESELS10, etc)
-            const tanqueCorreto = tanquesGlobal.find(t => {
-                const prodTanque = normalizarTexto(t.PRODUTO);
-                return prodTanque.includes(prodMotorista) || prodMotorista.includes(prodTanque);
+            // BUSCA DO TANQUE - LÓGICA DE EQUIVALÊNCIA "CHAVE MESTRA"
+            const tanque = tanquesGlobal.find(t => {
+                const prodTanque = limpar(t.PRODUTO);
+                // Se o caminhão é BIODIESEL e no tanque tem B100 ou BIO, ele libera
+                if (prodCaminhao.includes("BIODIESEL") && (prodTanque.includes("B100") || prodTanque.includes("BIO"))) return true;
+                // Se o caminhão é DIESEL e no tanque tem S10, ele libera
+                if (prodCaminhao.includes("DIESEL") && prodTanque.includes("S10")) return true;
+                // Comparação padrão
+                return prodTanque.includes(prodCaminhao) || prodCaminhao.includes(prodTanque);
             });
             
-            const infoSemaforo = calcularSemaforo(item.JORNADA);
-            const volItem = Number(item.VOLUME) || 0;
-            const espacoTanque = tanqueCorreto ? Number(tanqueCorreto.ESPAÇO_DISPONIVEL) : 0;
+            const sem = calcularSemaforo(item.JORNADA);
+            const volC = Number(item.VOLUME) || 0;
+            const espL = tanque ? Number(tanque.ESPAÇO_DISPONIVEL) : 0;
             
-            let msgStatus = "OK";
-            let podeLiberar = true;
+            let txtStatus = "OK";
+            let pode = true;
 
-            if (!tanqueCorreto) { 
-                msgStatus = "PRODUTO Ñ ENCONTRADO"; podeLiberar = false; 
-            } else if (volItem <= 0) { 
-                msgStatus = "INFORMAR VOLUME"; podeLiberar = false; 
-            } else if (espacoTanque < volItem) { 
-                msgStatus = `SEM ESPAÇO (${espacoTanque}L)`; podeLiberar = false; 
-            }
+            if (!tanque) { txtStatus = "ERRO: PRODUTO"; pode = false; }
+            else if (volC <= 0) { txtStatus = "INSERIR VOLUME"; pode = false; }
+            else if (espL < volC) { txtStatus = `SEM ESPAÇO (${espL}L)`; pode = false; }
 
-            corpoTabela.innerHTML += `
+            corpo.innerHTML += `
                 <tr>
                     <td style="color:var(--roxo-raizen); font-weight:900;">${item.PLACA}</td>
                     <td><span style="background:#f1f5f9; padding:10px 20px; border-radius:15px;">${item.PRODUTO}</span></td>
                     <td>
                         <div style="display:flex; gap:12px; justify-content:center;">
-                            <input type="number" id="vol-${item.ID}" value="${item.VOLUME || ''}" 
-                                style="width:160px; padding:15px; font-size:20px; border-radius:20px;">
-                            <button onclick="salvarVolume(${item.ID})" 
-                                style="background:var(--roxo-raizen); color:white; border:none; padding:15px 25px; border-radius:15px; cursor:pointer; font-weight:900;">OK</button>
+                            <input type="number" id="vol-${item.ID}" value="${item.VOLUME || ''}" style="width:170px; padding:15px; border-radius:20px; font-size:22px;">
+                            <button onclick="salvarVol(${item.ID})" style="background:var(--roxo-raizen); color:white; border:none; padding:15px 25px; border-radius:15px; cursor:pointer;">OK</button>
                         </div>
                     </td>
-                    <td class="${infoSemaforo.classe}">
-                        <i class="fa-solid ${infoSemaforo.icone}"></i> ${item.JORNADA}
-                    </td>
+                    <td class="${sem.c}"><i class="fa-solid ${sem.i}"></i> ${item.JORNADA}</td>
+                    <td><span class="${pode ? 'status-ok' : 'status-erro'}">${txtStatus}</span></td>
                     <td>
-                        <span class="${podeLiberar ? 'status-ok' : 'status-erro'}">
-                            ${msgStatus}
-                        </span>
-                    </td>
-                    <td>
-                        <button onclick="enviarZap('${item.TELEFONE}', '${item.PLACA}')" 
-                            ${podeLiberar ? '' : 'disabled'} 
-                            style="background:${podeLiberar ? '#25d366' : '#cbd5e1'}; color:white; border:none; padding:22px; border-radius:20px; cursor:pointer; font-weight:900; width:100%;">
-                            <i class="fa-brands fa-whatsapp"></i> CHAMAR
+                        <button onclick="enviarW('${item.TELEFONE}', '${item.PLACA}')" 
+                            ${pode ? '' : 'disabled'} 
+                            style="background:${pode ? '#25d366' : '#cbd5e1'}; color:white; border:none; padding:25px; border-radius:25px; cursor:pointer; font-weight:900; width:100%;">
+                            WHATSAPP
                         </button>
                     </td>
                     <td>
-                        <button onclick="finalizarCaminhao(${item.ID}, ${volItem}, ${tanqueCorreto?.id})" 
-                            style="background:#3b82f6; color:white; border:none; padding:22px; border-radius:20px; cursor:pointer; font-weight:900; width:100%;">
-                            FINALIZAR
-                        </button>
+                        <button onclick="finalizar(${item.ID}, ${volC}, ${tanque?.id})" style="background:#3b82f6; color:white; border:none; padding:25px; border-radius:25px; cursor:pointer; font-weight:900;">SAÍDA</button>
                     </td>
                 </tr>`;
         });
     }
 
-    /* SALVAR VOLUME DO CAMINHÃO */
-    async function salvarVolume(id) {
-        const volumeInformado = document.getElementById(`vol-${id}`).value;
-        if(!volumeInformado) return alert("Informe o volume!");
-        
+    async function salvarVol(id) {
+        const v = document.getElementById(`vol-${id}`).value;
         setLoader(true);
-        await fetch(`${CONFIG.URL}/registros?ID=eq.${id}`, { 
-            method: 'PATCH', 
-            headers: CONFIG.HEADERS, 
-            body: JSON.stringify({ VOLUME: volumeInformado }) 
-        });
-        await carregarDados();
-        setLoader(false);
+        await fetch(`${CONFIG.URL}/registros?ID=eq.${id}`, { method: 'PATCH', headers: CONFIG.HEADERS, body: JSON.stringify({ VOLUME: v }) });
+        await carregarDados(); setLoader(false);
     }
 
-    /* FINALIZAR E BAIXAR ESTOQUE */
-    async function finalizarCaminhao(id, vol, idTanque) {
-        if(!confirm("CONFIRMAR SAÍDA E BAIXA NO ESTOQUE?")) return;
-        
+    async function finalizar(id, vol, tId) {
+        if(!confirm("CONFIRMAR FINALIZAÇÃO?")) return;
         setLoader(true);
-        // Registra a saída
-        await fetch(`${CONFIG.URL}/registros?ID=eq.${id}`, { 
-            method: 'PATCH', 
-            headers: CONFIG.HEADERS, 
-            body: JSON.stringify({ SAIDA: new Date().toLocaleString() }) 
-        });
-
-        // Baixa o estoque no tanque
-        if(idTanque && vol > 0) {
-            const tanqueAlvo = tanquesGlobal.find(x => x.id === idTanque);
-            const novoEspaco = Number(tanqueAlvo.ESPAÇO_DISPONIVEL) - vol;
-            
-            await fetch(`${CONFIG.URL}/ESTOQUE?id=eq.${idTanque}`, { 
-                method: 'PATCH', 
-                headers: CONFIG.HEADERS, 
-                body: JSON.stringify({ ESPAÇO_DISPONIVEL: novoEspaco }) 
-            });
+        await fetch(`${CONFIG.URL}/registros?ID=eq.${id}`, { method: 'PATCH', headers: CONFIG.HEADERS, body: JSON.stringify({ SAIDA: new Date().toLocaleString() }) });
+        if(tId && vol > 0) {
+            const t = tanquesGlobal.find(x => x.id === tId);
+            await fetch(`${CONFIG.URL}/ESTOQUE?id=eq.${tId}`, { method: 'PATCH', headers: CONFIG.HEADERS, body: JSON.stringify({ ESPAÇO_DISPONIVEL: Number(t.ESPAÇO_DISPONIVEL) - vol }) });
         }
-        
-        await carregarDados();
-        setLoader(false);
+        await carregarDados(); setLoader(false);
     }
 
-    /* RENDERIZAÇÃO DA SUPERVISÃO */
-    function renderizarSupervisao() {
+    function renderSuper() {
         const grid = document.getElementById('gridSupervisao');
         grid.innerHTML = tanquesGlobal.map(t => `
             <div class="card-tanque">
-                <i class="fa-solid fa-database" style="font-size:50px; color:var(--roxo-raizen); margin-bottom:25px;"></i>
-                <h3 style="color:var(--roxo-raizen); font-size:28px;">${t.TANQUE_NAME}</h3>
-                <p style="font-weight:900; font-size:22px; color:var(--verde-raizen); margin-bottom:30px;">${t.PRODUTO}</p>
-                <div style="text-align:left;">
-                    <label style="font-size:14px;">ESPAÇO LIVRE (LITROS)</label>
-                    <input type="number" id="stq-${t.id}" value="${t.ESPAÇO_DISPONIVEL}" style="padding:25px; font-size:26px;">
+                <i class="fa-solid fa-database" style="font-size:55px; color:var(--roxo-raizen); margin-bottom:30px;"></i>
+                <h3 style="color:var(--roxo-raizen); font-size:30px;">${t.TANQUE_NAME}</h3>
+                <p style="font-weight:900; font-size:24px; color:var(--verde-raizen);">${t.PRODUTO}</p>
+                <div style="text-align:left; margin-top:30px;">
+                    <label style="font-size:14px;">ESPAÇO LIVRE (L)</label>
+                    <input type="number" id="stq-${t.id}" value="${t.ESPAÇO_DISPONIVEL}" style="padding:30px; font-size:28px;">
                 </div>
-                <button onclick="atualizarEstoque(${t.id})" class="btn-master" style="font-size:18px; padding:30px; margin-top:30px; box-shadow:0 12px 0 #5e1659;">
-                    SALVAR ESTOQUE
-                </button>
-            </div>
-        `).join('');
+                <button onclick="salvarEstoque(${t.id})" class="btn-master" style="font-size:20px; padding:35px; margin-top:30px;">SALVAR</button>
+            </div>`).join('');
     }
 
-    async function atualizarEstoque(id) {
-        const novoValor = document.getElementById(`stq-${id}`).value;
+    async function salvarEstoque(id) {
+        const v = document.getElementById(`stq-${id}`).value;
         setLoader(true);
-        await fetch(`${CONFIG.URL}/ESTOQUE?id=eq.${id}`, { 
-            method: 'PATCH', 
-            headers: CONFIG.HEADERS, 
-            body: JSON.stringify({ ESPAÇO_DISPONIVEL: novoValor }) 
-        });
-        await carregarDados();
-        setLoader(false);
-        alert("CAPACIDADE ATUALIZADA!");
+        await fetch(`${CONFIG.URL}/ESTOQUE?id=eq.${id}`, { method: 'PATCH', headers: CONFIG.HEADERS, body: JSON.stringify({ ESPAÇO_DISPONIVEL: v }) });
+        await carregarDados(); setLoader(false); alert("ESTOQUE SALVO!");
     }
 
-    /* ENVIO DE REGISTRO DO MOTORISTA */
     document.getElementById('formMaster').onsubmit = async e => {
-        e.preventDefault();
-        setLoader(true);
-        
-        const info = {
-            PLACA: document.getElementById('placa').value.toUpperCase(),
-            PRODUTO: document.getElementById('produto').value,
-            TELEFONE: document.getElementById('whatsapp').value,
-            JORNADA: document.getElementById('jornada24').checked ? "24 HORAS" : document.getElementById('limite').value,
-            ENTRADA: new Date().toLocaleString()
-        };
-
-        const res = await fetch(`${CONFIG.URL}/registros`, { 
-            method: 'POST', 
-            headers: CONFIG.HEADERS, 
-            body: JSON.stringify(info) 
-        });
-
-        setLoader(false);
-        if(res.ok) {
-            alert("REGISTRO EFETUADO! Aguarde o contato via WhatsApp.");
-            location.reload();
-        }
+        e.preventDefault(); setLoader(true);
+        const d = { PLACA: document.getElementById('placa').value.toUpperCase(), PRODUTO: document.getElementById('produto').value, TELEFONE: document.getElementById('whatsapp').value, JORNADA: document.getElementById('jornada24').checked ? "24 HORAS" : document.getElementById('limite').value, ENTRADA: new Date().toLocaleString() };
+        await fetch(`${CONFIG.URL}/registros`, { method: 'POST', headers: CONFIG.HEADERS, body: JSON.stringify(d) });
+        setLoader(false); alert("REGISTRADO!"); location.reload();
     };
 
-    /* ACESSOS RESTRITOS */
-    function acessoADM() { 
-        if(prompt("SENHA ADMINISTRATIVA:") === "raizen2026") { 
-            document.getElementById('secao-entrada').style.display='none'; 
-            document.getElementById('modulo-operador-full').style.display='block'; 
-            carregarDados(); 
-        } 
-    }
+    function acessoADM() { if(prompt("SENHA ADM:") === "raizen2026") { document.getElementById('secao-entrada').style.display='none'; document.getElementById('modulo-operador-full').style.display='block'; carregarDados(); } }
+    function acessoSuper() { if(prompt("SENHA SUPERVISÃO:") === "master2026") { document.getElementById('secao-entrada').style.display='none'; document.getElementById('modulo-supervisao').style.display='block'; carregarDados(); } }
+    function abrirReabertura() { document.getElementById('form-principal-wrapper').style.display = 'none'; document.getElementById('form-reabertura-wrapper').style.display = 'block'; }
+    function fecharReabertura() { document.getElementById('form-reabertura-wrapper').style.display = 'none'; document.getElementById('form-principal-wrapper').style.display = 'block'; }
     
-    function acessoSuper() { 
-        if(prompt("SENHA SUPERVISÃO:") === "master2026") { 
-            document.getElementById('secao-entrada').style.display='none'; 
-            document.getElementById('modulo-supervisao').style.display='block'; 
-            carregarDados(); 
-        } 
-    }
-
-    function abrirReabertura() { 
-        document.getElementById('form-principal-wrapper').style.display = 'none'; 
-        document.getElementById('form-reabertura-wrapper').style.display = 'block'; 
-    }
-    
-    function fecharReabertura() { 
-        document.getElementById('form-reabertura-wrapper').style.display = 'none'; 
-        document.getElementById('form-principal-wrapper').style.display = 'block'; 
-    }
-
     async function processarReabertura() {
-        const p = document.getElementById('re_placa').value.toUpperCase();
-        const h = document.getElementById('re_hora').value;
-        setLoader(true);
+        const p = document.getElementById('re_placa').value.toUpperCase(); const h = document.getElementById('re_hora').value; setLoader(true);
         const res = await fetch(`${CONFIG.URL}/registros?PLACA=eq.${p}&SAIDA=is.null`, { headers: CONFIG.HEADERS });
-        const dados = await res.json();
-        if(dados.length > 0) {
-            await fetch(`${CONFIG.URL}/registros?ID=eq.${dados[0].ID}`, { 
-                method: 'PATCH', 
-                headers: CONFIG.HEADERS, 
-                body: JSON.stringify({ JORNADA: h }) 
-            });
-            setLoader(false);
-            alert("JORNADA ATUALIZADA!");
-            location.reload();
-        } else {
-            setLoader(false);
-            alert("VEÍCULO NÃO ENCONTRADO NO PÁTIO!");
-        }
+        const d = await res.json();
+        if(d.length > 0) { await fetch(`${CONFIG.URL}/registros?ID=eq.${d[0].ID}`, { method: 'PATCH', headers: CONFIG.HEADERS, body: JSON.stringify({ JORNADA: h }) }); location.reload(); }
+        else { setLoader(false); alert("PLACA NÃO ACHADA!"); }
     }
 
-    function enviarZap(tel, placa) {
-        const fone = tel.replace(/\D/g, "");
-        window.open(`https://wa.me/55${fone}?text=Olá! O veículo ${placa} está autorizado para descarga. Dirija-se à doca agora.`, '_blank');
-    }
-
-    // Auto-refresh do semáforo a cada 60s
-    setInterval(() => { if(filaGlobal.length > 0) renderizarFila(); }, 60000);
+    function enviarW(t, p) { window.open(`https://wa.me/55${t.replace(/\D/g, "")}?text=Veículo ${p} autorizado.`); }
+    
+    // ATUALIZAÇÃO AUTOMÁTICA DO SEMÁFORO
+    setInterval(() => { if(filaGlobal.length > 0) renderFila(); }, 60000);
 </script>
 </body>
 </html>
