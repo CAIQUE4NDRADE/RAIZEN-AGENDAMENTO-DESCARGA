@@ -28,7 +28,7 @@
             color: #1e293b; 
             min-height: 100vh; 
             padding-bottom: 80px;
-            overflow-x: auto;
+            overflow-x: auto; /* Permitir scroll lateral para visualização desktop no celular */
         }
 
         header { 
@@ -268,7 +268,6 @@
                 <tr>
                     <th>VEÍCULO</th>
                     <th>PRODUTO</th>
-                    <th style="background:#fefce8; color:#854d0e;">VOLUME (ADM)</th>
                     <th>STATUS JORNADA</th>
                     <th>HORA ENTRADA</th>
                     <th style="background:#fff7ed; color:#c2410c;">AGENDAMENTO</th>
@@ -323,15 +322,17 @@
         e.target.value = !v[2] ? v[1] : '(' + v[1] + ') ' + v[2] + (v[3] ? '-' + v[3] : '');
     };
 
+    // CONTROLE DA TRAVA DE JORNADA
     document.getElementById('jornada24').onchange = function() {
         const campoLimite = document.getElementById('limite');
         document.getElementById('area-tempo').style.opacity = this.checked ? "0.3" : "1";
         campoLimite.disabled = this.checked;
+        
         if(this.checked) {
-            campoLimite.required = false;
+            campoLimite.required = false; // Se for 24h, não precisa da hora
             campoLimite.value = "";
         } else {
-            campoLimite.required = true;
+            campoLimite.required = true; // Se não for 24h, a hora volta a ser obrigatória
         }
     };
 
@@ -361,10 +362,6 @@
                 <tr>
                     <td style="color:var(--roxo-raizen); font-weight:900; font-size:22px;">${item.PLACA}</td>
                     <td><span class="tag-p ${corTag}">${item.PRODUTO}</span></td>
-                    <td style="background:#fefce8;">
-                        <input type="number" id="vol-${id}" value="${item.VOLUME || ''}" placeholder="LITROS" class="input-edit-table">
-                        <button onclick="salvarCampo('${id}', 'VOLUME')" class="btn-acao-tabela" style="background:#854d0e; color:white;">SALVAR VOL.</button>
-                    </td>
                     <td>${verificarJornada(item.JORNADA)}</td>
                     <td style="font-size:12px; color:#64748b;">${item.ENTRADA}</td>
                     <td style="background:#fffbeb;">
@@ -390,14 +387,8 @@
     }
 
     async function salvarCampo(id, campo) {
-        let inputId = "";
-        if(campo === 'AGENDAMENTO') inputId = `ag-${id}`;
-        else if(campo === 'VOLUME') inputId = `vol-${id}`;
-        else inputId = `tel-${id}`;
-
-        let valor = document.getElementById(inputId).value;
+        let valor = document.getElementById(campo === 'AGENDAMENTO' ? `ag-${id}` : `tel-${id}`).value;
         if(campo === 'AGENDAMENTO') valor = valor ? valor.replace("T", " ") : null;
-        
         setLoader(true);
         try {
             const res = await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?${RAÍZEN_DB.ID_COL}=eq.${id}`, {
