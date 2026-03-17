@@ -286,209 +286,187 @@
 </div>
 
 <script>
+    /* --- CONFIGURAÇÕES DO BANCO --- */
+    const RAÍZEN_DB = {
+        URL: 'https://rbbkjuiizmvatiawfzuv.supabase.co',
+        KEY: 'sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X',
+        ID_COL: 'ID',
+        HEADERS: { 
+            "apikey": 'sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X', 
+            "Authorization": `Bearer sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X`, 
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+        }
+    };
 
-/* ================= CONFIG ================= */
-const RAÍZEN_DB = {
-    URL: 'https://rbbkjuiizmvatiawfzuv.supabase.co',
-    KEY: 'sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X',
-    ID_COL: 'ID',
-    HEADERS: { 
-        "apikey": 'sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X', 
-        "Authorization": `Bearer sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X`, 
-        "Content-Type": "application/json",
-        "Prefer": "return=minimal"
-    }
-};
+    let memoriaFila = [];
+    let filtroAtivo = 'TODOS';
 
-/* ================= MEMÓRIA ================= */
-let memoriaFila = [];
-let memoriaTanques = [];
-let filtroAtivo = 'TODOS';
+    /* --- COMPONENTES DE INTERFACE --- */
+    function setLoader(v) { document.getElementById('loader-overlay').style.display = v ? 'flex' : 'none'; }
+    function abrirReabertura() { document.getElementById('form-principal-wrapper').style.display = 'none'; document.getElementById('form-reabertura-wrapper').style.display = 'block'; }
+    function fecharReabertura() { document.getElementById('form-reabertura-wrapper').style.display = 'none'; document.getElementById('form-principal-wrapper').style.display = 'block'; }
 
-/* ================= NORMALIZAR ================= */
-function normalizarProduto(produto){
-    if(produto.includes("ANIDRO")) return "ANIDRO";
-    if(produto.includes("HIDRATADO")) return "HIDRATADO";
-    if(produto.includes("B100")) return "BIODIESEL (B100)";
-    if(produto.includes("DIESEL")) return "S10";
-    if(produto.includes("GASOLINA")) return "GASOLINA";
-    return produto;
-}
+    const mascaraPlaca = (el) => {
+        el.oninput = function() {
+            let v = this.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+            if (v.length > 3 && !isNaN(v[3])) v = v.substring(0,3) + "-" + v.substring(3,7);
+            this.value = v.substring(0,8);
+        };
+    };
+    mascaraPlaca(document.getElementById('placa'));
+    mascaraPlaca(document.getElementById('re_placa'));
 
-/* ================= CARREGAR ================= */
-async function carregarDados() {
-    try {
-        const [resFila, resTanques] = await Promise.all([
-            fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?SAIDA=is.null&select=*`, { headers: RAÍZEN_DB.HEADERS }),
-            fetch(`${RAÍZEN_DB.URL}/rest/v1/TANQUES?select=*`, { headers: RAÍZEN_DB.HEADERS })
-        ]);
+    document.getElementById('whatsapp').oninput = function(e) {
+        let v = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+        e.target.value = !v[2] ? v[1] : '(' + v[1] + ') ' + v[2] + (v[3] ? '-' + v[3] : '');
+    };
 
-        memoriaFila = await resFila.json();
-        memoriaTanques = await resTanques.json();
+    // CONTROLE DA TRAVA DE JORNADA
+    document.getElementById('jornada24').onchange = function() {
+        const campoLimite = document.getElementById('limite');
+        document.getElementById('area-tempo').style.opacity = this.checked ? "0.3" : "1";
+        campoLimite.disabled = this.checked;
+        
+        if(this.checked) {
+            campoLimite.required = false; // Se for 24h, não precisa da hora
+            campoLimite.value = "";
+        } else {
+            campoLimite.required = true; // Se não for 24h, a hora volta a ser obrigatória
+        }
+    };
 
-        renderTabela();
-
-    } catch(e) { console.error("Erro:", e); }
-}
-
-/* ================= RENDER ================= */
-function renderTabela() {
-    const corpo = document.getElementById('listaFila');
-    corpo.innerHTML = "";
-
-    let lista = [...memoriaFila];
-
-    if (filtroAtivo !== 'TODOS')
-        lista = lista.filter(i => i.PRODUTO.toUpperCase().includes(filtroAtivo));
-
-    lista.sort((a,b)=>{
-        const agA = a.AGENDAMENTO ? new Date(a.AGENDAMENTO) : new Date(8640000000000000);
-        const agB = b.AGENDAMENTO ? new Date(b.AGENDAMENTO) : new Date(8640000000000000);
-        return agA - agB;
-    });
-
-    lista.forEach(item => {
-
-        const produtoDB = normalizarProduto(item.PRODUTO);
-
-        const tanquesOk = memoriaTanques.filter(t =>
-            t.PRODUTO === produtoDB && t.ESPACO_DISPONIVEL >= item.VOLUME
-        );
-
-        const bloqueado = tanquesOk.length === 0;
-
-        const id = item.ID;
-
-        const corTag = item.PRODUTO.includes("GASOLINA") ? "bg-gas" :
-            item.PRODUTO.includes("BIODIESEL") ? "bg-b100" :
-            item.PRODUTO.includes("ANIDRO") ? "bg-ani" :
-            item.PRODUTO.includes("HIDRATADO") ? "bg-hid" : "bg-die";
-
-        corpo.innerHTML += `
-        <tr>
-            <td style="color:var(--roxo-raizen); font-weight:900;">${item.PLACA}</td>
-
-            <td><span class="tag-p ${corTag}">${item.PRODUTO}</span></td>
-
-            <td>${verificarJornada(item.JORNADA)}</td>
-
-            <td>${item.ENTRADA}</td>
-
-            <td>
-                <input id="ag-${id}" type="datetime-local" value="${item.AGENDAMENTO ? item.AGENDAMENTO.slice(0,16) : ''}" class="input-edit-table">
-                <button onclick="salvarCampo('${id}','AGENDAMENTO')" class="btn-acao-tabela">SALVAR</button>
-            </td>
-
-            <td>
-                <input id="tel-${id}" value="${item.TELEFONE}" class="input-edit-table">
-                <button onclick="salvarCampo('${id}','TELEFONE')" class="btn-acao-tabela">SALVAR</button>
-            </td>
-
-            <td>
-                <button onclick="chamarWhatsApp('${item.TELEFONE}','${item.PRODUTO}',${item.VOLUME},${id})"
-                ${bloqueado ? 'disabled' : ''}>
-                ${bloqueado ? 'SEM ESPAÇO' : 'CHAMAR'}
-                </button>
-            </td>
-
-            <td>
-                <button onclick="finalizar('${id}')">SAÍDA</button>
-            </td>
-        </tr>`;
-    });
-}
-
-/* ================= WHATS ================= */
-async function chamarWhatsApp(tel, produto, volume, id) {
-
-    const produtoDB = normalizarProduto(produto);
-
-    const tanques = memoriaTanques.filter(t =>
-        t.PRODUTO === produtoDB && t.ESPACO_DISPONIVEL >= volume
-    );
-
-    if(tanques.length === 0){
-        alert("SEM ESPAÇO");
-        return;
+    async function carregarDados() {
+        try {
+            const res = await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?SAIDA=is.null&select=*`, { headers: RAÍZEN_DB.HEADERS });
+            if(!res.ok) throw new Error("Erro de resposta");
+            memoriaFila = await res.json();
+            renderTabela();
+        } catch(e) { console.error("Falha na sincronização", e); }
     }
 
-    const tanque = tanques[0];
+    function renderTabela() {
+        const corpo = document.getElementById('listaFila');
+        corpo.innerHTML = "";
+        let lista = [...memoriaFila].sort((a,b) => {
+            const agA = a.AGENDAMENTO ? new Date(a.AGENDAMENTO) : new Date(8640000000000000);
+            const agB = b.AGENDAMENTO ? new Date(b.AGENDAMENTO) : new Date(8640000000000000);
+            return agA - agB;
+        });
+        if (filtroAtivo !== 'TODOS') lista = lista.filter(i => i.PRODUTO.toUpperCase().includes(filtroAtivo));
 
-    const baia = prompt(`Tanque ${tanque.TANQUE_NAME}\nInforme BAIA:`);
-    if(!baia) return;
-
-    await fetch(`${RAÍZEN_DB.URL}/rest/v1/TANQUES?id=eq.${tanque.id}`, {
-        method: 'PATCH',
-        headers: RAÍZEN_DB.HEADERS,
-        body: JSON.stringify({
-            ESPACO_DISPONIVEL: tanque.ESPACO_DISPONIVEL - volume
-        })
-    });
-
-    await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${id}`, {
-        method: 'PATCH',
-        headers: RAÍZEN_DB.HEADERS,
-        body: JSON.stringify({
-            TANQUE_USADO: tanque.id
-        })
-    });
-
-    const msg = encodeURIComponent(`Dirigir ao tanque ${tanque.TANQUE_NAME} - Baia ${baia}`);
-
-    window.open(`https://wa.me/55${tel.replace(/\D/g,"")}?text=${msg}`);
-
-    carregarDados();
-}
-
-/* ================= FINALIZAR ================= */
-async function finalizar(id){
-
-    const item = memoriaFila.find(i => i.ID == id);
-
-    if(item.TANQUE_USADO){
-
-        const tanque = memoriaTanques.find(t => t.id == item.TANQUE_USADO);
-
-        await fetch(`${RAÍZEN_DB.URL}/rest/v1/TANQUES?id=eq.${tanque.id}`, {
-            method: 'PATCH',
-            headers: RAÍZEN_DB.HEADERS,
-            body: JSON.stringify({
-                ESPACO_DISPONIVEL: tanque.ESPACO_DISPONIVEL + item.VOLUME
-            })
+        lista.forEach(item => {
+            const id = item[RAÍZEN_DB.ID_COL];
+            const corTag = item.PRODUTO.includes("GASOLINA") ? "bg-gas" : item.PRODUTO.includes("BIODIESEL") ? "bg-b100" : item.PRODUTO.includes("ANIDRO") ? "bg-ani" : item.PRODUTO.includes("HIDRATADO") ? "bg-hid" : "bg-die";
+            corpo.innerHTML += `
+                <tr>
+                    <td style="color:var(--roxo-raizen); font-weight:900; font-size:22px;">${item.PLACA}</td>
+                    <td><span class="tag-p ${corTag}">${item.PRODUTO}</span></td>
+                    <td>${verificarJornada(item.JORNADA)}</td>
+                    <td style="font-size:12px; color:#64748b;">${item.ENTRADA}</td>
+                    <td style="background:#fffbeb;">
+                        <input type="datetime-local" id="ag-${id}" value="${item.AGENDAMENTO ? item.AGENDAMENTO.slice(0,16) : ''}" class="input-edit-table">
+                        <button onclick="salvarCampo('${id}', 'AGENDAMENTO')" class="btn-acao-tabela" style="background:var(--verde-raizen); color:white;">SALVAR AG.</button>
+                    </td>
+                    <td style="background:#f0fdf4;">
+                        <input type="text" id="tel-${id}" value="${item.TELEFONE}" class="input-edit-table">
+                        <button onclick="salvarCampo('${id}', 'TELEFONE')" class="btn-acao-tabela" style="background:#166534; color:white;">ATUALIZAR TEL.</button>
+                    </td>
+                    <td><button onclick="chamarWhatsApp('${item.TELEFONE}')" style="background:#25d366; color:white; border:none; padding:15px; border-radius:15px; cursor:pointer; font-weight:900; width:100%; display:flex; align-items:center; justify-content:center; gap:8px;"><i class="fa-brands fa-whatsapp"></i> CONVOCAR</button></td>
+                    <td><button onclick="finalizar('${id}')" style="background:#3b82f6; color:white; border:none; padding:15px; border-radius:15px; cursor:pointer; font-weight:900; width:100%;">SAÍDA</button></td>
+                </tr>`;
         });
     }
 
-    await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${id}`, {
-        method: 'PATCH',
-        headers: RAÍZEN_DB.HEADERS,
-        body: JSON.stringify({
-            SAIDA: new Date().toLocaleString('pt-BR')
-        })
-    });
+    function verificarJornada(h) {
+        if(h === "24 HORAS") return "<b style='color:green'>● 24H LIBERADA</b>";
+        if(!h) return "<span style='color:#ccc'>---</span>";
+        const limite = new Date(); const [hr, min] = h.split(':');
+        limite.setHours(parseInt(hr), parseInt(min), 0);
+        return (new Date() > limite) ? `<b style="color:var(--cor-erro)">● EXPIRADA (${h})</b>` : `<b style="color:var(--cor-sucesso)">● EM DIA (${h})</b>`;
+    }
 
-    carregarDados();
-}
+    async function salvarCampo(id, campo) {
+        let valor = document.getElementById(campo === 'AGENDAMENTO' ? `ag-${id}` : `tel-${id}`).value;
+        if(campo === 'AGENDAMENTO') valor = valor ? valor.replace("T", " ") : null;
+        setLoader(true);
+        try {
+            const res = await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?${RAÍZEN_DB.ID_COL}=eq.${id}`, {
+                method: 'PATCH',
+                headers: RAÍZEN_DB.HEADERS,
+                body: JSON.stringify({ [campo]: valor })
+            });
+            if(res.ok) { alert("DADO ATUALIZADO!"); carregarDados(); } 
+            else throw new Error();
+        } catch(e) { alert("ERRO AO SALVAR"); }
+        finally { setLoader(false); }
+    }
 
-/* ================= RESTO DO SISTEMA ================= */
-function verificarJornada(h) {
-    if(h === "24 HORAS") return "<b style='color:green'>● 24H</b>";
-    if(!h) return "---";
-    const limite = new Date(); 
-    const [hr, min] = h.split(':');
-    limite.setHours(hr, min);
-    return (new Date() > limite) ? "EXPIRADA" : "OK";
-}
+    function chamarWhatsApp(tel) {
+        const baia = prompt("Motorista vamos descarregar?\nInforme a BAIA ou ÁREA:");
+        if(!baia) return;
+        const msg = encodeURIComponent(`Olá\nMotorista vamos descarregar?\nBaia ${baia}\nObrigado!\n\nObs: aguarde a instrução do operador para entrar na baia!`);
+        window.open(`https://wa.me/55${tel.replace(/\D/g, "")}?text=${msg}`, '_blank');
+    }
 
-function salvarCampo(id, campo){
-    let valor = document.getElementById(campo === 'AGENDAMENTO' ? `ag-${id}` : `tel-${id}`).value;
-    if(campo === 'AGENDAMENTO') valor = valor ? valor.replace("T"," ") : null;
+    async function finalizar(id) {
+        if(!confirm("DESEJA FINALIZAR A SAÍDA?")) return;
+        setLoader(true);
+        try {
+            await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?${RAÍZEN_DB.ID_COL}=eq.${id}`, {
+                method: 'PATCH', headers: RAÍZEN_DB.HEADERS, body: JSON.stringify({ "SAIDA": new Date().toLocaleString('pt-BR') })
+            });
+            carregarDados();
+        } finally { setLoader(false); }
+    }
 
-    fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${id}`, {
-        method:'PATCH',
-        headers: RAÍZEN_DB.HEADERS,
-        body: JSON.stringify({[campo]:valor})
-    }).then(()=>carregarDados());
-}
+    async function processarReabertura() {
+        const p = document.getElementById('re_placa').value.toUpperCase();
+        const h = document.getElementById('re_hora').value;
+        setLoader(true);
+        try {
+            const res = await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?PLACA=eq.${p}&SAIDA=is.null`, { headers: RAÍZEN_DB.HEADERS });
+            const data = await res.json();
+            if(data.length > 0) {
+                await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?${RAÍZEN_DB.ID_COL}=eq.${data[0][RAÍZEN_DB.ID_COL]}`, {
+                    method: 'PATCH', headers: RAÍZEN_DB.HEADERS, body: JSON.stringify({"JORNADA": h})
+                });
+                alert("JORNADA REABERTA!"); location.reload();
+            } else alert("NÃO LOCALIZADO!");
+        } finally { setLoader(false); }
+    }
+
+    function filtrar(tipo, btn) {
+        filtroAtivo = tipo;
+        document.querySelectorAll('.chip-filtro').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderTabela();
+    }
+
+    function ativarOperador() {
+        if(prompt("SENHA:") === "raizen2026") {
+            document.getElementById('secao-entrada').style.display = 'none';
+            document.getElementById('modulo-operador-full').style.display = 'block';
+            carregarDados();
+            setInterval(carregarDados, 30000);
+        }
+    }
+
+    document.getElementById('formMaster').onsubmit = async e => {
+        e.preventDefault();
+        setLoader(true);
+        const data = {
+            "PLACA": document.getElementById('placa').value.toUpperCase(),
+            "PRODUTO": document.getElementById('produto').value,
+            "TELEFONE": document.getElementById('whatsapp').value,
+            "JORNADA": document.getElementById('jornada24').checked ? "24 HORAS" : document.getElementById('limite').value,
+            "ENTRADA": new Date().toLocaleString('pt-BR')
+        };
+        try {
+            const res = await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros`, { method: 'POST', headers: RAÍZEN_DB.HEADERS, body: JSON.stringify(data) });
+            if(res.ok) { alert("REGISTRADO!"); location.reload(); }
+        } finally { setLoader(false); }
+    };
 
 </script>
 
