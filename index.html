@@ -28,7 +28,7 @@
             color: #1e293b; 
             min-height: 100vh; 
             padding-bottom: 80px;
-            overflow-x: auto; /* Permitir scroll lateral para visualização desktop no celular */
+            overflow-x: auto;
         }
 
         header { 
@@ -212,6 +212,11 @@
                 <label><i class="fa-brands fa-whatsapp"></i> WHATSAPP MOTORISTA</label>
                 <input type="tel" id="whatsapp" placeholder="(19) 99999-9999" required>
             </div>
+
+            <div class="wrapper-input">
+                <label><i class="fa-solid fa-droplet"></i> VOLUME PARA DESCARGA (LITROS)</label>
+                <input type="number" id="volume_carga" placeholder="Ex: 45000" required>
+            </div>
             
             <div class="painel-jornada">
                 <div id="area-tempo">
@@ -253,10 +258,10 @@
 
 <div id="modulo-operador-full">
     <div style="text-align:center; margin-top:20px;">
-    <button onclick="abrirGestaoTanques()" style="background:none; border:none; color:#64748b; font-weight:700; cursor:pointer; font-size:12px; text-transform:uppercase;">
-        <i class="fa-solid fa-gauge-high"></i> SUPERVISÃO DE TANQUES
-    </button>
-</div>
+        <button onclick="abrirGestaoTanques()" style="background:none; border:none; color:#64748b; font-weight:700; cursor:pointer; font-size:12px; text-transform:uppercase;">
+            <i class="fa-solid fa-gauge-high"></i> SUPERVISÃO DE TANQUES
+        </button>
+    </div>
     <h2>PAINEL DE CONTROLE DE PÁTIO</h2>
     <div class="filtros-top">
         <button class="chip-filtro active" onclick="filtrar('TODOS', this)">TODOS</button>
@@ -327,18 +332,12 @@
         e.target.value = !v[2] ? v[1] : '(' + v[1] + ') ' + v[2] + (v[3] ? '-' + v[3] : '');
     };
 
-    // CONTROLE DA TRAVA DE JORNADA
     document.getElementById('jornada24').onchange = function() {
         const campoLimite = document.getElementById('limite');
         document.getElementById('area-tempo').style.opacity = this.checked ? "0.3" : "1";
         campoLimite.disabled = this.checked;
-        
-        if(this.checked) {
-            campoLimite.required = false; // Se for 24h, não precisa da hora
-            campoLimite.value = "";
-        } else {
-            campoLimite.required = true; // Se não for 24h, a hora volta a ser obrigatória
-        }
+        if(this.checked) { campoLimite.required = false; campoLimite.value = ""; } 
+        else { campoLimite.required = true; }
     };
 
     async function carregarDados() {
@@ -366,7 +365,7 @@
             corpo.innerHTML += `
                 <tr>
                     <td style="color:var(--roxo-raizen); font-weight:900; font-size:22px;">${item.PLACA}</td>
-                    <td><span class="tag-p ${corTag}">${item.PRODUTO}</span></td>
+                    <td><span class="tag-p ${corTag}">${item.PRODUTO}</span><br><small>Vol: ${item.VOLUME_CARGA}L</small></td>
                     <td>${verificarJornada(item.JORNADA)}</td>
                     <td style="font-size:12px; color:#64748b;">${item.ENTRADA}</td>
                     <td style="background:#fffbeb;">
@@ -377,7 +376,7 @@
                         <input type="text" id="tel-${id}" value="${item.TELEFONE}" class="input-edit-table">
                         <button onclick="salvarCampo('${id}', 'TELEFONE')" class="btn-acao-tabela" style="background:#166534; color:white;">ATUALIZAR TEL.</button>
                     </td>
-                    <td><button onclick="chamarWhatsApp('${item.TELEFONE}')" style="background:#25d366; color:white; border:none; padding:15px; border-radius:15px; cursor:pointer; font-weight:900; width:100%; display:flex; align-items:center; justify-content:center; gap:8px;"><i class="fa-brands fa-whatsapp"></i> CONVOCAR</button></td>
+                    <td><button onclick="chamarWhatsApp('${item.TELEFONE}', '${item.PRODUTO}', '${item.VOLUME_CARGA}')" style="background:#25d366; color:white; border:none; padding:15px; border-radius:15px; cursor:pointer; font-weight:900; width:100%; display:flex; align-items:center; justify-content:center; gap:8px;"><i class="fa-brands fa-whatsapp"></i> CONVOCAR</button></td>
                     <td><button onclick="finalizar('${id}')" style="background:#3b82f6; color:white; border:none; padding:15px; border-radius:15px; cursor:pointer; font-weight:900; width:100%;">SAÍDA</button></td>
                 </tr>`;
         });
@@ -407,11 +406,54 @@
         finally { setLoader(false); }
     }
 
-    function chamarWhatsApp(tel) {
-        const baia = prompt("Motorista vamos descarregar?\nInforme a BAIA ou ÁREA:");
-        if(!baia) return;
-        const msg = encodeURIComponent(`Olá\nMotorista vamos descarregar?\nBaia ${baia}\nObrigado!\n\nObs: aguarde a instrução do operador para entrar na baia!`);
-        window.open(`https://wa.me/55${tel.replace(/\D/g, "")}?text=${msg}`, '_blank');
+    // ADIÇÃO: LÓGICA DE WHATSAPP + SUBTRAÇÃO DE TANQUE
+    async function chamarWhatsApp(tel, produto, volumeCaminhao) {
+        setLoader(true);
+        try {
+            // 1. Busca espaço no tanque do produto específico
+            const resTanque = await fetch(`${RAÍZEN_DB.URL}/rest/v1/ESTOQUE?PRODUTO=ilike.*${produto.split(' ')[0]}*&select=*`, { headers: RAÍZEN_DB.HEADERS });
+            const tanques = await resTanque.json();
+
+            if (tanques.length === 0) {
+                alert("ALERTA: Tanque não configurado pela supervisão para " + produto);
+                return;
+            }
+
+            // Calcula espaço total disponível
+            const espacoTotal = tanques.reduce((acc, t) => acc + parseFloat(t.ESPAÇO_DISPONIVEL), 0);
+            const volumeNecessario = parseFloat(volumeCaminhao);
+
+            // 2. Trava de Segurança
+            if (volumeNecessario > espacoTotal) {
+                alert(`⚠️ BLOQUEADO!\nEspaço no tanque: ${espacoTotal.toLocaleString()}L\nCaminhão: ${volumeNecessario.toLocaleString()}L\n\nAcabou o espaço do tanque! Verificar com a supervisão.`);
+                return;
+            }
+
+            // 3. Se liberado, pede a baia
+            const baia = prompt(`ESPAÇO OK (${espacoTotal.toLocaleString()}L disponíveis).\nInforme a BAIA de destino:`);
+            if(!baia) return;
+
+            // 4. Subtrai o volume do tanque no banco
+            const tanqueParaBaixa = tanques[0];
+            const novoEspaco = parseFloat(tanqueParaBaixa.ESPAÇO_DISPONIVEL) - volumeNecessario;
+            
+            await fetch(`${RAÍZEN_DB.URL}/rest/v1/ESTOQUE?id=eq.${tanqueParaBaixa.id}`, {
+                method: 'PATCH',
+                headers: RAÍZEN_DB.HEADERS,
+                body: JSON.stringify({ "ESPAÇO_DISPONIVEL": novoEspaco })
+            });
+
+            // 5. Abre WhatsApp
+            const msg = encodeURIComponent(`Olá\nMotorista vamos descarregar?\nBaia ${baia}\nObrigado!\n\nObs: aguarde a instrução do operador para entrar na baia!`);
+            window.open(`https://wa.me/55${tel.replace(/\D/g, "")}?text=${msg}`, '_blank');
+            
+            carregarDados();
+
+        } catch (e) {
+            alert("Erro ao verificar tanques.");
+        } finally {
+            setLoader(false);
+        }
     }
 
     async function finalizar(id) {
@@ -464,6 +506,7 @@
             "PLACA": document.getElementById('placa').value.toUpperCase(),
             "PRODUTO": document.getElementById('produto').value,
             "TELEFONE": document.getElementById('whatsapp').value,
+            "VOLUME_CARGA": document.getElementById('volume_carga').value, // ADIÇÃO DO VOLUME NO ENVIO
             "JORNADA": document.getElementById('jornada24').checked ? "24 HORAS" : document.getElementById('limite').value,
             "ENTRADA": new Date().toLocaleString('pt-BR')
         };
@@ -472,93 +515,76 @@
             if(res.ok) { alert("REGISTRADO!"); location.reload(); }
         } finally { setLoader(false); }
     };
+
     /* --- MÓDULO DE GESTÃO DE TANQUES (SUPERVISÃO) --- */
+    async function abrirGestaoTanques() {
+        const senha = prompt("SENHA DE SUPERVISÃO:");
+        if (senha !== "raizen2026") return;
 
-// 1. Função para abrir a tela de gestão (pode ser chamada por um botão ou senha)
-async function abrirGestaoTanques() {
-    const senha = prompt("SENHA DE SUPERVISÃO:");
-    if (senha !== "raizen2026") return; // Use a mesma senha do operacional ou uma nova
-
-    // Esconde as outras seções e mostra a de gestão
-    document.getElementById('secao-entrada').style.display = 'none';
-    document.getElementById('modulo-operador-full').style.display = 'none';
-    
-    // Cria o container da gestão se não existir
-    if (!document.getElementById('modulo-supervisao-tanques')) {
-        const div = document.createElement('div');
-        div.id = 'modulo-supervisao-tanques';
-        div.className = 'card-master'; // Usa o mesmo estilo blindado
-        div.innerHTML = `
-            <h2><i class="fa-solid fa-gears"></i> GESTÃO DE TANQUES</h2>
-            <div id="lista-tanques-gestao"></div>
-            <button class="btn-master" style="background:#1e293b; margin-top:30px;" onclick="location.reload()">VOLTAR AO INÍCIO</button>
-        `;
-        document.body.appendChild(div);
-    }
-    
-    document.getElementById('modulo-supervisao-tanques').style.display = 'block';
-    carregarTanquesParaEdicao();
-}
-
-// 2. Carrega os tanques do Supabase para a tela de edição
-async function carregarTanquesParaEdicao() {
-    setLoader(true);
-    try {
-        const res = await fetch(`${RAÍZEN_DB.URL}/rest/v1/ESTOQUE?select=*`, { headers: RAÍZEN_DB.HEADERS });
-        const tanques = await res.json();
+        document.getElementById('secao-entrada').style.display = 'none';
+        document.getElementById('modulo-operador-full').style.display = 'none';
         
-        const container = document.getElementById('lista-tanques-gestao');
-        container.innerHTML = "";
-
-        tanques.forEach(t => {
-            container.innerHTML += `
-                <div class="painel-jornada" style="border-style: solid; border-color: var(--roxo-raizen); margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-                        <div>
-                            <span style="font-weight:900; color:var(--roxo-raizen); font-size:18px;">TANQUE ${t.TANQUE_NAME}</span><br>
-                            <small style="font-weight:700;">${t.PRODUTO}</small>
-                        </div>
-                        <div style="flex-grow: 1; max-width: 300px;">
-                            <label style="font-size:12px;">ESPAÇO DISPONÍVEL (LITROS)</label>
-                            <input type="number" id="input-tanque-${t.id}" value="${t.ESPAÇO_DISPONIVEL}" 
-                                   style="padding: 15px; font-size: 18px; border-width: 2px;">
-                        </div>
-                        <button onclick="atualizarEspacoTanque(${t.id})" 
-                                style="background: var(--cor-sucesso); color: white; border: none; padding: 15px 30px; border-radius: 15px; font-weight: 900; cursor: pointer;">
-                            ATUALIZAR
-                        </button>
-                    </div>
-                </div>
+        if (!document.getElementById('modulo-supervisao-tanques')) {
+            const div = document.createElement('div');
+            div.id = 'modulo-supervisao-tanques';
+            div.className = 'card-master';
+            div.innerHTML = `
+                <h2><i class="fa-solid fa-gears"></i> GESTÃO DE TANQUES</h2>
+                <div id="lista-tanques-gestao"></div>
+                <button class="btn-master" style="background:#1e293b; margin-top:30px;" onclick="location.reload()">VOLTAR AO INÍCIO</button>
             `;
-        });
-    } finally {
-        setLoader(false);
-    }
-}
-
-// 3. Salva o novo volume no Supabase
-async function atualizarEspacoTanque(id) {
-    const novoVolume = document.getElementById(`input-tanque-${id}`).value;
-    if (!novoVolume) return;
-
-    setLoader(true);
-    try {
-        const res = await fetch(`${RAÍZEN_DB.URL}/rest/v1/ESTOQUE?id=eq.${id}`, {
-            method: 'PATCH',
-            headers: RAÍZEN_DB.HEADERS,
-            body: JSON.stringify({ "ESPAÇO_DISPONIVEL": parseFloat(novoVolume) })
-        });
-
-        if (res.ok) {
-            alert("VOLUME ATUALIZADO COM SUCESSO!");
-            carregarTanquesParaEdicao();
+            document.body.appendChild(div);
         }
-    } catch (e) {
-        alert("Erro ao atualizar tanque.");
-    } finally {
-        setLoader(false);
+        
+        document.getElementById('modulo-supervisao-tanques').style.display = 'block';
+        carregarTanquesParaEdicao();
     }
-}
+
+    async function carregarTanquesParaEdicao() {
+        setLoader(true);
+        try {
+            const res = await fetch(`${RAÍZEN_DB.URL}/rest/v1/ESTOQUE?select=*`, { headers: RAÍZEN_DB.HEADERS });
+            const tanques = await res.json();
+            const container = document.getElementById('lista-tanques-gestao');
+            container.innerHTML = "";
+
+            tanques.forEach(t => {
+                container.innerHTML += `
+                    <div class="painel-jornada" style="border-style: solid; border-color: var(--roxo-raizen); margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                            <div>
+                                <span style="font-weight:900; color:var(--roxo-raizen); font-size:18px;">TANQUE ${t.TANQUE_NAME}</span><br>
+                                <small style="font-weight:700;">${t.PRODUTO}</small>
+                            </div>
+                            <div style="flex-grow: 1; max-width: 300px;">
+                                <label style="font-size:12px;">ESPAÇO DISPONÍVEL (LITROS)</label>
+                                <input type="number" id="input-tanque-${t.id}" value="${t.ESPAÇO_DISPONIVEL}" 
+                                       style="padding: 15px; font-size: 18px; border-width: 2px;">
+                            </div>
+                            <button onclick="atualizarEspacoTanque(${t.id})" 
+                                    style="background: var(--cor-sucesso); color: white; border: none; padding: 15px 30px; border-radius: 15px; font-weight: 900; cursor: pointer;">
+                                ATUALIZAR
+                            </button>
+                        </div>
+                    </div>`;
+            });
+        } finally { setLoader(false); }
+    }
+
+    async function atualizarEspacoTanque(id) {
+        const novoVolume = document.getElementById(`input-tanque-${id}`).value;
+        if (!novoVolume) return;
+        setLoader(true);
+        try {
+            const res = await fetch(`${RAÍZEN_DB.URL}/rest/v1/ESTOQUE?id=eq.${id}`, {
+                method: 'PATCH',
+                headers: RAÍZEN_DB.HEADERS,
+                body: JSON.stringify({ "ESPAÇO_DISPONIVEL": parseFloat(novoVolume) })
+            });
+            if (res.ok) { alert("VOLUME ATUALIZADO COM SUCESSO!"); carregarTanquesParaEdicao(); }
+        } catch (e) { alert("Erro ao atualizar tanque."); }
+        finally { setLoader(false); }
+    }
 </script>
 </body>
 </html>
