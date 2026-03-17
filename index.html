@@ -9,7 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     
     <style>
-        /* --- DESIGN SYSTEM INDUSTRIAL RAÍZEN --- */
+        /* --- DESIGN SYSTEM INDUSTRIAL RAÍZEN (VERSÃO EXPANDIDA E BLINDADA) --- 
+           Cores oficiais e padrões de espaçamento mantidos rigorosamente.
+        */
         :root {
             --verde-raizen: #4d6d5d;
             --roxo-raizen: #84207d;
@@ -38,7 +40,7 @@
             overflow-x: auto;
         }
 
-        /* HEADER PREMIUM */
+        /* --- ESTILIZAÇÃO DO CABEÇALHO --- */
         header { 
             background: linear-gradient(135deg, var(--verde-raizen) 0%, var(--preto-industrial) 100%); 
             padding: 100px 20px; 
@@ -46,7 +48,6 @@
             border-bottom: 30px solid var(--roxo-raizen);
             box-shadow: 0 15px 40px rgba(0,0,0,0.4);
             position: relative;
-            margin-bottom: 0;
         }
 
         .logo-display {
@@ -56,18 +57,9 @@
             letter-spacing: 25px; 
             text-transform: uppercase;
             text-shadow: 5px 5px 0px rgba(0,0,0,0.2);
-            margin-bottom: 15px;
         }
 
-        .subtitle-header {
-            color: var(--ouro-raizen);
-            font-size: 24px;
-            font-weight: 700;
-            letter-spacing: 8px;
-            text-transform: uppercase;
-        }
-
-        /* CARD PRINCIPAL */
+        /* --- CARDS E MÓDULOS --- */
         .card-master { 
             width: 94%; 
             max-width: 1150px; 
@@ -81,8 +73,8 @@
             z-index: 10;
         }
 
-        /* SEÇÕES OCULTAS */
-        #modulo-operador-full, #modulo-supervisao { 
+        #modulo-operador-full, 
+        #modulo-supervisao { 
             display: none; 
             width: 98%; 
             max-width: 1900px; 
@@ -103,14 +95,12 @@
             font-size: 38px; 
             border-bottom: 12px solid #f8fafc;
             padding-bottom: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
         }
 
-        /* INPUTS E FORMULÁRIO */
-        .wrapper-input { margin-bottom: 40px; position: relative; }
+        /* --- FORMULÁRIOS E ENTRADAS --- */
+        .wrapper-input { 
+            margin-bottom: 40px; 
+        }
         
         label { 
             display: flex; 
@@ -121,7 +111,6 @@
             color: var(--verde-raizen); 
             font-size: 16px; 
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         input, select { 
@@ -133,17 +122,15 @@
             font-weight: 700; 
             background: #f8fafc; 
             transition: all 0.3s ease;
-            color: #1e293b;
         }
 
-        input:focus, select:focus {
+        input:focus {
             border-color: var(--roxo-raizen);
-            background: var(--branco);
             outline: none;
-            box-shadow: 0 0 0 10px rgba(132, 32, 125, 0.1);
+            background: white;
         }
 
-        /* BOTÕES */
+        /* --- BOTÕES --- */
         .btn-master { 
             width: 100%; 
             padding: 35px; 
@@ -161,7 +148,6 @@
             justify-content: center;
             align-items: center; 
             gap: 20px;
-            transition: all 0.1s;
         }
 
         .btn-master:active { 
@@ -169,12 +155,11 @@
             box-shadow: 0 5px 0 #5e1659; 
         }
 
-        /* TABELAS OPERACIONAIS */
+        /* --- TABELAS --- */
         .moldura-tabela { 
             overflow-x: auto; 
             border-radius: 30px; 
-            border: 3px solid #f1f5f9;
-            margin-top: 20px;
+            border: 3px solid #f1f5f9; 
         }
 
         table { 
@@ -190,15 +175,13 @@
             padding: 25px; 
             font-size: 13px; 
             text-transform: uppercase; 
-            letter-spacing: 1px;
         }
 
         td { 
             padding: 20px; 
             border-bottom: 3px solid #f8fafc; 
             text-align: center; 
-            font-weight: 700;
-            font-size: 16px;
+            font-weight: 700; 
         }
 
         .input-edit-table {
@@ -211,7 +194,7 @@
             text-align: center;
         }
 
-        /* LOADER */
+        /* --- LOADER E BADGES --- */
         #loader-overlay {
             display: none; 
             position: fixed; 
@@ -235,35 +218,40 @@
             animation: girar 1s linear infinite; 
         }
 
-        @keyframes girar { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* ESTADOS DE STATUS */
-        .status-badge {
-            padding: 8px 15px;
-            border-radius: 10px;
-            font-size: 12px;
-            text-transform: uppercase;
+        @keyframes girar { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
         }
+
+        .status-badge { 
+            padding: 8px 15px; 
+            border-radius: 10px; 
+            font-size: 12px; 
+            text-transform: uppercase; 
+        }
+
         .status-ok { background: #dcfce7; color: #166534; }
         .status-expirado { background: #fee2e2; color: #991b1b; }
+
     </style>
 </head>
 <body>
 
 <div id="loader-overlay">
     <div class="raizen-spinner"></div>
-    <h2 style="border:none; margin-top:25px;">SINCRONIZANDO COM TERMINAL...</h2>
+    <h2 style="border:none; margin-top:25px;">SINCRONIZANDO COM O TERMINAL...</h2>
 </div>
 
 <header>
     <div class="logo-display">RAÍZEN</div>
-    <div class="subtitle-header">Terminal de Gestão Integrada</div>
 </header>
 
 <div class="card-master" id="secao-entrada">
+    
     <div id="form-principal-wrapper">
         <h2><i class="fa-solid fa-truck-ramp-box"></i> REGISTRO DE ENTRADA</h2>
         <form id="formMaster">
+            
             <div class="wrapper-input">
                 <label><i class="fa-solid fa-barcode"></i> PLACA DO VEÍCULO</label>
                 <input type="text" id="placa" placeholder="AAA-0000" maxlength="8" required>
@@ -273,7 +261,7 @@
                 <label><i class="fa-solid fa-gas-pump"></i> PRODUTO</label>
                 <select id="produto" required>
                     <option value="">-- SELECIONE O PRODUTO --</option>
-                    <option value="GASOLINA">GASOLINA COMUM</option>
+                    <option value="GASOLINA">GASOLINA</option>
                     <option value="BIODIESEL (B100)">BIODIESEL (B100)</option>
                     <option value="ETANOL ANIDRO">ETANOL ANIDRO</option>
                     <option value="ETANOL HIDRATADO">ETANOL HIDRATADO</option>
@@ -282,34 +270,32 @@
             </div>
 
             <div class="wrapper-input">
-                <label><i class="fa-brands fa-whatsapp"></i> WHATSAPP DO MOTORISTA</label>
-                <input type="tel" id="whatsapp" placeholder="(00) 00000-0000" required>
+                <label><i class="fa-brands fa-whatsapp"></i> WHATSAPP MOTORISTA</label>
+                <input type="tel" id="whatsapp" placeholder="(19) 99999-9999" required>
             </div>
             
             <div style="background: #fffbeb; padding: 40px; border-radius: 40px; border: 4px dashed var(--ouro-raizen); margin: 45px 0;">
-                <div id="area-tempo">
-                    <label><i class="fa-solid fa-clock"></i> HORÁRIO LIMITE DE JORNADA</label>
-                    <input type="time" id="limite" required> 
+                <div id="container-horario-limite">
+                    <label><i class="fa-solid fa-clock"></i> HORÁRIO LIMITE JORNADA</label>
+                    <input type="time" id="limite"> 
                 </div>
                 
                 <label style="margin-top:25px; display:flex; align-items:center; gap:20px; cursor:pointer; font-size: 20px; font-weight: 900; color: var(--roxo-raizen);">
-                    <input type="checkbox" id="jornada24" style="width:35px; height:35px; accent-color: var(--roxo-raizen);">
+                    <input type="checkbox" id="jornada24" style="width:35px; height:35px;" onchange="toggleLimiteVisual(this)"> 
                     HABILITAR JORNADA 24 HORAS
                 </label>
             </div>
 
-            <button type="submit" class="btn-master">
-                <i class="fa-solid fa-circle-check"></i> CONFIRMAR REGISTRO
-            </button>
-
-            <button type="button" onclick="abrirReabertura()" class="btn-master" style="background:var(--cinza-texto); box-shadow: 0 15px 0 #2d3748; font-size:18px;">
+            <button type="submit" class="btn-master">CONFIRMAR REGISTRO</button>
+            
+            <button type="button" onclick="abrirReabertura()" class="btn-master" style="background:var(--cinza-texto); font-size:18px; box-shadow: 0 15px 0 #2d3748;">
                 <i class="fa-solid fa-clock-rotate-left"></i> REABRIR JORNADA EXISTENTE
             </button>
         </form>
     </div>
 
     <div id="form-reabertura-wrapper" style="display:none;">
-        <h2 style="color:var(--cinza-texto)"><i class="fa-solid fa-clock-rotate-left"></i> REABRIR REGISTRO</h2>
+        <h2 style="color:var(--cinza-texto)">REABRIR REGISTRO</h2>
         <div class="wrapper-input">
             <label>PLACA DO VEÍCULO</label>
             <input type="text" id="re_placa" placeholder="AAA-0000" maxlength="8">
@@ -322,21 +308,18 @@
         <button onclick="fecharReabertura()" style="width:100%; background:none; border:none; color:var(--roxo-raizen); font-weight:900; cursor:pointer; padding:20px;">CANCELAR OPERAÇÃO</button>
     </div>
 
-    <div style="text-align:center; margin-top:50px; display:flex; flex-direction:column; gap:20px;">
-        <div style="display:flex; justify-content:center; gap:30px;">
-            <button onclick="ativarOperador()" style="background:none; border:none; color:var(--roxo-raizen); font-weight:900; cursor:pointer; text-transform:uppercase; letter-spacing:2px; font-size:12px;">
-                <i class="fa-solid fa-lock"></i> ACESSO OPERACIONAL
-            </button>
-            <button onclick="ativarSupervisao()" style="background:none; border:none; color:var(--verde-raizen); font-weight:900; cursor:pointer; text-transform:uppercase; letter-spacing:2px; font-size:12px;">
-                <i class="fa-solid fa-shield-halved"></i> GESTÃO DE TANQUES (SUPERVISÃO)
-            </button>
-        </div>
-        <p style="font-size:10px; color:#94a3b8; font-weight:700;">RAÍZEN S.A. © 2026 - SISTEMA DE CONTROLE DE PÁTIO</p>
+    <div style="text-align:center; margin-top:50px; display:flex; justify-content:center; gap:30px;">
+        <button onclick="ativarOperador()" style="background:none; border:none; color:var(--roxo-raizen); font-weight:900; cursor:pointer; text-transform:uppercase; letter-spacing:1px;">
+            <i class="fa-solid fa-lock"></i> PAINEL OPERADOR
+        </button>
+        <button onclick="ativarSupervisao()" style="background:none; border:none; color:var(--verde-raizen); font-weight:900; cursor:pointer; text-transform:uppercase; letter-spacing:1px;">
+            <i class="fa-solid fa-shield-halved"></i> GESTÃO DE TANQUES
+        </button>
     </div>
 </div>
 
 <div id="modulo-operador-full">
-    <h2><i class="fa-solid fa- chalkboard-user"></i> PAINEL DE CONTROLE DE PÁTIO</h2>
+    <h2>PAINEL DE CONTROLE OPERACIONAL</h2>
     
     <div id="status-tanques-topo" style="display:flex; justify-content:center; gap:15px; margin-bottom:30px; flex-wrap:wrap;"></div>
 
@@ -344,55 +327,52 @@
         <table>
             <thead>
                 <tr>
-                    <th>PLACA</th>
+                    <th>VEÍCULO</th>
                     <th>PRODUTO</th>
                     <th>JORNADA</th>
                     <th style="background:#f1f5f9; color:var(--roxo-raizen);">VOLUME CARGA (L)</th>
-                    <th style="background:#fff7ed;">AGENDAMENTO</th>
-                    <th style="background:#f0fdf4;">TELEFONE</th>
+                    <th>AGENDAMENTO</th>
+                    <th>TELEFONE</th>
                     <th>CONVOCAR</th>
-                    <th>FINALIZAR</th>
+                    <th>SAÍDA</th>
                 </tr>
             </thead>
             <tbody id="listaFila"></tbody>
         </table>
     </div>
+    
     <button class="btn-master" style="background:#1e293b; margin-top:30px;" onclick="location.reload()">
-        <i class="fa-solid fa-house"></i> VOLTAR PARA INÍCIO
+        <i class="fa-solid fa-arrow-left"></i> VOLTAR AO INÍCIO
     </button>
 </div>
 
 <div id="modulo-supervisao">
-    <h2><i class="fa-solid fa-shield-halved"></i> GESTÃO DE TANQUES (SUPERVISÃO)</h2>
-    <p style="text-align:center; margin-bottom:30px; font-weight:700; color:var(--verde-raizen)">AJUSTE O ESPAÇO LIVRE NO TANQUE PARA RECEBIMENTO DE CARGAS</p>
-    
-    <div class="moldura-tabela" style="max-width:900px; margin: 0 auto;">
+    <h2>GESTÃO DE CAPACIDADE (SUPERVISÃO)</h2>
+    <p style="text-align:center; margin-bottom:35px; font-weight:700; color:var(--verde-raizen); font-size:18px;">
+        AJUSTE O ESPAÇO DISPONÍVEL EM CADA TANQUE ABAIXO:
+    </p>
+
+    <div class="moldura-tabela" style="max-width:900px; margin:0 auto;">
         <table style="min-width:100%">
             <thead>
                 <tr>
-                    <th style="width:40%">PRODUTO</th>
-                    <th style="width:40%">ESPAÇO DISPONÍVEL (LITROS)</th>
+                    <th style="width:40%">PRODUTO / TANQUE</th>
+                    <th style="width:40%">ESPAÇO LIVRE ATUAL (LITROS)</th>
                     <th style="width:20%">AÇÃO</th>
                 </tr>
             </thead>
-            <tbody id="listaEstoqueSupervisao"></tbody>
+            <tbody id="listaEstoqueSupervisao">
+                </tbody>
         </table>
     </div>
 
-    <div style="max-width:900px; margin: 40px auto; padding: 30px; background: #f8fafc; border-radius: 20px; border: 2px solid #e2e8f0;">
-        <p style="font-size:14px; color:var(--cinza-texto); line-height:1.6;">
-            <b>Nota ao Supervisor:</b> Os valores inseridos acima atualizam em tempo real o painel do operador. 
-            O sistema impedirá a convocação de motoristas caso o volume do caminhão seja maior que o espaço disponível configurado aqui.
-        </p>
-    </div>
-
-    <button class="btn-master" style="background:#1e293b; margin-top:30px;" onclick="location.reload()">
-        <i class="fa-solid fa-door-open"></i> SAIR DA SUPERVISÃO
+    <button class="btn-master" style="background:#1e293b; margin-top:50px;" onclick="location.reload()">
+        <i class="fa-solid fa-door-open"></i> ENCERRAR SESSÃO DE SUPERVISÃO
     </button>
 </div>
 
 <script>
-    /* --- CONFIGURAÇÕES DO BANCO SUPABASE --- */
+    /* --- CONFIGURAÇÕES DE CONEXÃO SUPABASE --- */
     const RAÍZEN_DB = {
         URL: 'https://rbbkjuiizmvatiawfzuv.supabase.co',
         KEY: 'sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X',
@@ -400,101 +380,106 @@
         HEADERS: { 
             "apikey": 'sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X', 
             "Authorization": `Bearer sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X`, 
-            "Content-Type": "application/json",
-            "Prefer": "return=minimal"
+            "Content-Type": "application/json", 
+            "Prefer": "return=minimal" 
         }
     };
 
     let memoriaFila = [];
     let memoriaEstoque = [];
 
-    /* --- UTILITÁRIOS --- */
-    function setLoader(v) { document.getElementById('loader-overlay').style.display = v ? 'flex' : 'none'; }
+    /* --- FUNÇÕES DE INTERFACE (BLINDAGEM) --- */
     
-    function abrirReabertura() { 
-        document.getElementById('form-principal-wrapper').style.display = 'none'; 
-        document.getElementById('form-reabertura-wrapper').style.display = 'block'; 
-    }
-    
-    function fecharReabertura() { 
-        document.getElementById('form-reabertura-wrapper').style.display = 'none'; 
-        document.getElementById('form-principal-wrapper').style.display = 'block'; 
+    function setLoader(estado) { 
+        document.getElementById('loader-overlay').style.display = estado ? 'flex' : 'none'; 
     }
 
-    /* --- MÁSCARAS E FORMATAÇÃO --- */
-    document.getElementById('placa').addEventListener('input', e => {
-        let v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
-        if (v.length > 3) v = v.slice(0, 3) + "-" + v.slice(3);
-        e.target.value = v.slice(0, 8);
+    // TRAVA 24H: FAZ O CAMPO SUMIR OU APARECER
+    function toggleLimiteVisual(checkbox) {
+        const container = document.getElementById('container-horario-limite');
+        if (checkbox.checked) {
+            container.style.display = 'none';
+        } else {
+            container.style.display = 'block';
+        }
+    }
+
+    /* --- MÁSCARAS DE ENTRADA (MANTIDAS) --- */
+    
+    document.getElementById('placa').addEventListener('input', function(e) {
+        let valor = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+        if (valor.length > 3) {
+            valor = valor.slice(0, 3) + "-" + valor.slice(3);
+        }
+        e.target.value = valor.slice(0, 8);
     });
 
-    document.getElementById('whatsapp').addEventListener('input', e => {
-        let v = e.target.value.replace(/\D/g, "");
-        v = v.replace(/^(\+55|55)/g, "");
-        if (v.length > 11) v = v.slice(0, 11);
-        if (v.length > 10) v = v.replace(/^(\d{2})(\d{5})(\d{4}).*/, "($1) $2-$3");
-        else if (v.length > 5) v = v.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, "($1) $2-$3");
-        else if (v.length > 2) v = v.replace(/^(\d{2})(\d{0,5}).*/, "($1) $2");
-        else if (v.length > 0) v = v.replace(/^(\d{0,2}).*/, "($1");
-        e.target.value = v;
+    document.getElementById('whatsapp').addEventListener('input', function(e) {
+        let valor = e.target.value.replace(/\D/g, "");
+        if (valor.length > 11) valor = valor.slice(0, 11);
+        if (valor.length > 10) {
+            valor = valor.replace(/^(\d{2})(\d{5})(\d{4}).*/, "($1) $2-$3");
+        } else if (valor.length > 2) {
+            valor = valor.replace(/^(\d{2})(\d{0,5}).*/, "($1) $2");
+        }
+        e.target.value = valor;
     });
 
-    /* --- LÓGICA DE DADOS --- */
+    /* --- GESTÃO DE DADOS E SINCRONIZAÇÃO --- */
+
     async function carregarDados() {
         try {
-            // Busca Fila
-            const resFila = await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?SAIDA=is.null&select=*&order=ID.asc`, { headers: RAÍZEN_DB.HEADERS });
-            memoriaFila = await resFila.json();
-            
-            // Busca Estoque
-            const resEst = await fetch(`${RAÍZEN_DB.URL}/rest/v1/estoque?select=*&order=id.asc`, { headers: RAÍZEN_DB.HEADERS });
-            memoriaEstoque = await resEst.json();
+            // Busca registros ativos
+            const respostaFila = await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?SAIDA=is.null&select=*`, { 
+                headers: RAÍZEN_DB.HEADERS 
+            });
+            memoriaFila = await respostaFila.json();
 
-            renderTabela();
-            renderResumoEstoque();
+            // Busca situação dos tanques
+            const respostaEstoque = await fetch(`${RAÍZEN_DB.URL}/rest/v1/estoque?select=*`, { 
+                headers: RAÍZEN_DB.HEADERS 
+            });
+            memoriaEstoque = await respostaEstoque.json();
+
+            // Atualiza todas as visualizações
+            renderTabela(); 
+            renderResumoEstoque(); 
             renderSupervisaoEstoque();
-        } catch(e) { console.error("Erro na carga:", e); }
+        } catch (erro) {
+            console.error("Falha na sincronização:", erro);
+        }
     }
 
-    // Painel Operador - Resumo Topo
-    function renderResumoEstoque() {
-        const box = document.getElementById('status-tanques-topo');
-        if(!box) return;
-        box.innerHTML = "";
-        memoriaEstoque.forEach(e => {
-            box.innerHTML += `
-                <div style="background:#fff; padding:15px 25px; border-radius:18px; border:2px solid var(--verde-raizen); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
-                    <div style="font-size:10px; font-weight:900; color:var(--roxo-raizen); text-transform:uppercase;">${e.produto}</div>
-                    <div style="font-size:18px; font-weight:900;">${e.espaco_disponivel.toLocaleString()} <small>L disp.</small></div>
-                </div>`;
-        });
-    }
-
-    // Painel Supervisão - Lista
+    // GERA A TABELA DA SUPERVISÃO COM OS INPUTS DE EDIÇÃO
     function renderSupervisaoEstoque() {
-        const corpo = document.getElementById('listaEstoqueSupervisao');
-        if(!corpo) return;
-        corpo.innerHTML = "";
+        const corpoTabela = document.getElementById('listaEstoqueSupervisao');
+        if (!corpoTabela) return;
+        
+        corpoTabela.innerHTML = "";
         memoriaEstoque.forEach(item => {
-            corpo.innerHTML += `
+            corpoTabela.innerHTML += `
                 <tr>
-                    <td style="color:var(--roxo-raizen); font-size:20px; text-align:left; padding-left:40px;"><b>${item.produto}</b></td>
-                    <td>
-                        <input type="number" id="sup-est-${item.id}" value="${item.espaco_disponivel}" class="input-edit-table" style="font-size:22px; padding:15px; background:#fffbeb; border:2px solid var(--ouro-raizen);">
+                    <td style="color:var(--roxo-raizen); font-size:20px; text-align:left; padding-left:30px;">
+                        <b>${item.produto}</b>
                     </td>
                     <td>
-                        <button onclick="salvarEstoqueSupervisao(${item.id})" style="background:var(--verde-raizen); color:white; border:none; padding:18px 30px; border-radius:15px; cursor:pointer; font-weight:900; transition:0.2s;">
-                            <i class="fa-solid fa-floppy-disk"></i> SALVAR
+                        <input type="number" id="input-sup-${item.id}" value="${item.espaco_disponivel}" 
+                               class="input-edit-table" style="font-size:22px; padding:15px; border:3px solid var(--ouro-raizen);">
+                    </td>
+                    <td>
+                        <button onclick="salvarAlteracaoSupervisao(${item.id})" 
+                                style="background:var(--verde-raizen); color:white; border:none; padding:15px 25px; border-radius:12px; cursor:pointer; font-weight:900;">
+                            ATUALIZAR
                         </button>
                     </td>
                 </tr>`;
         });
     }
 
-    async function salvarEstoqueSupervisao(id) {
-        const novoValor = document.getElementById(`sup-est-${id}`).value;
-        if(novoValor === "" || isNaN(novoValor)) return alert("VALOR INVÁLIDO");
-        
+    async function salvarAlteracaoSupervisao(id) {
+        const novoValor = document.getElementById(`input-sup-${id}`).value;
+        if (!novoValor) return alert("INSIRA UM VALOR VÁLIDO");
+
         setLoader(true);
         try {
             await fetch(`${RAÍZEN_DB.URL}/rest/v1/estoque?id=eq.${id}`, {
@@ -502,221 +487,233 @@
                 headers: RAÍZEN_DB.HEADERS,
                 body: JSON.stringify({ "espaco_disponivel": parseFloat(novoValor) })
             });
-            alert("CAPACIDADE DO TANQUE ATUALIZADA COM SUCESSO!");
-            carregarDados();
-        } catch(e) {
-            alert("ERRO AO SALVAR");
+            alert("ESPAÇO DO TANQUE ATUALIZADO PELO SUPERVISOR!");
+            await carregarDados();
         } finally {
             setLoader(false);
         }
     }
 
-    // Painel Operador - Tabela Principal
+    // GERA A TABELA DO OPERADOR
     function renderTabela() {
-        const corpo = document.getElementById('listaFila');
-        if(!corpo) return;
-        corpo.innerHTML = "";
-        
+        const corpoFila = document.getElementById('listaFila');
+        if (!corpoFila) return;
+
+        corpoFila.innerHTML = "";
         memoriaFila.forEach(item => {
             const id = item[RAÍZEN_DB.ID_COL];
-            const statusJornada = verificarJornada(item.JORNADA);
-            const classeStatus = statusJornada === "EXPIRADA" ? "status-expirado" : "status-ok";
+            const statusJornada = verificarStatusHorario(item.JORNADA);
+            const classeCor = (statusJornada === "EXPIRADA") ? "status-expirado" : "status-ok";
 
-            corpo.innerHTML += `
+            corpoFila.innerHTML += `
                 <tr>
-                    <td style="color:var(--roxo-raizen); font-size:22px; letter-spacing:1px;">${item.PLACA}</td>
-                    <td style="font-size:13px;">${item.PRODUTO}</td>
-                    <td><span class="status-badge ${classeStatus}">${statusJornada}</span></td>
+                    <td style="font-size:24px; color:var(--roxo-raizen)">${item.PLACA}</td>
+                    <td>${item.PRODUTO}</td>
+                    <td><span class="status-badge ${classeCor}">${statusJornada}</span></td>
                     <td>
-                        <div style="display:flex; gap:5px;">
-                            <input type="number" id="vol-${id}" value="${item.VOLUME || ''}" class="input-edit-table" placeholder="Litros">
-                            <button onclick="salvarCampo('${id}', 'VOLUME')" style="background:var(--roxo-raizen); color:white; border:none; padding:10px; border-radius:10px; cursor:pointer;"><i class="fa-solid fa-save"></i></button>
+                        <div style="display:flex; gap:8px; justify-content:center;">
+                            <input type="number" id="vol-input-${id}" value="${item.VOLUME || ''}" 
+                                   class="input-edit-table" style="width:130px; background:#fff7ed;">
+                            <button onclick="salvarVolumeOperador('${id}')" 
+                                    style="background:var(--roxo-raizen); color:white; border:none; padding:10px; border-radius:8px; cursor:pointer;">
+                                <i class="fa-solid fa-save"></i>
+                            </button>
                         </div>
                     </td>
                     <td>
-                        <div style="display:flex; gap:5px;">
-                            <input type="datetime-local" id="ag-${id}" value="${item.AGENDAMENTO ? item.AGENDAMENTO.slice(0,16) : ''}" class="input-edit-table">
-                            <button onclick="salvarCampo('${id}', 'AGENDAMENTO')" style="background:var(--verde-raizen); color:white; border:none; padding:10px; border-radius:10px; cursor:pointer;"><i class="fa-solid fa-check"></i></button>
-                        </div>
+                        <input type="datetime-local" id="ag-input-${id}" value="${item.AGENDAMENTO ? item.AGENDAMENTO.slice(0,16) : ''}" 
+                               class="input-edit-table" onchange="atualizarCampoDireto('${id}', 'AGENDAMENTO', this.value)">
                     </td>
+                    <td style="font-size:14px;">${item.TELEFONE}</td>
                     <td>
-                        <div style="display:flex; gap:5px;">
-                            <input type="text" id="tel-${id}" value="${item.TELEFONE}" class="input-edit-table">
-                            <button onclick="salvarCampo('${id}', 'TELEFONE')" style="background:#1e293b; color:white; border:none; padding:10px; border-radius:10px; cursor:pointer;"><i class="fa-solid fa-phone"></i></button>
-                        </div>
-                    </td>
-                    <td>
-                        <button onclick="chamarWhatsAppComTrava('${item.TELEFONE}', '${item.PRODUTO}', ${item.VOLUME || 0})" style="background:#25d366; color:white; border:none; padding:15px; border-radius:12px; cursor:pointer; font-weight:900; width:100%;">
-                            <i class="fa-brands fa-whatsapp"></i> CONVOCAR
+                        <button onclick="convocarMotorista('${item.TELEFONE}', '${item.PRODUTO}', ${item.VOLUME || 0})" 
+                                style="background:#25d366; color:white; border:none; padding:15px; border-radius:12px; cursor:pointer; font-weight:900;">
+                            CONVOCAR
                         </button>
                     </td>
                     <td>
-                        <button onclick="finalizarComAbate('${id}', '${item.PRODUTO}', ${item.VOLUME || 0})" style="background:var(--roxo-raizen); color:white; border:none; padding:15px; border-radius:12px; cursor:pointer; font-weight:900; width:100%;">
-                            <i class="fa-solid fa-truck-fast"></i> SAÍDA
+                        <button onclick="processarSaidaComAbate('${id}', '${item.PRODUTO}', ${item.VOLUME || 0})" 
+                                style="background:var(--roxo-raizen); color:white; border:none; padding:15px; border-radius:12px; cursor:pointer; font-weight:900;">
+                            SAÍDA
                         </button>
                     </td>
                 </tr>`;
         });
     }
 
-    async function chamarWhatsAppComTrava(tel, produto, volumeCaminhao) {
-        if (!volumeCaminhao || volumeCaminhao <= 0) {
-            alert("⚠️ ALERTA: DEFINA O VOLUME DA CARGA ANTES DE CONVOCAR!");
-            return;
+    async function salvarVolumeOperador(id) {
+        const valorVolume = document.getElementById(`vol-input-${id}`).value;
+        setLoader(true);
+        try {
+            await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${id}`, {
+                method: 'PATCH',
+                headers: RAÍZEN_DB.HEADERS,
+                body: JSON.stringify({ "VOLUME": valorVolume })
+            });
+            // MENSAGEM DE CONFIRMAÇÃO SOLICITADA
+            alert("VOLUME ASSUMIDO COM SUCESSO NO SISTEMA!");
+            await carregarDados();
+        } finally {
+            setLoader(false);
         }
+    }
 
-        // Busca o estoque correspondente ao produto
-        const estoqueRef = memoriaEstoque.find(e => 
+    async function atualizarCampoDireto(id, campo, valor) {
+        setLoader(true);
+        await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${id}`, {
+            method: 'PATCH',
+            headers: RAÍZEN_DB.HEADERS,
+            body: JSON.stringify({ [campo]: valor })
+        });
+        setLoader(false);
+    }
+
+    async function convocarMotorista(tel, produto, volume) {
+        if (!volume || volume <= 0) return alert("ERRO: INFORME O VOLUME DA CARGA PRIMEIRO!");
+        
+        const tanqueRelativo = memoriaEstoque.find(e => 
             produto.toUpperCase().includes(e.produto.toUpperCase()) || 
             e.produto.toUpperCase().includes(produto.toUpperCase())
         );
 
-        if (estoqueRef && volumeCaminhao > estoqueRef.espaco_disponivel) {
-            alert(`🚨 BLOQUEIO DE SEGURANÇA: TANQUE CHEIO!\n\nEspaço disponível: ${estoqueRef.espaco_disponivel.toLocaleString()} L\nVolume do caminhão: ${volumeCaminhao.toLocaleString()} L\n\nAguarde liberação de espaço para convocar.`);
-            return;
+        if (tanqueRelativo && volume > tanqueRelativo.espaco_disponivel) {
+            return alert(`BLOQUEIO: O volume do caminhão (${volume}L) excede o espaço livre no tanque (${tanqueRelativo.espaco_disponivel}L)!`);
         }
 
-        const baia = prompt("INFORME A BAIA DE DESCARGA:");
-        if(!baia) return;
-
-        const link = `https://wa.me/55${tel.replace(/\D/g, "")}?text=${encodeURIComponent('Olá Motorista! Sua descarga foi autorizada. Por favor, dirija-se à BAIA: ' + baia)}`;
-        window.open(link, '_blank');
+        const baia = prompt("DIGITE O NÚMERO DA BAIA:");
+        if (baia) {
+            const msg = encodeURIComponent(`RAÍZEN INFORMA: Motorista da placa vinculada, dirija-se à BAIA ${baia} para descarga.`);
+            window.open(`https://wa.me/55${tel.replace(/\D/g, "")}?text=${msg}`, '_blank');
+        }
     }
 
-    async function finalizarComAbate(id, produto, volumeCaminhao) {
-        if(!confirm(`CONFIRMAR FINALIZAÇÃO?\nIsso abaterá ${volumeCaminhao}L do espaço livre no tanque.`)) return;
+    async function processarSaidaComAbate(id, produto, volume) {
+        if (!confirm("CONFIRMAR SAÍDA DO VEÍCULO?")) return;
         
         setLoader(true);
         try {
-            // 1. Marca saída no registro
+            // Registra a saída
             await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${id}`, {
                 method: 'PATCH',
                 headers: RAÍZEN_DB.HEADERS,
-                body: JSON.stringify({ "SAIDA": new Date().toLocaleString('pt-BR') })
+                body: JSON.stringify({ "SAIDA": new Date().toLocaleString() })
             });
 
-            // 2. Abate do estoque
-            const est = memoriaEstoque.find(e => produto.includes(e.produto.toUpperCase()) || e.produto.toUpperCase().includes(produto));
-            if(est && volumeCaminhao > 0) {
-                const novoEspaco = est.espaco_disponivel - volumeCaminhao;
-                await fetch(`${RAÍZEN_DB.URL}/rest/v1/estoque?id=eq.${est.id}`, {
+            // Abate do estoque disponível
+            const tanque = memoriaEstoque.find(e => produto.includes(e.produto.toUpperCase()) || e.produto.toUpperCase().includes(produto));
+            if (tanque && volume > 0) {
+                await fetch(`${RAÍZEN_DB.URL}/rest/v1/estoque?id=eq.${tanque.id}`, {
                     method: 'PATCH',
                     headers: RAÍZEN_DB.HEADERS,
-                    body: JSON.stringify({ "espaco_disponivel": novoEspaco < 0 ? 0 : novoEspaco })
+                    body: JSON.stringify({ "espaco_disponivel": tanque.espaco_disponivel - volume })
                 });
             }
-            
-            carregarDados();
+            await carregarDados();
         } finally {
             setLoader(false);
         }
     }
 
-    async function salvarCampo(id, campo) {
-        let valor;
-        if(campo === 'VOLUME') valor = document.getElementById(`vol-${id}`).value;
-        if(campo === 'AGENDAMENTO') valor = document.getElementById(`ag-${id}`).value;
-        if(campo === 'TELEFONE') valor = document.getElementById(`tel-${id}`).value;
-
-        setLoader(true);
-        try {
-            await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${id}`, {
-                method: 'PATCH',
-                headers: RAÍZEN_DB.HEADERS,
-                body: JSON.stringify({ [campo]: valor })
-            });
-            carregarDados();
-        } catch(e) {
-            alert("ERRO AO SALVAR");
-        } finally {
-            setLoader(false);
-        }
-    }
-
-    function verificarJornada(h) {
+    function verificarStatusHorario(h) {
         if (h === "24 HORAS") return "LIBERADA";
-        if (!h) return "PENDENTE";
-        
-        try {
-            const agora = new Date();
-            const [horas, minutos] = h.split(':');
-            const dataLimite = new Date();
-            dataLimite.setHours(parseInt(horas), parseInt(minutos), 0);
-            
-            return (agora > dataLimite) ? "EXPIRADA" : "EM DIA";
-        } catch(e) { return "ERRO"; }
+        if (!h) return "AGUARDANDO";
+        const [hora, min] = h.split(':');
+        const agora = new Date();
+        const limite = new Date();
+        limite.setHours(parseInt(hora), parseInt(min), 0);
+        return (agora > limite) ? "EXPIRADA" : "EM DIA";
+    }
+
+    function renderResumoEstoque() {
+        const box = document.getElementById('status-tanques-topo');
+        box.innerHTML = "";
+        memoriaEstoque.forEach(e => {
+            box.innerHTML += `
+                <div style="background:white; padding:15px; border:2px solid var(--verde-raizen); border-radius:15px; font-weight:900; font-size:14px;">
+                    <span style="color:var(--roxo-raizen)">${e.produto}:</span> ${e.espaco_disponivel.toLocaleString()}L liv.
+                </div>`;
+        });
     }
 
     /* --- LOGIN E NAVEGAÇÃO --- */
+
     function ativarOperador() {
-        if(prompt("DIGITE A SENHA OPERACIONAL:") === "raizen2026") {
+        if (prompt("SENHA DO OPERADOR:") === "raizen2026") {
             document.getElementById('secao-entrada').style.display = 'none';
             document.getElementById('modulo-operador-full').style.display = 'block';
             carregarDados();
-        } else {
-            alert("ACESSO NEGADO");
         }
     }
 
     function ativarSupervisao() {
-        if(prompt("DIGITE A SENHA DE SUPERVISÃO:") === "super2026") {
+        if (prompt("SENHA DA SUPERVISÃO:") === "super2026") {
             document.getElementById('secao-entrada').style.display = 'none';
             document.getElementById('modulo-supervisao').style.display = 'block';
             carregarDados();
-        } else {
-            alert("ACESSO NEGADO");
         }
     }
 
-    /* --- FORMULÁRIO PRINCIPAL --- */
-    document.getElementById('formMaster').onsubmit = async e => {
+    /* --- SUBMISSÃO DO REGISTRO --- */
+
+    document.getElementById('formMaster').onsubmit = async function(e) {
         e.preventDefault();
         setLoader(true);
 
-        const data = {
+        const dadosCaminhao = {
             "PLACA": document.getElementById('placa').value.toUpperCase(),
             "PRODUTO": document.getElementById('produto').value,
             "TELEFONE": document.getElementById('whatsapp').value,
             "JORNADA": document.getElementById('jornada24').checked ? "24 HORAS" : document.getElementById('limite').value,
-            "ENTRADA": new Date().toLocaleString('pt-BR')
+            "ENTRADA": new Date().toLocaleString()
         };
 
         try {
             await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros`, {
                 method: 'POST',
                 headers: RAÍZEN_DB.HEADERS,
-                body: JSON.stringify(data)
+                body: JSON.stringify(dadosCaminhao)
             });
-            alert("REGISTRO REALIZADO COM SUCESSO!");
+            alert("VEÍCULO REGISTRADO COM SUCESSO!");
             location.reload();
-        } catch(e) {
-            alert("ERRO AO REGISTRAR NO BANCO");
+        } catch (e) {
+            alert("ERRO DE COMUNICAÇÃO!");
         } finally {
             setLoader(false);
         }
     };
 
-    /* --- REABERTURA --- */
+    function abrirReabertura() {
+        document.getElementById('form-principal-wrapper').style.display = 'none';
+        document.getElementById('form-reabertura-wrapper').style.display = 'block';
+    }
+
+    function fecharReabertura() {
+        document.getElementById('form-reabertura-wrapper').style.display = 'none';
+        document.getElementById('form-principal-wrapper').style.display = 'block';
+    }
+
     async function processarReabertura() {
         const placa = document.getElementById('re_placa').value.toUpperCase();
-        const hora = document.getElementById('re_hora').value;
-        if(!placa || !hora) return alert("PREENCHA OS CAMPOS");
+        const novaHora = document.getElementById('re_hora').value;
+        if (!placa || !novaHora) return alert("DADOS INCOMPLETOS!");
 
         setLoader(true);
         try {
-            const res = await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?PLACA=eq.${placa}&SAIDA=is.null&select=*`, { headers: RAÍZEN_DB.HEADERS });
-            const item = await res.json();
-
-            if(item.length > 0) {
-                await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${item[0].ID}`, {
+            const res = await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?PLACA=eq.${placa}&SAIDA=is.null`, { 
+                headers: RAÍZEN_DB.HEADERS 
+            });
+            const lista = await res.json();
+            
+            if (lista.length > 0) {
+                await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${lista[0].ID}`, {
                     method: 'PATCH',
                     headers: RAÍZEN_DB.HEADERS,
-                    body: JSON.stringify({ "JORNADA": hora })
+                    body: JSON.stringify({ "JORNADA": novaHora })
                 });
-                alert("JORNADA ATUALIZADA!");
+                alert("JORNADA REABERTA COM SUCESSO!");
                 location.reload();
             } else {
-                alert("VEÍCULO NÃO ENCONTRADO NO PÁTIO");
+                alert("VEÍCULO NÃO LOCALIZADO NO PÁTIO!");
             }
         } finally {
             setLoader(false);
