@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=1200"> 
-    <title>RAÍZEN - GESTÃO OPERACIONAL V30.0</title>
+    <title>RAÍZEN - GESTÃO OPERACIONAL V31.0</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     
     <style>
-        /* --- DESIGN SYSTEM COMPLETO (SEM ABREVIAÇÕES) --- */
         :root {
             --verde-raizen: #4d6d5d;
             --roxo-raizen: #84207d;
@@ -21,21 +20,9 @@
             --sombra-premium: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
 
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            font-family: 'Montserrat', sans-serif; 
-        }
-
-        body { 
-            background-color: var(--fundo-base); 
-            color: #1e293b; 
-            min-height: 100vh; 
-            padding-bottom: 80px; 
-            overflow-x: auto; 
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+        body { background-color: var(--fundo-base); color: #1e293b; min-height: 100vh; padding-bottom: 80px; overflow-x: auto; }
+        
         header { 
             background: linear-gradient(135deg, var(--verde-raizen) 0%, #1a241f 100%); 
             padding: 100px 20px; 
@@ -46,190 +33,53 @@
         }
 
         .logo-display {
-            color: var(--branco); 
-            font-size: 110px; 
-            font-weight: 900;
-            letter-spacing: 25px; 
-            text-transform: uppercase;
+            color: var(--branco); font-size: 110px; font-weight: 900;
+            letter-spacing: 25px; text-transform: uppercase;
             text-shadow: 5px 5px 0px rgba(0,0,0,0.2);
         }
 
         .card-master { 
-            width: 94%; 
-            max-width: 1150px; 
-            margin: -60px auto 60px; 
-            background: var(--branco); 
-            padding: 70px; 
-            border-radius: 45px; 
-            box-shadow: var(--sombra-premium); 
-            border-left: 35px solid var(--roxo-raizen);
-            position: relative; 
-            z-index: 10;
+            width: 94%; max-width: 1150px; margin: -60px auto 60px; 
+            background: var(--branco); padding: 70px; border-radius: 45px; 
+            box-shadow: var(--sombra-premium); border-left: 35px solid var(--roxo-raizen);
+            position: relative; z-index: 10;
         }
 
-        /* PAINEL AMPLO PARA OPERADOR */
         #modulo-operador-full { 
-            display: none; 
-            width: 98%; 
-            max-width: 2100px; 
-            margin: 40px auto;
-            background: var(--branco); 
-            padding: 45px; 
-            border-radius: 35px;
-            box-shadow: var(--sombra-premium); 
-            zoom: 0.75;
+            display: none; width: 98%; max-width: 2200px; margin: 40px auto;
+            background: var(--branco); padding: 45px; border-radius: 35px;
+            box-shadow: var(--sombra-premium); zoom: 0.75;
         }
 
         h2 { 
-            color: var(--roxo-raizen); 
-            text-align: center; 
-            font-weight: 900; 
-            text-transform: uppercase; 
-            margin-bottom: 50px; 
-            font-size: 38px; 
-            border-bottom: 12px solid #f8fafc; 
-            padding-bottom: 25px;
+            color: var(--roxo-raizen); text-align: center; font-weight: 900; 
+            text-transform: uppercase; margin-bottom: 50px; font-size: 38px; 
+            border-bottom: 12px solid #f8fafc; padding-bottom: 25px;
         }
 
         .wrapper-input { margin-bottom: 40px; }
+        label { display: flex; align-items: center; gap: 15px; margin-bottom: 18px; font-weight: 900; color: var(--verde-raizen); font-size: 16px; text-transform: uppercase; }
         
-        label { 
-            display: flex; 
-            align-items: center; 
-            gap: 15px; 
-            margin-bottom: 18px; 
-            font-weight: 900; 
-            color: var(--verde-raizen); 
-            font-size: 16px; 
-            text-transform: uppercase;
-        }
-
         input, select { 
-            width: 100%; 
-            padding: 28px; 
-            border: 5px solid #f1f5f9; 
-            border-radius: 25px; 
-            font-size: 24px; 
-            font-weight: 700; 
-            background: #f8fafc; 
-            transition: all 0.3s ease;
+            width: 100%; padding: 28px; border: 5px solid #f1f5f9; 
+            border-radius: 25px; font-size: 24px; font-weight: 700; 
+            background: #f8fafc; transition: all 0.3s ease;
         }
 
-        input:focus { 
-            border-color: var(--roxo-raizen); 
-            background: white; 
-            outline: none; 
-            box-shadow: 0 0 0 15px rgba(132, 32, 125, 0.08); 
-        }
-
-        .painel-jornada { 
-            background: #fffbeb; 
-            padding: 40px; 
-            border-radius: 40px; 
-            border: 4px dashed var(--ouro-raizen); 
-            margin: 45px 0;
-        }
-
-        .filtros-top { 
-            display: flex; 
-            gap: 20px; 
-            margin-bottom: 40px; 
-            justify-content: center; 
-            flex-wrap: wrap; 
-        }
-
+        .painel-jornada { background: #fffbeb; padding: 40px; border-radius: 40px; border: 4px dashed var(--ouro-raizen); margin: 45px 0; }
+        .filtros-top { display: flex; gap: 20px; margin-bottom: 40px; justify-content: center; flex-wrap: wrap; }
+        
         .chip-filtro { 
-            padding: 18px 40px; 
-            border-radius: 20px; 
-            border: none; 
-            background: #e2e8f0;
-            font-weight: 900; 
-            cursor: pointer; 
-            color: #64748b; 
-            font-size: 14px;
+            padding: 18px 40px; border-radius: 20px; border: none; background: #e2e8f0;
+            font-weight: 900; cursor: pointer; color: #64748b; font-size: 14px;
         }
+        .chip-filtro.active { background: var(--roxo-raizen); color: white; transform: scale(1.1); }
 
-        .chip-filtro.active { 
-            background: var(--roxo-raizen); 
-            color: white; 
-            transform: scale(1.1); 
-        }
+        .moldura-tabela { overflow-x: auto; border-radius: 30px; border: 3px solid #f1f5f9; }
+        table { width: 100%; border-collapse: collapse; min-width: 2400px; background: white; }
+        th { background: #1e293b; color: white; padding: 25px; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; }
+        td { padding: 20px; border-bottom: 3px solid #f8fafc; text-align: center; font-weight: 700; font-size: 17px; }
 
-        .moldura-tabela { 
-            overflow-x: auto; 
-            border-radius: 30px; 
-            border: 3px solid #f1f5f9; 
-        }
-
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            min-width: 2300px; 
-            background: white; 
-        }
-
-        th { 
-            background: #1e293b; 
-            color: white; 
-            padding: 25px; 
-            font-size: 13px; 
-            text-transform: uppercase; 
-            letter-spacing: 2px; 
-        }
-
-        td { 
-            padding: 20px; 
-            border-bottom: 3px solid #f8fafc; 
-            text-align: center; 
-            font-weight: 700; 
-            font-size: 17px; 
-        }
-
-        /* ESTILOS DOS BOTÕES E INPUTS NA TABELA */
-        .input-edit-table {
-            padding: 12px; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 12px;
-            font-size: 14px; 
-            font-weight: 700; 
-            width: 100%; 
-            text-align: center; 
-            background: #f8fafc;
-        }
-
-        .btn-acao-tabela {
-            padding: 10px; 
-            border: none; 
-            border-radius: 10px;
-            cursor: pointer; 
-            font-weight: 900; 
-            font-size: 12px;
-            text-transform: uppercase; 
-            width: 100%; 
-            margin-top: 5px; 
-            transition: 0.2s;
-        }
-
-        .btn-master { 
-            width: 100%; 
-            padding: 35px; 
-            background: var(--roxo-raizen); 
-            color: white; 
-            border: none; 
-            border-radius: 30px; 
-            font-size: 26px; 
-            font-weight: 900; 
-            cursor: pointer; 
-            text-transform: uppercase; 
-            box-shadow: 0 15px 0 #5e1659; 
-            margin-bottom: 25px; 
-            display: flex; 
-            justify-content: center;
-            align-items: center; 
-            gap: 20px;
-        }
-
-        /* STATUS TAGS */
         .tag-p { padding: 12px 20px; border-radius: 15px; font-size: 13px; font-weight: 900; color: white; display: inline-block; min-width: 160px; }
         .bg-gas { background: #ff8c00; } 
         .bg-b100 { background: #5d4037; } 
@@ -237,10 +87,11 @@
         .bg-hid { background: #00a8ff; border: 2px solid #0056b3; } 
         .bg-die { background: #334155; }
 
-        #loader-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.95); z-index: 10000; flex-direction: column; align-items: center; justify-content: center;
-        }
+        .input-edit-table { padding: 12px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 14px; font-weight: 700; width: 100%; text-align: center; background: #f8fafc; }
+        .btn-acao-tabela { padding: 10px; border: none; border-radius: 10px; cursor: pointer; font-weight: 900; font-size: 12px; text-transform: uppercase; width: 100%; margin-top: 5px; transition: 0.2s; }
+        .btn-master { width: 100%; padding: 35px; background: var(--roxo-raizen); color: white; border: none; border-radius: 30px; font-size: 26px; font-weight: 900; cursor: pointer; text-transform: uppercase; box-shadow: 0 15px 0 #5e1659; margin-bottom: 25px; display: flex; justify-content: center; align-items: center; gap: 20px; }
+        
+        #loader-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; }
         .raizen-spinner { width: 90px; height: 90px; border: 12px solid #f3f3f3; border-top: 12px solid var(--roxo-raizen); border-radius: 50%; animation: girar 1s linear infinite; }
         @keyframes girar { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -274,47 +125,33 @@
                 <label><i class="fa-brands fa-whatsapp"></i> WHATSAPP</label>
                 <input type="tel" id="whatsapp" placeholder="(19) 99999-9999" required>
             </div>
-            
             <div class="painel-jornada">
-                <div id="area-tempo">
-                    <label><i class="fa-solid fa-clock"></i> LIMITE JORNADA</label>
-                    <input type="time" id="limite" required> 
-                </div>
+                <div id="area-tempo"><label>LIMITE JORNADA</label><input type="time" id="limite" required></div>
                 <label style="margin-top:25px; display:flex; align-items:center; gap:20px; cursor:pointer; font-size: 20px; font-weight: 900; color: var(--roxo-raizen);">
                     <input type="checkbox" id="jornada24" style="width:35px; height:35px;"> JORNADA 24 HORAS
                 </label>
             </div>
-
-            <button type="submit" class="btn-master">REGISTRAR ENTRADA</button>
-            <button type="button" onclick="abrirReabertura()" class="btn-master" style="background:#475569; box-shadow: 0 15px 0 #2d3748; font-size:18px;">
-                REABRIR JORNADA EXISTENTE
-            </button>
+            <button type="submit" class="btn-master">CONFIRMAR REGISTRO</button>
+            <button type="button" onclick="abrirReabertura()" class="btn-master" style="background:#475569; box-shadow: 0 15px 0 #2d3748; font-size:18px;">REABRIR JORNADA</button>
         </form>
     </div>
 
     <div id="form-reabertura-wrapper" style="display:none;">
-        <h2 style="color:#475569">REABRIR REGISTRO</h2>
+        <h2>REABRIR JORNADA</h2>
         <div class="wrapper-input"><label>PLACA</label><input type="text" id="re_placa" placeholder="AAA-0000" maxlength="8"></div>
         <div class="wrapper-input"><label>NOVA HORA</label><input type="time" id="re_hora"></div>
         <button onclick="processarReabertura()" class="btn-master" style="background:#475569">ATUALIZAR</button>
-        <button onclick="fecharReabertura()" style="width:100%; background:none; border:none; color:var(--roxo-raizen); font-weight:900; cursor:pointer; padding:20px;">CANCELAR</button>
+        <button onclick="fecharReabertura()" style="width:100%; background:none; border:none; color:var(--roxo-raizen); font-weight:900; cursor:pointer; padding:20px;">VOLTAR</button>
     </div>
 
     <div style="text-align:center; margin-top:50px;">
-        <button onclick="ativarOperador()" style="background:none; border:none; color:var(--roxo-raizen); font-weight:900; cursor:pointer; text-transform:uppercase;">
-            <i class="fa-solid fa-lock"></i> ACESSO OPERACIONAL
-        </button>
+        <button onclick="ativarOperador()" style="background:none; border:none; color:var(--roxo-raizen); font-weight:900; cursor:pointer; text-transform:uppercase;">ACESSO OPERACIONAL</button>
     </div>
 </div>
 
 <div id="modulo-operador-full">
-    <div style="text-align:center; margin-top:20px;">
-        <button onclick="abrirGestaoTanques()" style="background:none; border:none; color:#64748b; font-weight:700; cursor:pointer; text-transform:uppercase;">
-            <i class="fa-solid fa-gauge-high"></i> SUPERVISÃO DE TANQUES (ADM)
-        </button>
-    </div>
+    <div style="text-align:center; margin-top:20px;"><button onclick="abrirGestaoTanques()" style="background:none; border:none; color:#64748b; font-weight:700; cursor:pointer;">SUPERVISÃO DE TANQUES (ADM)</button></div>
     <h2>PAINEL DE CONTROLE DE PÁTIO</h2>
-    
     <div class="filtros-top">
         <button class="chip-filtro active" onclick="filtrar('TODOS', this)">TODOS</button>
         <button class="chip-filtro" onclick="filtrar('GASOLINA', this)">GASOLINA</button>
@@ -323,7 +160,6 @@
         <button class="chip-filtro" onclick="filtrar('HIDRATADO', this)">HIDRATADO</button>
         <button class="chip-filtro" onclick="filtrar('DIESEL', this)">DIESEL S10</button>
     </div>
-
     <div class="moldura-tabela">
         <table>
             <thead>
@@ -341,7 +177,6 @@
             <tbody id="listaFila"></tbody>
         </table>
     </div>
-    
     <div style="margin-top:40px; display:flex; gap:25px;">
         <button class="btn-master" style="background:#1e293b; box-shadow: 0 15px 0 #0f172a;" onclick="location.reload()">SAIR</button>
         <button class="btn-master" style="background:var(--verde-raizen); box-shadow: 0 15px 0 #2d3e35;" onclick="carregarDados()">ATUALIZAR LISTA</button>
@@ -352,12 +187,7 @@
     const RAÍZEN_DB = {
         URL: 'https://rbbkjuiizmvatiawfzuv.supabase.co',
         KEY: 'sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X',
-        HEADERS: { 
-            "apikey": 'sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X', 
-            "Authorization": `Bearer sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X`, 
-            "Content-Type": "application/json",
-            "Prefer": "return=minimal"
-        }
+        HEADERS: { "apikey": 'sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X', "Authorization": `Bearer sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X`, "Content-Type": "application/json", "Prefer": "return=minimal" }
     };
 
     let memoriaFila = [];
@@ -367,16 +197,22 @@
     function abrirReabertura() { document.getElementById('form-principal-wrapper').style.display = 'none'; document.getElementById('form-reabertura-wrapper').style.display = 'block'; }
     function fecharReabertura() { document.getElementById('form-reabertura-wrapper').style.display = 'none'; document.getElementById('form-principal-wrapper').style.display = 'block'; }
 
-    // MASCARAS
-    const mascaraPlaca = (el) => {
+    // RESTAURAÇÃO DA MÁSCARA DE PLACA RIGOROSA
+    function aplicarMascaraPlaca(el) {
         el.oninput = function() {
             let v = this.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
-            if (v.length > 3 && !isNaN(v[3])) v = v.substring(0,3) + "-" + v.substring(3,7);
+            if (v.length > 3) {
+                // Se o quarto caractere for número, é placa antiga (AAA-1234), se for letra é Mercosul (AAA1A23)
+                // Mas para o padrão de visualização, forçamos o hífen no 4º dígito para facilitar a leitura se for o caso
+                if(!isNaN(v[3])) {
+                    v = v.substring(0,3) + "-" + v.substring(3,7);
+                }
+            }
             this.value = v.substring(0,8);
         };
-    };
-    mascaraPlaca(document.getElementById('placa'));
-    mascaraPlaca(document.getElementById('re_placa'));
+    }
+    aplicarMascaraPlaca(document.getElementById('placa'));
+    aplicarMascaraPlaca(document.getElementById('re_placa'));
 
     document.getElementById('whatsapp').oninput = function(e) {
         let v = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
@@ -395,7 +231,7 @@
             const res = await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?SAIDA=is.null&select=*`, { headers: RAÍZEN_DB.HEADERS });
             memoriaFila = await res.json();
             renderTabela();
-        } catch(e) { console.error("Erro Supabase:", e); }
+        } catch(e) { console.error(e); }
     }
 
     function renderTabela() {
@@ -428,7 +264,7 @@
                     <td>
                         <button onclick="chamarWhatsApp('${id}', '${item.TELEFONE}', '${item.PRODUTO}', ${item.VOLUME})" 
                                 style="background:#25d366; color:white; border:none; padding:15px; border-radius:15px; cursor:pointer; font-weight:900; width:100%;">
-                                <i class="fa-brands fa-whatsapp"></i> CONVOCAR
+                                CONVOCAR
                         </button>
                     </td>
                     <td><button onclick="finalizar('${id}')" style="background:#3b82f6; color:white; border:none; padding:15px; border-radius:15px; cursor:pointer; font-weight:900; width:100%;">SAÍDA</button></td>
@@ -450,17 +286,15 @@
         if(campo === 'AGENDAMENTO') v = v ? v.replace("T", " ") : null;
         setLoader(true);
         try {
-            await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${id}`, {
-                method: 'PATCH', headers: RAÍZEN_DB.HEADERS, body: JSON.stringify({ [campo]: v })
-            });
+            await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${id}`, { method: 'PATCH', headers: RAÍZEN_DB.HEADERS, body: JSON.stringify({ [campo]: v }) });
             carregarDados();
         } finally { setLoader(false); }
     }
 
+    // RESTAURAÇÃO DA MENSAGEM COMPLETA E DA TRAVA
     async function chamarWhatsApp(id, tel, produto, volumeCaminhao) {
-        // TRAVA DE SEGURANÇA REFORÇADA
         if(!volumeCaminhao || volumeCaminhao <= 0) {
-            alert("🛑 ERRO DE SEGURANÇA: O volume do caminhão não foi informado ou não foi salvo. Digite o volume na coluna laranja e clique em 'SALVAR VOL' antes de convocar.");
+            alert("🛑 ALERTA: O volume não foi preenchido ou salvo! Informe o volume na coluna laranja primeiro.");
             return;
         }
 
@@ -471,32 +305,37 @@
             const espacoTotal = tanques.reduce((acc, t) => acc + parseFloat(t.ESPAÇO_DISPONIVEL), 0);
 
             if (volumeCaminhao > espacoTotal) {
-                alert(`🛑 ESPAÇO INSUFICIENTE: O caminhão tem ${volumeCaminhao}L, mas o espaço total nos tanques é de apenas ${espacoTotal}L.`);
+                alert(`🛑 BLOQUEADO: Volume do caminhão (${volumeCaminhao}L) excede o espaço disponível (${espacoTotal}L).`);
                 return;
             }
 
-            const baia = prompt("CAMINHÃO LIBERADO! Informe a BAIA de descarga:");
+            const baia = prompt("CAMINHÃO LIBERADO! Informe a BAIA:");
             if(!baia) return;
 
+            // Abate no tanque
             const t = tanques[0];
-            await fetch(`${RAÍZEN_DB.URL}/rest/v1/ESTOQUE?id=eq.${t.id}`, {
-                method: 'PATCH', headers: RAÍZEN_DB.HEADERS, body: JSON.stringify({ "ESPAÇO_DISPONIVEL": t.ESPAÇO_DISPONIVEL - volumeCaminhao })
-            });
+            await fetch(`${RAÍZEN_DB.URL}/rest/v1/ESTOQUE?id=eq.${t.id}`, { method: 'PATCH', headers: RAÍZEN_DB.HEADERS, body: JSON.stringify({ "ESPAÇO_DISPONIVEL": t.ESPAÇO_DISPONIVEL - volumeCaminhao }) });
 
-            const p = memoriaFila.find(x => x.ID == id).PLACA;
-            const msg = encodeURIComponent(`Olá! Placa ${p}, favor dirigir-se à BAIA ${baia} para descarga de ${produto} (${volumeCaminhao}L).`);
-            window.open(`https://wa.me/55${tel.replace(/\D/g, "")}?text=${msg}`, '_blank');
+            const placa = memoriaFila.find(x => x.ID == id).PLACA;
+            
+            // RESTAURAÇÃO DA MENSAGEM DE OK COMPLETA
+            const mensagemOK = `*RAÍZEN - INFORMATIVO OPERACIONAL*%0A%0A` +
+                               `✅ *PLACA:* ${placa}%0A` +
+                               `🚛 *PRODUTO:* ${produto}%0A` +
+                               `📦 *VOLUME:* ${volumeCaminhao} Litros%0A` +
+                               `📍 *LOCAL:* Dirigir-se imediatamente para a *BAIA ${baia}*%0A%0A` +
+                               `_Favor manter o uso de EPIs obrigatórios durante a operação._`;
+
+            window.open(`https://wa.me/55${tel.replace(/\D/g, "")}?text=${mensagemOK}`, '_blank');
             carregarDados();
         } finally { setLoader(false); }
     }
 
     async function finalizar(id) {
-        if(!confirm("CONFIRMAR SAÍDA DO PÁTIO?")) return;
+        if(!confirm("CONFIRMAR SAÍDA?")) return;
         setLoader(true);
         try {
-            await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${id}`, {
-                method: 'PATCH', headers: RAÍZEN_DB.HEADERS, body: JSON.stringify({ "SAIDA": new Date().toLocaleString('pt-BR') })
-            });
+            await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${id}`, { method: 'PATCH', headers: RAÍZEN_DB.HEADERS, body: JSON.stringify({ "SAIDA": new Date().toLocaleString('pt-BR') }) });
             carregarDados();
         } finally { setLoader(false); }
     }
@@ -509,10 +348,8 @@
             const res = await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?PLACA=eq.${p}&SAIDA=is.null`, { headers: RAÍZEN_DB.HEADERS });
             const data = await res.json();
             if(data.length > 0) {
-                await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${data[0].ID}`, {
-                    method: 'PATCH', headers: RAÍZEN_DB.HEADERS, body: JSON.stringify({"JORNADA": h})
-                });
-                alert("JORNADA REABERTA!"); location.reload();
+                await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${data[0].ID}`, { method: 'PATCH', headers: RAÍZEN_DB.HEADERS, body: JSON.stringify({"JORNADA": h}) });
+                alert("SUCESSO!"); location.reload();
             } else alert("PLACA NÃO ENCONTRADA!");
         } finally { setLoader(false); }
     }
@@ -525,11 +362,11 @@
     }
 
     function ativarOperador() {
-        if(prompt("SENHA OPERACIONAL:") === "raizen2026") {
+        if(prompt("SENHA:") === "raizen2026") {
             document.getElementById('secao-entrada').style.display = 'none';
             document.getElementById('modulo-operador-full').style.display = 'block';
             carregarDados();
-            setInterval(carregarDados, 30000); // Auto-refresh 30s
+            setInterval(carregarDados, 30000);
         }
     }
 
@@ -547,16 +384,15 @@
         location.reload();
     };
 
-    /* --- GESTÃO ADM (MANTIDA INTEGRALMENTE) --- */
     async function abrirGestaoTanques() {
-        const s = prompt("SENHA ADMINISTRADOR:");
+        const s = prompt("SENHA ADM:");
         if (s !== "raizen2026") return;
         document.getElementById('modulo-operador-full').style.display = 'none';
         if (!document.getElementById('modulo-supervisao-tanques')) {
             const div = document.createElement('div');
             div.id = 'modulo-supervisao-tanques';
             div.className = 'card-master';
-            div.innerHTML = `<h2>GESTÃO DE ESTOQUE (ADM)</h2><div id="lista-tanques-gestao"></div><button class="btn-master" style="background:#1e293b;" onclick="location.reload()">VOLTAR AO PAINEL</button>`;
+            div.innerHTML = `<h2>ESTOQUE ADM</h2><div id="lista-tanques-gestao"></div><button class="btn-master" style="background:#1e293b;" onclick="location.reload()">VOLTAR</button>`;
             document.body.appendChild(div);
         }
         document.getElementById('modulo-supervisao-tanques').style.display = 'block';
@@ -569,20 +405,14 @@
         const container = document.getElementById('lista-tanques-gestao');
         container.innerHTML = "";
         tanques.forEach(t => {
-            container.innerHTML += `
-                <div class="painel-jornada">
-                    <b>${t.TANQUE_NAME} - ${t.PRODUTO}</b><br><br>
-                    <label>ESPAÇO DISPONÍVEL ATUAL (L):</label>
-                    <input type="number" id="adm-t-${t.id}" value="${t.ESPAÇO_DISPONIVEL}">
-                    <button onclick="salvarTanqueADM(${t.id})" class="btn-acao-tabela" style="background:var(--roxo-raizen); color:white; padding:15px; margin-top:10px;">SALVAR AJUSTE</button>
-                </div>`;
+            container.innerHTML += `<div class="painel-jornada"><b>${t.TANQUE_NAME}</b><br><input type="number" id="adm-t-${t.id}" value="${t.ESPAÇO_DISPONIVEL}"><button onclick="salvarTanqueADM(${t.id})" class="btn-acao-tabela" style="background:var(--roxo-raizen); color:white; padding:15px; margin-top:10px;">SALVAR</button></div>`;
         });
     }
 
     async function salvarTanqueADM(id) {
         const v = document.getElementById(`adm-t-${id}`).value;
         await fetch(`${RAÍZEN_DB.URL}/rest/v1/ESTOQUE?id=eq.${id}`, { method: 'PATCH', headers: RAÍZEN_DB.HEADERS, body: JSON.stringify({"ESPAÇO_DISPONIVEL": v}) });
-        alert("ESTOQUE ATUALIZADO PELO ADM!");
+        alert("ATUALIZADO!");
     }
 </script>
 </body>
