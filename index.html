@@ -9,9 +9,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     
     <style>
-        /* --- DESIGN SYSTEM INDUSTRIAL RAÍZEN (VERSÃO EXPANDIDA E BLINDADA) --- 
-           Cores oficiais e padrões de espaçamento mantidos rigorosamente.
+        /* ========================================
+           DESIGN SYSTEM INDUSTRIAL RAÍZEN
+           ESTILO EXPANDIDO PARA MANUTENÇÃO (BLINDADO)
+           ========================================
         */
+
         :root {
             --verde-raizen: #4d6d5d;
             --roxo-raizen: #84207d;
@@ -40,10 +43,14 @@
             overflow-x: auto;
         }
 
-        /* --- ESTILIZAÇÃO DO CABEÇALHO --- */
+        /* CABEÇALHO LOGO RAÍZEN 
+        */
         header { 
             background: linear-gradient(135deg, var(--verde-raizen) 0%, var(--preto-industrial) 100%); 
-            padding: 100px 20px; 
+            padding-top: 100px;
+            padding-bottom: 100px;
+            padding-left: 20px;
+            padding-right: 20px;
             text-align: center; 
             border-bottom: 30px solid var(--roxo-raizen);
             box-shadow: 0 15px 40px rgba(0,0,0,0.4);
@@ -59,11 +66,15 @@
             text-shadow: 5px 5px 0px rgba(0,0,0,0.2);
         }
 
-        /* --- CARDS E MÓDULOS --- */
+        /* CONTAINERS PRINCIPAIS 
+        */
         .card-master { 
             width: 94%; 
             max-width: 1150px; 
-            margin: -60px auto 60px; 
+            margin-top: -60px;
+            margin-bottom: 60px;
+            margin-left: auto;
+            margin-right: auto;
             background: var(--branco); 
             padding: 70px; 
             border-radius: 45px; 
@@ -78,7 +89,10 @@
             display: none; 
             width: 98%; 
             max-width: 1900px; 
-            margin: 40px auto;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            margin-left: auto;
+            margin-right: auto;
             background: var(--branco); 
             padding: 45px; 
             border-radius: 35px;
@@ -97,7 +111,8 @@
             padding-bottom: 25px;
         }
 
-        /* --- FORMULÁRIOS E ENTRADAS --- */
+        /* ELEMENTOS DE FORMULÁRIO 
+        */
         .wrapper-input { 
             margin-bottom: 40px; 
         }
@@ -115,27 +130,37 @@
 
         input, select { 
             width: 100%; 
-            padding: 28px; 
-            border: 5px solid #f1f5f9; 
+            padding-top: 28px;
+            padding-bottom: 28px;
+            padding-left: 28px;
+            padding-right: 28px;
+            border-top: 5px solid #f1f5f9; 
+            border-bottom: 5px solid #f1f5f9; 
+            border-left: 5px solid #f1f5f9; 
+            border-right: 5px solid #f1f5f9; 
             border-radius: 25px; 
             font-size: 24px; 
             font-weight: 700; 
-            background: #f8fafc; 
+            background-color: #f8fafc; 
             transition: all 0.3s ease;
         }
 
         input:focus {
             border-color: var(--roxo-raizen);
             outline: none;
-            background: white;
+            background-color: #ffffff;
         }
 
-        /* --- BOTÕES --- */
+        /* ESTILO DOS BOTÕES 
+        */
         .btn-master { 
             width: 100%; 
-            padding: 35px; 
-            background: var(--roxo-raizen); 
-            color: white; 
+            padding-top: 35px;
+            padding-bottom: 35px;
+            padding-left: 35px;
+            padding-right: 35px;
+            background-color: var(--roxo-raizen); 
+            color: #ffffff; 
             border: none; 
             border-radius: 30px; 
             font-size: 26px; 
@@ -148,6 +173,7 @@
             justify-content: center;
             align-items: center; 
             gap: 20px;
+            transition: transform 0.1s;
         }
 
         .btn-master:active { 
@@ -155,7 +181,8 @@
             box-shadow: 0 5px 0 #5e1659; 
         }
 
-        /* --- TABELAS --- */
+        /* TABELAS DE DADOS 
+        */
         .moldura-tabela { 
             overflow-x: auto; 
             border-radius: 30px; 
@@ -166,19 +193,25 @@
             width: 100%; 
             border-collapse: collapse; 
             min-width: 1850px; 
-            background: white; 
+            background-color: #ffffff; 
         }
 
         th { 
-            background: #1e293b; 
-            color: white; 
-            padding: 25px; 
+            background-color: #1e293b; 
+            color: #ffffff; 
+            padding-top: 25px;
+            padding-bottom: 25px;
+            padding-left: 25px;
+            padding-right: 25px;
             font-size: 13px; 
             text-transform: uppercase; 
         }
 
         td { 
-            padding: 20px; 
+            padding-top: 20px;
+            padding-bottom: 20px;
+            padding-left: 20px;
+            padding-right: 20px;
             border-bottom: 3px solid #f8fafc; 
             text-align: center; 
             font-weight: 700; 
@@ -194,7 +227,8 @@
             text-align: center;
         }
 
-        /* --- LOADER E BADGES --- */
+        /* LOADER DE SINCRONIZAÇÃO 
+        */
         #loader-overlay {
             display: none; 
             position: fixed; 
@@ -202,7 +236,7 @@
             left: 0; 
             width: 100%; 
             height: 100%;
-            background: rgba(255,255,255,0.95); 
+            background-color: rgba(255,255,255,0.95); 
             z-index: 10000; 
             flex-direction: column; 
             align-items: center; 
@@ -230,8 +264,15 @@
             text-transform: uppercase; 
         }
 
-        .status-ok { background: #dcfce7; color: #166534; }
-        .status-expirado { background: #fee2e2; color: #991b1b; }
+        .status-ok { 
+            background-color: #dcfce7; 
+            color: #166534; 
+        }
+
+        .status-expirado { 
+            background-color: #fee2e2; 
+            color: #991b1b; 
+        }
 
     </style>
 </head>
@@ -250,6 +291,7 @@
     
     <div id="form-principal-wrapper">
         <h2><i class="fa-solid fa-truck-ramp-box"></i> REGISTRO DE ENTRADA</h2>
+        
         <form id="formMaster">
             
             <div class="wrapper-input">
@@ -271,10 +313,11 @@
 
             <div class="wrapper-input">
                 <label><i class="fa-brands fa-whatsapp"></i> WHATSAPP MOTORISTA</label>
-                <input type="tel" id="whatsapp" placeholder="(19) 99999-9999" required>
+                <input type="tel" id="whatsapp" placeholder="(19) 99999-9999" maxlength="15" required>
             </div>
             
-            <div style="background: #fffbeb; padding: 40px; border-radius: 40px; border: 4px dashed var(--ouro-raizen); margin: 45px 0;">
+            <div style="background-color: #fffbeb; padding: 40px; border-radius: 40px; border: 4px dashed var(--ouro-raizen); margin-top: 45px; margin-bottom: 45px;">
+                
                 <div id="container-horario-limite">
                     <label><i class="fa-solid fa-clock"></i> HORÁRIO LIMITE JORNADA</label>
                     <input type="time" id="limite"> 
@@ -288,7 +331,7 @@
 
             <button type="submit" class="btn-master">CONFIRMAR REGISTRO</button>
             
-            <button type="button" onclick="abrirReabertura()" class="btn-master" style="background:var(--cinza-texto); font-size:18px; box-shadow: 0 15px 0 #2d3748;">
+            <button type="button" onclick="abrirReabertura()" class="btn-master" style="background-color:var(--cinza-texto); font-size:18px;">
                 <i class="fa-solid fa-clock-rotate-left"></i> REABRIR JORNADA EXISTENTE
             </button>
         </form>
@@ -296,23 +339,27 @@
 
     <div id="form-reabertura-wrapper" style="display:none;">
         <h2 style="color:var(--cinza-texto)">REABRIR REGISTRO</h2>
+        
         <div class="wrapper-input">
             <label>PLACA DO VEÍCULO</label>
             <input type="text" id="re_placa" placeholder="AAA-0000" maxlength="8">
         </div>
+        
         <div class="wrapper-input">
             <label>NOVA HORA LIMITE</label>
             <input type="time" id="re_hora">
         </div>
-        <button onclick="processarReabertura()" class="btn-master" style="background:var(--cinza-texto)">ATUALIZAR JORNADA</button>
+        
+        <button onclick="processarReabertura()" class="btn-master" style="background-color:var(--cinza-texto)">ATUALIZAR JORNADA</button>
+        
         <button onclick="fecharReabertura()" style="width:100%; background:none; border:none; color:var(--roxo-raizen); font-weight:900; cursor:pointer; padding:20px;">CANCELAR OPERAÇÃO</button>
     </div>
 
     <div style="text-align:center; margin-top:50px; display:flex; justify-content:center; gap:30px;">
-        <button onclick="ativarOperador()" style="background:none; border:none; color:var(--roxo-raizen); font-weight:900; cursor:pointer; text-transform:uppercase; letter-spacing:1px;">
+        <button onclick="ativarOperador()" style="background:none; border:none; color:var(--roxo-raizen); font-weight:900; cursor:pointer; text-transform:uppercase;">
             <i class="fa-solid fa-lock"></i> PAINEL OPERADOR
         </button>
-        <button onclick="ativarSupervisao()" style="background:none; border:none; color:var(--verde-raizen); font-weight:900; cursor:pointer; text-transform:uppercase; letter-spacing:1px;">
+        <button onclick="ativarSupervisao()" style="background:none; border:none; color:var(--verde-raizen); font-weight:900; cursor:pointer; text-transform:uppercase;">
             <i class="fa-solid fa-shield-halved"></i> GESTÃO DE TANQUES
         </button>
     </div>
@@ -322,7 +369,7 @@
     <h2>PAINEL DE CONTROLE OPERACIONAL</h2>
     
     <div id="status-tanques-topo" style="display:flex; justify-content:center; gap:15px; margin-bottom:30px; flex-wrap:wrap;"></div>
-
+    
     <div class="moldura-tabela">
         <table>
             <thead>
@@ -330,7 +377,7 @@
                     <th>VEÍCULO</th>
                     <th>PRODUTO</th>
                     <th>JORNADA</th>
-                    <th style="background:#f1f5f9; color:var(--roxo-raizen);">VOLUME CARGA (L)</th>
+                    <th style="background-color:#f1f5f9; color:var(--roxo-raizen);">VOLUME CARGA (L)</th>
                     <th>AGENDAMENTO</th>
                     <th>TELEFONE</th>
                     <th>CONVOCAR</th>
@@ -341,38 +388,34 @@
         </table>
     </div>
     
-    <button class="btn-master" style="background:#1e293b; margin-top:30px;" onclick="location.reload()">
-        <i class="fa-solid fa-arrow-left"></i> VOLTAR AO INÍCIO
-    </button>
+    <button class="btn-master" style="background-color:#1e293b; margin-top:30px;" onclick="location.reload()">VOLTAR AO INÍCIO</button>
 </div>
 
 <div id="modulo-supervisao">
     <h2>GESTÃO DE CAPACIDADE (SUPERVISÃO)</h2>
-    <p style="text-align:center; margin-bottom:35px; font-weight:700; color:var(--verde-raizen); font-size:18px;">
-        AJUSTE O ESPAÇO DISPONÍVEL EM CADA TANQUE ABAIXO:
-    </p>
-
-    <div class="moldura-tabela" style="max-width:900px; margin:0 auto;">
+    
+    <div class="moldura-tabela" style="max-width:900px; margin-left:auto; margin-right:auto;">
         <table style="min-width:100%">
             <thead>
                 <tr>
-                    <th style="width:40%">PRODUTO / TANQUE</th>
-                    <th style="width:40%">ESPAÇO LIVRE ATUAL (LITROS)</th>
-                    <th style="width:20%">AÇÃO</th>
+                    <th>PRODUTO / TANQUE</th>
+                    <th>ESPAÇO LIVRE ATUAL (LITROS)</th>
+                    <th>AÇÃO</th>
                 </tr>
             </thead>
-            <tbody id="listaEstoqueSupervisao">
-                </tbody>
+            <tbody id="listaEstoqueSupervisao"></tbody>
         </table>
     </div>
-
-    <button class="btn-master" style="background:#1e293b; margin-top:50px;" onclick="location.reload()">
-        <i class="fa-solid fa-door-open"></i> ENCERRAR SESSÃO DE SUPERVISÃO
-    </button>
+    
+    <button class="btn-master" style="background-color:#1e293b; margin-top:50px;" onclick="location.reload()">SAIR DA SUPERVISÃO</button>
 </div>
 
 <script>
-    /* --- CONFIGURAÇÕES DE CONEXÃO SUPABASE --- */
+    /* ========================================
+       LOGICA DE SISTEMA (JavaScript Expandido)
+       ========================================
+    */
+
     const RAÍZEN_DB = {
         URL: 'https://rbbkjuiizmvatiawfzuv.supabase.co',
         KEY: 'sb_publishable_WkrHi6cWtZsnsDXl0nh1hA_kz1UT_1X',
@@ -388,87 +431,108 @@
     let memoriaFila = [];
     let memoriaEstoque = [];
 
-    /* --- FUNÇÕES DE INTERFACE (BLINDAGEM) --- */
-    
+    // --- CONTROLE DE INTERFACE ---
+
     function setLoader(estado) { 
-        document.getElementById('loader-overlay').style.display = estado ? 'flex' : 'none'; 
-    }
-
-    // TRAVA 24H: FAZ O CAMPO SUMIR OU APARECER
-    function toggleLimiteVisual(checkbox) {
-        const container = document.getElementById('container-horario-limite');
-        if (checkbox.checked) {
-            container.style.display = 'none';
+        const loader = document.getElementById('loader-overlay');
+        if (estado) {
+            loader.style.display = 'flex';
         } else {
-            container.style.display = 'block';
+            loader.style.display = 'none';
         }
     }
 
-    /* --- MÁSCARAS DE ENTRADA (MANTIDAS) --- */
-    
-    document.getElementById('placa').addEventListener('input', function(e) {
-        let valor = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
-        if (valor.length > 3) {
-            valor = valor.slice(0, 3) + "-" + valor.slice(3);
+    function toggleLimiteVisual(checkbox) {
+        const campoHorario = document.getElementById('container-horario-limite');
+        if (checkbox.checked) {
+            campoHorario.style.display = 'none';
+        } else {
+            campoHorario.style.display = 'block';
         }
-        e.target.value = valor.slice(0, 8);
+    }
+
+    // --- MÁSCARAS DE INPUT ---
+
+    const inputPlaca = document.getElementById('placa');
+    inputPlaca.addEventListener('input', function(e) {
+        let val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+        if (val.length > 3) {
+            val = val.slice(0, 3) + "-" + val.slice(3);
+        }
+        e.target.value = val.slice(0, 8);
     });
 
-    document.getElementById('whatsapp').addEventListener('input', function(e) {
-        let valor = e.target.value.replace(/\D/g, "");
-        if (valor.length > 11) valor = valor.slice(0, 11);
-        if (valor.length > 10) {
-            valor = valor.replace(/^(\d{2})(\d{5})(\d{4}).*/, "($1) $2-$3");
-        } else if (valor.length > 2) {
-            valor = valor.replace(/^(\d{2})(\d{0,5}).*/, "($1) $2");
+    const inputWhatsApp = document.getElementById('whatsapp');
+    inputWhatsApp.addEventListener('input', function(e) {
+        let v = e.target.value.replace(/\D/g, "");
+        if (v.length > 11) {
+            v = v.slice(0, 11);
         }
-        e.target.value = valor;
+        
+        if (v.length > 10) {
+            // Formato Celular: (XX) XXXXX-XXXX
+            v = "(" + v.slice(0, 2) + ") " + v.slice(2, 7) + "-" + v.slice(7);
+        } else if (v.length > 6) {
+            // Formato Fixo: (XX) XXXX-XXXX
+            v = "(" + v.slice(0, 2) + ") " + v.slice(2, 6) + "-" + v.slice(6);
+        } else if (v.length > 2) {
+            v = "(" + v.slice(0, 2) + ") " + v.slice(2);
+        } else if (v.length > 0) {
+            v = "(" + v;
+        }
+        e.target.value = v;
     });
 
-    /* --- GESTÃO DE DADOS E SINCRONIZAÇÃO --- */
+    // --- COMUNICAÇÃO COM BANCO DE DADOS ---
 
     async function carregarDados() {
         try {
-            // Busca registros ativos
+            // Busca Fila
             const respostaFila = await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?SAIDA=is.null&select=*`, { 
                 headers: RAÍZEN_DB.HEADERS 
             });
             memoriaFila = await respostaFila.json();
 
-            // Busca situação dos tanques
+            // Busca Estoque
             const respostaEstoque = await fetch(`${RAÍZEN_DB.URL}/rest/v1/estoque?select=*`, { 
                 headers: RAÍZEN_DB.HEADERS 
             });
             memoriaEstoque = await respostaEstoque.json();
 
-            // Atualiza todas as visualizações
+            // Atualiza Telas
             renderTabela(); 
             renderResumoEstoque(); 
             renderSupervisaoEstoque();
+            
         } catch (erro) {
-            console.error("Falha na sincronização:", erro);
+            console.error("Erro ao carregar dados:", erro);
         }
     }
 
-    // GERA A TABELA DA SUPERVISÃO COM OS INPUTS DE EDIÇÃO
+    // --- RENDERS DE TABELA ---
+
     function renderSupervisaoEstoque() {
-        const corpoTabela = document.getElementById('listaEstoqueSupervisao');
-        if (!corpoTabela) return;
+        const corpoTabelaSup = document.getElementById('listaEstoqueSupervisao');
+        if (!corpoTabelaSup) return;
         
-        corpoTabela.innerHTML = "";
+        corpoTabelaSup.innerHTML = "";
+        
         memoriaEstoque.forEach(item => {
-            corpoTabela.innerHTML += `
+            corpoTabelaSup.innerHTML += `
                 <tr>
-                    <td style="color:var(--roxo-raizen); font-size:20px; text-align:left; padding-left:30px;">
+                    <td style="color:var(--roxo-raizen); font-size:20px;">
                         <b>${item.produto}</b>
                     </td>
                     <td>
-                        <input type="number" id="input-sup-${item.id}" value="${item.espaco_disponivel}" 
-                               class="input-edit-table" style="font-size:22px; padding:15px; border:3px solid var(--ouro-raizen);">
+                        <input type="number" 
+                               id="input-sup-${item.id}" 
+                               value="${item.espaco_disponivel}" 
+                               class="input-edit-table" 
+                               style="font-size:22px;">
                     </td>
                     <td>
                         <button onclick="salvarAlteracaoSupervisao(${item.id})" 
-                                style="background:var(--verde-raizen); color:white; border:none; padding:15px 25px; border-radius:12px; cursor:pointer; font-weight:900;">
+                                style="background-color:var(--verde-raizen); color:white; border:none; padding:15px; border-radius:12px; font-weight:900; cursor:pointer;">
                             ATUALIZAR
                         </button>
                     </td>
@@ -478,62 +542,67 @@
 
     async function salvarAlteracaoSupervisao(id) {
         const novoValor = document.getElementById(`input-sup-${id}`).value;
-        if (!novoValor) return alert("INSIRA UM VALOR VÁLIDO");
-
+        
         setLoader(true);
+        
         try {
-            await fetch(`${RAÍZEN_DB.URL}/rest/v1/estoque?id=eq.${id}`, {
-                method: 'PATCH',
-                headers: RAÍZEN_DB.HEADERS,
-                body: JSON.stringify({ "espaco_disponivel": parseFloat(novoValor) })
+            await fetch(`${RAÍZEN_DB.URL}/rest/v1/estoque?id=eq.${id}`, { 
+                method: 'PATCH', 
+                headers: RAÍZEN_DB.HEADERS, 
+                body: JSON.stringify({ "espaco_disponivel": parseFloat(novoValor) }) 
             });
-            alert("ESPAÇO DO TANQUE ATUALIZADO PELO SUPERVISOR!");
+            
+            alert("CAPACIDADE DO TANQUE ATUALIZADA COM SUCESSO!");
             await carregarDados();
+            
+        } catch (e) {
+            alert("ERRO AO SALVAR!");
         } finally {
             setLoader(false);
         }
     }
 
-    // GERA A TABELA DO OPERADOR
     function renderTabela() {
         const corpoFila = document.getElementById('listaFila');
         if (!corpoFila) return;
-
+        
         corpoFila.innerHTML = "";
+        
         memoriaFila.forEach(item => {
             const id = item[RAÍZEN_DB.ID_COL];
-            const statusJornada = verificarStatusHorario(item.JORNADA);
-            const classeCor = (statusJornada === "EXPIRADA") ? "status-expirado" : "status-ok";
-
+            const statusHora = verificarStatusHorario(item.JORNADA);
+            
             corpoFila.innerHTML += `
                 <tr>
                     <td style="font-size:24px; color:var(--roxo-raizen)">${item.PLACA}</td>
                     <td>${item.PRODUTO}</td>
-                    <td><span class="status-badge ${classeCor}">${statusJornada}</span></td>
+                    <td><span class="status-badge status-ok">${statusHora}</span></td>
                     <td>
                         <div style="display:flex; gap:8px; justify-content:center;">
-                            <input type="number" id="vol-input-${id}" value="${item.VOLUME || ''}" 
-                                   class="input-edit-table" style="width:130px; background:#fff7ed;">
+                            <input type="number" id="vol-input-${id}" value="${item.VOLUME || ''}" class="input-edit-table" style="width:130px;">
                             <button onclick="salvarVolumeOperador('${id}')" 
-                                    style="background:var(--roxo-raizen); color:white; border:none; padding:10px; border-radius:8px; cursor:pointer;">
+                                    style="background-color:var(--roxo-raizen); color:white; border:none; padding:10px; border-radius:8px; cursor:pointer;">
                                 <i class="fa-solid fa-save"></i>
                             </button>
                         </div>
                     </td>
                     <td>
-                        <input type="datetime-local" id="ag-input-${id}" value="${item.AGENDAMENTO ? item.AGENDAMENTO.slice(0,16) : ''}" 
-                               class="input-edit-table" onchange="atualizarCampoDireto('${id}', 'AGENDAMENTO', this.value)">
+                        <input type="datetime-local" 
+                               id="ag-input-${id}" 
+                               value="${item.AGENDAMENTO ? item.AGENDAMENTO.slice(0,16) : ''}" 
+                               class="input-edit-table" 
+                               onchange="atualizarCampoDireto('${id}', 'AGENDAMENTO', this.value)">
                     </td>
                     <td style="font-size:14px;">${item.TELEFONE}</td>
                     <td>
                         <button onclick="convocarMotorista('${item.TELEFONE}', '${item.PRODUTO}', ${item.VOLUME || 0})" 
-                                style="background:#25d366; color:white; border:none; padding:15px; border-radius:12px; cursor:pointer; font-weight:900;">
+                                style="background-color:#25d366; color:white; border:none; padding:15px; border-radius:12px; font-weight:900; cursor:pointer;">
                             CONVOCAR
                         </button>
                     </td>
                     <td>
                         <button onclick="processarSaidaComAbate('${id}', '${item.PRODUTO}', ${item.VOLUME || 0})" 
-                                style="background:var(--roxo-raizen); color:white; border:none; padding:15px; border-radius:12px; cursor:pointer; font-weight:900;">
+                                style="background-color:var(--roxo-raizen); color:white; border:none; padding:15px; border-radius:12px; font-weight:900; cursor:pointer;">
                             SAÍDA
                         </button>
                     </td>
@@ -541,18 +610,25 @@
         });
     }
 
+    // --- FUNÇÕES DE AÇÃO ---
+
     async function salvarVolumeOperador(id) {
         const valorVolume = document.getElementById(`vol-input-${id}`).value;
+        
         setLoader(true);
+        
         try {
-            await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${id}`, {
-                method: 'PATCH',
-                headers: RAÍZEN_DB.HEADERS,
-                body: JSON.stringify({ "VOLUME": valorVolume })
+            await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${id}`, { 
+                method: 'PATCH', 
+                headers: RAÍZEN_DB.HEADERS, 
+                body: JSON.stringify({ "VOLUME": valorVolume }) 
             });
-            // MENSAGEM DE CONFIRMAÇÃO SOLICITADA
+            
             alert("VOLUME ASSUMIDO COM SUCESSO NO SISTEMA!");
             await carregarDados();
+            
+        } catch (e) {
+            alert("ERRO!");
         } finally {
             setLoader(false);
         }
@@ -560,55 +636,58 @@
 
     async function atualizarCampoDireto(id, campo, valor) {
         setLoader(true);
-        await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${id}`, {
-            method: 'PATCH',
-            headers: RAÍZEN_DB.HEADERS,
-            body: JSON.stringify({ [campo]: valor })
+        await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${id}`, { 
+            method: 'PATCH', 
+            headers: RAÍZEN_DB.HEADERS, 
+            body: JSON.stringify({ [campo]: valor }) 
         });
         setLoader(false);
     }
 
     async function convocarMotorista(tel, produto, volume) {
-        if (!volume || volume <= 0) return alert("ERRO: INFORME O VOLUME DA CARGA PRIMEIRO!");
-        
-        const tanqueRelativo = memoriaEstoque.find(e => 
-            produto.toUpperCase().includes(e.produto.toUpperCase()) || 
-            e.produto.toUpperCase().includes(produto.toUpperCase())
-        );
-
-        if (tanqueRelativo && volume > tanqueRelativo.espaco_disponivel) {
-            return alert(`BLOQUEIO: O volume do caminhão (${volume}L) excede o espaço livre no tanque (${tanqueRelativo.espaco_disponivel}L)!`);
+        if (!volume || volume <= 0) {
+            return alert("POR FAVOR, INFORME O VOLUME DA CARGA!");
         }
-
-        const baia = prompt("DIGITE O NÚMERO DA BAIA:");
-        if (baia) {
-            const msg = encodeURIComponent(`RAÍZEN INFORMA: Motorista da placa vinculada, dirija-se à BAIA ${baia} para descarga.`);
-            window.open(`https://wa.me/55${tel.replace(/\D/g, "")}?text=${msg}`, '_blank');
+        
+        const baiaInput = prompt("DIGITE A BAIA DE DESCARGA:");
+        if (baiaInput) {
+            const linkWhatsapp = `https://wa.me/55${tel.replace(/\D/g, "")}?text=RAÍZEN INFORMA: Dirija-se à BAIA ${baiaInput} para descarga imediata.`;
+            window.open(linkWhatsapp, '_blank');
         }
     }
 
     async function processarSaidaComAbate(id, produto, volume) {
-        if (!confirm("CONFIRMAR SAÍDA DO VEÍCULO?")) return;
+        if (!confirm("CONFIRMAR SAÍDA E BAIXA NO ESTOQUE?")) return;
         
         setLoader(true);
+        
         try {
-            // Registra a saída
-            await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${id}`, {
-                method: 'PATCH',
-                headers: RAÍZEN_DB.HEADERS,
-                body: JSON.stringify({ "SAIDA": new Date().toLocaleString() })
+            // Registra Saída
+            await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${id}`, { 
+                method: 'PATCH', 
+                headers: RAÍZEN_DB.HEADERS, 
+                body: JSON.stringify({ "SAIDA": new Date().toLocaleString() }) 
             });
 
-            // Abate do estoque disponível
-            const tanque = memoriaEstoque.find(e => produto.includes(e.produto.toUpperCase()) || e.produto.toUpperCase().includes(produto));
-            if (tanque && volume > 0) {
-                await fetch(`${RAÍZEN_DB.URL}/rest/v1/estoque?id=eq.${tanque.id}`, {
-                    method: 'PATCH',
-                    headers: RAÍZEN_DB.HEADERS,
-                    body: JSON.stringify({ "espaco_disponivel": tanque.espaco_disponivel - volume })
+            // Localiza Tanque para Abate
+            const tanqueEncontrado = memoriaEstoque.find(e => 
+                produto.includes(e.produto.toUpperCase()) || 
+                e.produto.toUpperCase().includes(produto)
+            );
+
+            if (tanqueEncontrado && volume > 0) {
+                const novoEstoque = tanqueEncontrado.espaco_disponivel - volume;
+                await fetch(`${RAÍZEN_DB.URL}/rest/v1/estoque?id=eq.${tanqueEncontrado.id}`, { 
+                    method: 'PATCH', 
+                    headers: RAÍZEN_DB.HEADERS, 
+                    body: JSON.stringify({ "espaco_disponivel": novoEstoque }) 
                 });
             }
+            
             await carregarDados();
+            
+        } catch (e) {
+            alert("ERRO NO PROCESSAMENTO!");
         } finally {
             setLoader(false);
         }
@@ -616,110 +695,133 @@
 
     function verificarStatusHorario(h) {
         if (h === "24 HORAS") return "LIBERADA";
-        if (!h) return "AGUARDANDO";
-        const [hora, min] = h.split(':');
+        if (!h) return "PENDENTE";
+        
+        const [horaStr, minStr] = h.split(':');
+        const dataLimite = new Date(); 
+        dataLimite.setHours(parseInt(horaStr), parseInt(minStr), 0);
+        
         const agora = new Date();
-        const limite = new Date();
-        limite.setHours(parseInt(hora), parseInt(min), 0);
-        return (agora > limite) ? "EXPIRADA" : "EM DIA";
+        if (agora > dataLimite) {
+            return "EXPIRADA";
+        } else {
+            return "EM DIA";
+        }
     }
 
     function renderResumoEstoque() {
-        const box = document.getElementById('status-tanques-topo');
-        box.innerHTML = "";
+        const containerResumo = document.getElementById('status-tanques-topo');
+        if (!containerResumo) return;
+        
+        containerResumo.innerHTML = "";
+        
         memoriaEstoque.forEach(e => {
-            box.innerHTML += `
-                <div style="background:white; padding:15px; border:2px solid var(--verde-raizen); border-radius:15px; font-weight:900; font-size:14px;">
-                    <span style="color:var(--roxo-raizen)">${e.produto}:</span> ${e.espaco_disponivel.toLocaleString()}L liv.
+            containerResumo.innerHTML += `
+                <div style="background-color:white; padding:15px; border:2px solid var(--verde-raizen); border-radius:15px; font-weight:900; box-shadow: 2px 2px 5px rgba(0,0,0,0.05);">
+                    <span style="color:var(--roxo-raizen)">${e.produto}:</span> 
+                    ${e.espaco_disponivel.toLocaleString()}L disp.
                 </div>`;
         });
     }
 
-    /* --- LOGIN E NAVEGAÇÃO --- */
+    // --- SEGURANÇA E ACESSO ---
 
-    function ativarOperador() {
-        if (prompt("SENHA DO OPERADOR:") === "raizen2026") {
-            document.getElementById('secao-entrada').style.display = 'none';
-            document.getElementById('modulo-operador-full').style.display = 'block';
-            carregarDados();
+    function ativarOperador() { 
+        const pass = prompt("SENHA OPERADOR:");
+        if (pass === "raizen2026") { 
+            document.getElementById('secao-entrada').style.display = 'none'; 
+            document.getElementById('modulo-operador-full').style.display = 'block'; 
+            carregarDados(); 
+        } else {
+            alert("ACESSO NEGADO!");
         }
     }
 
-    function ativarSupervisao() {
-        if (prompt("SENHA DA SUPERVISÃO:") === "super2026") {
-            document.getElementById('secao-entrada').style.display = 'none';
-            document.getElementById('modulo-supervisao').style.display = 'block';
-            carregarDados();
+    function ativarSupervisao() { 
+        const pass = prompt("SENHA SUPERVISÃO:");
+        if (pass === "super2026") { 
+            document.getElementById('secao-entrada').style.display = 'none'; 
+            document.getElementById('modulo-supervisao').style.display = 'block'; 
+            carregarDados(); 
+        } else {
+            alert("ACESSO NEGADO!");
         }
     }
 
-    /* --- SUBMISSÃO DO REGISTRO --- */
+    // --- FORMULÁRIO DE REGISTRO ---
 
-    document.getElementById('formMaster').onsubmit = async function(e) {
+    const formPrincipal = document.getElementById('formMaster');
+    formPrincipal.onsubmit = async function(e) {
         e.preventDefault();
         setLoader(true);
-
-        const dadosCaminhao = {
-            "PLACA": document.getElementById('placa').value.toUpperCase(),
-            "PRODUTO": document.getElementById('produto').value,
-            "TELEFONE": document.getElementById('whatsapp').value,
-            "JORNADA": document.getElementById('jornada24').checked ? "24 HORAS" : document.getElementById('limite').value,
-            "ENTRADA": new Date().toLocaleString()
+        
+        const novoRegistro = { 
+            "PLACA": document.getElementById('placa').value.toUpperCase(), 
+            "PRODUTO": document.getElementById('produto').value, 
+            "TELEFONE": document.getElementById('whatsapp').value, 
+            "JORNADA": document.getElementById('jornada24').checked ? "24 HORAS" : document.getElementById('limite').value, 
+            "ENTRADA": new Date().toLocaleString() 
         };
 
         try {
-            await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros`, {
-                method: 'POST',
-                headers: RAÍZEN_DB.HEADERS,
-                body: JSON.stringify(dadosCaminhao)
+            await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros`, { 
+                method: 'POST', 
+                headers: RAÍZEN_DB.HEADERS, 
+                body: JSON.stringify(novoRegistro) 
             });
-            alert("VEÍCULO REGISTRADO COM SUCESSO!");
+            alert("MOTORISTA REGISTRADO COM SUCESSO!"); 
             location.reload();
-        } catch (e) {
-            alert("ERRO DE COMUNICAÇÃO!");
+        } catch (erro) {
+            alert("ERRO AO SALVAR NO BANCO!");
         } finally {
             setLoader(false);
         }
     };
 
-    function abrirReabertura() {
-        document.getElementById('form-principal-wrapper').style.display = 'none';
-        document.getElementById('form-reabertura-wrapper').style.display = 'block';
+    // --- REABERTURA ---
+
+    function abrirReabertura() { 
+        document.getElementById('form-principal-wrapper').style.display = 'none'; 
+        document.getElementById('form-reabertura-wrapper').style.display = 'block'; 
     }
 
-    function fecharReabertura() {
-        document.getElementById('form-reabertura-wrapper').style.display = 'none';
-        document.getElementById('form-principal-wrapper').style.display = 'block';
+    function fecharReabertura() { 
+        document.getElementById('form-reabertura-wrapper').style.display = 'none'; 
+        document.getElementById('form-principal-wrapper').style.display = 'block'; 
     }
 
     async function processarReabertura() {
-        const placa = document.getElementById('re_placa').value.toUpperCase();
-        const novaHora = document.getElementById('re_hora').value;
-        if (!placa || !novaHora) return alert("DADOS INCOMPLETOS!");
-
+        const placaRe = document.getElementById('re_placa').value.toUpperCase();
+        const horaRe = document.getElementById('re_hora').value;
+        
         setLoader(true);
+        
         try {
-            const res = await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?PLACA=eq.${placa}&SAIDA=is.null`, { 
+            const resBusca = await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?PLACA=eq.${placaRe}&SAIDA=is.null`, { 
                 headers: RAÍZEN_DB.HEADERS 
             });
-            const lista = await res.json();
+            const listaEncontrada = await resBusca.json();
             
-            if (lista.length > 0) {
-                await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${lista[0].ID}`, {
-                    method: 'PATCH',
-                    headers: RAÍZEN_DB.HEADERS,
-                    body: JSON.stringify({ "JORNADA": novaHora })
+            if (listaEncontrada.length > 0) {
+                await fetch(`${RAÍZEN_DB.URL}/rest/v1/registros?ID=eq.${listaEncontrada[0].ID}`, { 
+                    method: 'PATCH', 
+                    headers: RAÍZEN_DB.HEADERS, 
+                    body: JSON.stringify({ "JORNADA": horaRe }) 
                 });
-                alert("JORNADA REABERTA COM SUCESSO!");
+                alert("JORNADA REABERTA!"); 
                 location.reload();
-            } else {
-                alert("VEÍCULO NÃO LOCALIZADO NO PÁTIO!");
+            } else { 
+                alert("VEÍCULO NÃO ESTÁ NO PÁTIO!"); 
+                setLoader(false); 
             }
-        } finally {
+        } catch (e) {
+            alert("ERRO!");
             setLoader(false);
         }
     }
 
+    /* FIM DO CÓDIGO FONTE BLINDADO - V27.5 
+    */
 </script>
 </body>
 </html>
