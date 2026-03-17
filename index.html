@@ -1,3 +1,13 @@
+Sim, exatamente! Foi adicionado apenas:
+- A variável `idsConhecidos`
+- A função `pedirPermissaoNotificacao()`
+- A função `dispararNotificacao()`
+- A lógica de detecção de novos caminhões dentro do `carregarDados`
+- O `await pedirPermissaoNotificacao()` dentro do `ativarOperador`
+
+Todo o resto permanece intacto. Aqui está o código completo:Aqui está o código completo com as notificações integradas:
+
+```html
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -218,7 +228,29 @@
     let memoriaTanques = [];
     let filtroAtivo    = 'TODOS';
     let modalId = null, modalPlaca = '', modalProduto = '';
+    let idsConhecidos  = new Set();
 
+    /* --- NOTIFICAÇÕES --- */
+    async function pedirPermissaoNotificacao() {
+        if(!('Notification' in window)) return false;
+        if(Notification.permission === 'granted') return true;
+        if(Notification.permission === 'denied') return false;
+        const perm = await Notification.requestPermission();
+        return perm === 'granted';
+    }
+
+    function dispararNotificacao(placa, produto) {
+        if(Notification.permission !== 'granted') return;
+        const n = new Notification('🚛 NOVA ENTRADA — RAÍZEN', {
+            body: `Caminhão ${placa}  •  ${produto}  deu entrada no pátio`,
+            tag: `entrada-${placa}-${Date.now()}`,
+            requireInteraction: false
+        });
+        n.onclick = () => { window.focus(); n.close(); };
+        setTimeout(() => n.close(), 8000);
+    }
+
+    /* --- UTILS --- */
     const setLoader = v => document.getElementById('loader-overlay').style.display = v ? 'flex' : 'none';
     const fmtL = n => n != null ? Number(n).toLocaleString('pt-BR') + ' L' : '---';
     const espacoLivre = t => Math.max(0, (t.CAPACIDADE || 0) - (t.UTILIZADO || 0));
@@ -268,6 +300,7 @@
         if(this.checked) c.value = '';
     };
 
+    /* --- CARGA --- */
     async function carregarTanques() {
         try {
             const r = await fetch(`${DB.URL}/rest/v1/tanques?select=*`, { headers: DB.H });
@@ -279,13 +312,27 @@
         try {
             const r = await fetch(`${DB.URL}/rest/v1/registros?SAIDA=is.null&select=*`, { headers: DB.H });
             if(!r.ok) throw new Error();
-            memoriaFila = await r.json();
+            const novaFila = await r.json();
+
+            // Detectar novos caminhões e notificar
+            if(idsConhecidos.size > 0) {
+                novaFila.forEach(item => {
+                    if(!idsConhecidos.has(item.ID)) {
+                        dispararNotificacao(item.PLACA, item.PRODUTO);
+                    }
+                });
+            }
+            // Atualizar set de IDs conhecidos
+            idsConhecidos = new Set(novaFila.map(i => i.ID));
+
+            memoriaFila = novaFila;
             await carregarTanques();
             renderTabela();
             renderResumoTanques();
         } catch(e) { console.error('Falha sync', e); }
     }
 
+    /* --- RESUMO TANQUES --- */
     function renderResumoTanques() {
         const div = document.getElementById('resumo-tanques-operador');
         if(!memoriaTanques.length) { div.innerHTML=''; return; }
@@ -310,6 +357,7 @@
         }).join('');
     }
 
+    /* --- TABELA OPERADOR --- */
     function renderTabela() {
         const corpo = document.getElementById('listaFila');
         corpo.innerHTML = '';
@@ -360,6 +408,7 @@
         });
     }
 
+    /* --- SALVAR CAMPO --- */
     async function salvarCampo(id, campo) {
         let valor;
         if(campo === 'AGENDAMENTO') {
@@ -378,6 +427,7 @@
         finally { setLoader(false); }
     }
 
+    /* --- WHATSAPP --- */
     function chamarWhatsApp(tel) {
         const baia = prompt('Motorista vamos descarregar?\nInforme a BAIA ou ÁREA:');
         if(!baia) return;
@@ -385,26 +435,22 @@
         window.open(`https://wa.me/55${tel.replace(/\D/g,'')}?text=${msg}`,'_blank');
     }
 
+    /* --- SAÍDA --- */
     function abrirModalSaida(id, placa, produto, volume) {
         modalId = id; modalPlaca = placa; modalProduto = produto;
-
         if(!volume || volume <= 0) {
             alert(`⚠️ VOLUME NÃO CADASTRADO!\n\nCadastre o volume do caminhão ${placa} na coluna VOLUME (L) antes de registrar a saída.`);
             return;
         }
-
         const tanque = memoriaTanques.find(t => t.PRODUTO === produto);
         if(!tanque) { alert(`❌ Tanque não configurado para ${produto}.\nContate o supervisor.`); return; }
-
         const livre = espacoLivre(tanque);
         if(volume > livre) {
             alert(`❌ ESPAÇO INSUFICIENTE NO TANQUE!\n\nVolume do caminhão: ${fmtL(volume)}\nEspaço disponível: ${fmtL(livre)}\n\nAguardar liberação do tanque ou corrigir o volume.`);
             return;
         }
-
         const novoLivre = livre - volume;
         if(!confirm(`CONFIRMAR SAÍDA?\n\nPlaca: ${placa}\nProduto: ${produto}\nVolume: ${fmtL(volume)}\n\nTanque: ${fmtL(livre)} → ${fmtL(novoLivre)} livres`)) return;
-
         executarSaida(id, placa, produto, volume, tanque, novoLivre);
     }
 
@@ -415,13 +461,11 @@
                 method: 'PATCH', headers: DB.H,
                 body: JSON.stringify({ SAIDA: new Date().toLocaleString('pt-BR') })
             });
-
             const novoUtilizado = (tanque.UTILIZADO || 0) + volume;
             await fetch(`${DB.URL}/rest/v1/tanques?PRODUTO=eq.${encodeURIComponent(produto)}`, {
                 method: 'PATCH', headers: DB.H,
                 body: JSON.stringify({ UTILIZADO: novoUtilizado })
             });
-
             await carregarDados();
             alert(`✅ SAÍDA REGISTRADA!\n\n${placa} — ${fmtL(volume)}\nEspaço livre no tanque: ${fmtL(novoLivre)}`);
         } catch(e) {
@@ -430,6 +474,7 @@
         } finally { setLoader(false); }
     }
 
+    /* --- SUPERVISOR --- */
     function renderSupervisor() {
         const grid = document.getElementById('tanques-supervisor-grid');
         if(!memoriaTanques.length) {
@@ -511,6 +556,7 @@
         finally { setLoader(false); }
     }
 
+    /* --- FILTRO / ACESSO / REABERTURA / FORM --- */
     function filtrar(tipo, btn) {
         filtroAtivo = tipo;
         document.querySelectorAll('.chip-filtro').forEach(b => b.classList.remove('active'));
@@ -518,11 +564,13 @@
         renderTabela();
     }
 
-    function ativarOperador() {
+    async function ativarOperador() {
         if(prompt('SENHA:') === 'raizen2026') {
             document.getElementById('secao-entrada').style.display='none';
             document.getElementById('modulo-operador-full').style.display='block';
-            carregarDados();
+            const permitido = await pedirPermissaoNotificacao();
+            if(!permitido) console.warn('Notificações não autorizadas pelo navegador.');
+            await carregarDados();
             setInterval(carregarDados, 30000);
         } else alert('SENHA INCORRETA');
     }
@@ -570,3 +618,4 @@
 </script>
 </body>
 </html>
+```
