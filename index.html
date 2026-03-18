@@ -152,7 +152,7 @@
 <div class="card-master" id="secao-entrada">
     <div id="form-principal-wrapper">
         <h2>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="42" height="42" style="vertical-align:middle;" fill="none" stroke="#84207d" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="#84207d" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="1" y="8" width="13" height="9" rx="1"/>
                 <path d="M14 10h4l3 3v4h-7V10z"/>
                 <circle cx="5.5" cy="18.5" r="1.5"/>
@@ -260,13 +260,35 @@
 
 <div id="modulo-supervisor">
     <h2 style="color:#0ea5e9;"><i class="fa-solid fa-shield-halved"></i> GESTÃO DE TANQUES — SUPERVISOR</h2>
-    <div style="background:#f0f9ff;border-radius:25px;padding:28px;margin-bottom:40px;border:3px solid #bae6fd;">
+    <div style="background:#f0f9ff;border-radius:25px;padding:28px;margin-bottom:30px;border:3px solid #bae6fd;">
         <p style="font-size:15px;font-weight:700;color:#0369a1;text-align:center;">
             <i class="fa-solid fa-circle-info"></i>
             Atualize a capacidade e o volume já utilizado de cada tanque. O sistema deduz automaticamente a cada saída de caminhão.
         </p>
     </div>
+
+    <div style="background:#f0fdf4;border-radius:25px;padding:30px;margin-bottom:35px;border:3px solid #86efac;">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+            <div style="width:44px;height:44px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px;">📋</div>
+            <div>
+                <div style="font-size:17px;font-weight:900;color:#166534;">IMPORTAR DO RELATÓRIO DE SUPERVISÃO</div>
+                <div style="font-size:13px;font-weight:600;color:#16a34a;margin-top:2px;">Copie toda a tabela do sistema (Ctrl+A → Ctrl+C) e cole abaixo — os tanques serão atualizados automaticamente</div>
+            </div>
+        </div>
+        <textarea id="textarea-importacao" placeholder="Cole aqui o conteúdo copiado do Relatório de Supervisão de Tanques..." style="width:100%;height:140px;padding:16px;border:3px solid #86efac;border-radius:16px;font-size:13px;font-weight:600;font-family:monospace;background:#f8fffe;resize:vertical;color:#1e293b;outline:none;"></textarea>
+        <div id="preview-importacao" style="display:none;margin-top:16px;background:white;border-radius:16px;border:2px solid #86efac;overflow:hidden;"></div>
+        <div style="display:flex;gap:14px;margin-top:16px;flex-wrap:wrap;">
+            <button onclick="parsearTabelaSupervisao()" style="background:#16a34a;color:white;border:none;border-radius:16px;padding:16px 32px;font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;gap:10px;text-transform:uppercase;">
+                <i class="fa-solid fa-file-import"></i> IMPORTAR E ATUALIZAR TANQUES
+            </button>
+            <button onclick="document.getElementById('textarea-importacao').value='';document.getElementById('preview-importacao').style.display='none';" style="background:#f1f5f9;color:#475569;border:none;border-radius:16px;padding:16px 24px;font-size:15px;font-weight:900;cursor:pointer;text-transform:uppercase;">
+                <i class="fa-solid fa-trash"></i> LIMPAR
+            </button>
+        </div>
+    </div>
+
     <div id="tanques-supervisor-grid" class="tanques-grid"></div>
+
     <div style="display:flex;gap:20px;margin-top:10px;flex-wrap:wrap;">
         <button onclick="abrirPrevisao()" class="btn-master" style="background:#f59e0b;box-shadow:0 15px 0 #d97706;">
             <i class="fa-solid fa-chart-line"></i> PREVISÃO DE ESVAZIAMENTO
@@ -302,9 +324,7 @@
         </p>
     </div>
     <div id="previsao-grid" class="prev-grid"></div>
-    <button onclick="document.getElementById('modulo-previsao').style.display='none';document.getElementById('modulo-supervisor').style.display='block';" class="btn-master" style="background:#475569;box-shadow:0 15px 0 #334155;max-width:400px;margin:0 auto;">
-        VOLTAR
-    </button>
+    <button onclick="document.getElementById('modulo-previsao').style.display='none';document.getElementById('modulo-supervisor').style.display='block';" class="btn-master" style="background:#475569;box-shadow:0 15px 0 #334155;max-width:400px;margin:0 auto;">VOLTAR</button>
 </div>
 
 <script>
@@ -319,13 +339,13 @@
         }
     };
 
-    let memoriaFila       = [];
-    let memoriaTanques    = [];
-    let memoriaLogs       = [];
-    let filtroAtivo       = 'TODOS';
-    let filtroLogAtivo    = 'TODOS';
-    let idsConhecidos     = new Set();
-    let usuarioLogado     = null;
+    let memoriaFila    = [];
+    let memoriaTanques = [];
+    let memoriaLogs    = [];
+    let filtroAtivo    = 'TODOS';
+    let filtroLogAtivo = 'TODOS';
+    let idsConhecidos  = new Set();
+    let usuarioLogado  = null;
     let tipoLoginPendente = null;
 
     const setLoader = v => document.getElementById('loader-overlay').style.display = v ? 'flex' : 'none';
@@ -422,8 +442,7 @@
             if(perfilConfirmado === 'OPERADOR') {
                 document.getElementById('secao-entrada').style.display = 'none';
                 document.getElementById('modulo-operador-full').style.display = 'block';
-                const permitido = await pedirPermissaoNotificacao();
-                if(!permitido) console.warn('Notificações não autorizadas.');
+                await pedirPermissaoNotificacao();
                 await carregarDados();
                 setInterval(carregarDados, 30000);
             } else {
@@ -461,7 +480,7 @@
         try {
             const r = await fetch(`${DB.URL}/rest/v1/logs?select=*&order=id.desc&limit=200`, { headers: DB.H });
             if(r.ok) { memoriaLogs = await r.json(); renderLogs(); }
-        } catch(e) { console.error('Erro logs', e); }
+        } catch(e) { console.error(e); }
         finally { setLoader(false); }
     }
 
@@ -471,16 +490,13 @@
         if(filtroLogAtivo !== 'TODOS') lista = lista.filter(l => l.acao.includes(filtroLogAtivo));
         if(!lista.length) {
             div.innerHTML = `<div style="text-align:center;padding:60px;color:#94a3b8;font-weight:900;font-size:18px;">
-                <i class="fa-solid fa-inbox" style="font-size:50px;display:block;margin-bottom:15px;opacity:.3;"></i>
-                Nenhuma ação registrada ainda.
-            </div>`;
+                <i class="fa-solid fa-inbox" style="font-size:50px;display:block;margin-bottom:15px;opacity:.3;"></i>Nenhuma ação registrada ainda.</div>`;
             return;
         }
         div.innerHTML = lista.map(l => {
             const icon = l.acao.includes('SAIDA') ? '🚛' : l.acao.includes('VOLUME') ? '💧' : l.acao.includes('ZERAR') ? '🔄' : '🛢️';
             const cls  = l.acao.includes('SAIDA') ? 'saida' : l.acao.includes('VOLUME') ? 'volume' : l.acao.includes('ZERAR') ? 'zerar' : 'tanque';
-            return `
-            <div class="log-item ${cls}">
+            return `<div class="log-item ${cls}">
                 <div class="log-icon">${icon}</div>
                 <div class="log-corpo">
                     <div class="log-acao">${l.acao}</div>
@@ -510,8 +526,7 @@
         if(!('Notification' in window)) return false;
         if(Notification.permission === 'granted') return true;
         if(Notification.permission === 'denied') return false;
-        const perm = await Notification.requestPermission();
-        return perm === 'granted';
+        return (await Notification.requestPermission()) === 'granted';
     }
 
     function dispararNotificacao(placa, produto) {
@@ -519,7 +534,6 @@
         const n = new Notification('🚛 NOVA ENTRADA — RAÍZEN', {
             body: `Caminhão ${placa}  •  ${produto}  deu entrada no pátio`,
             tag: `entrada-${placa}-${Date.now()}`,
-            requireInteraction: false
         });
         n.onclick = () => { window.focus(); n.close(); };
         setTimeout(() => n.close(), 8000);
@@ -530,7 +544,7 @@
         try {
             const r = await fetch(`${DB.URL}/rest/v1/tanques?select=*`, { headers: DB.H });
             if(r.ok) memoriaTanques = await r.json();
-        } catch(e) { console.error('Erro tanques', e); }
+        } catch(e) { console.error(e); }
     }
 
     async function carregarDados() {
@@ -549,7 +563,7 @@
             renderTabela();
             renderResumoTanques();
             renderBannersAviso();
-        } catch(e) { console.error('Falha sync', e); }
+        } catch(e) { console.error(e); }
     }
 
     /* --- RESUMO TANQUES --- */
@@ -565,8 +579,7 @@
                 : pct>=60
                     ? `<span style="background:#dcfce7;color:#166534;padding:4px 10px;border-radius:8px;font-size:10px;font-weight:900;">OK</span>`
                     : `<span style="background:#fef9c3;color:#854d0e;padding:4px 10px;border-radius:8px;font-size:10px;font-weight:900;">BAIXO</span>`;
-            return `
-            <div class="resumo-tanque-mini">
+            return `<div class="resumo-tanque-mini">
                 <div style="font-size:11px;font-weight:900;color:#64748b;text-transform:uppercase;">${t.PRODUTO}</div>
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
                     <span style="font-size:14px;font-weight:900;color:${cor}">${fmtL(espacoLivre(t))}</span>${badge}
@@ -577,7 +590,7 @@
         }).join('');
     }
 
-    /* --- BANNERS AVISO TANQUE CHEIO --- */
+    /* --- BANNERS AVISO --- */
     function renderBannersAviso() {
         const div = document.getElementById('banners-aviso-tanque');
         if(!div) return;
@@ -598,8 +611,7 @@
             const lista = bloqueados[produto];
             const placas = lista.map(i => i.PLACA).join(', ');
             const qtd = lista.length;
-            return `
-            <div class="banner-aviso">
+            return `<div class="banner-aviso">
                 <div class="banner-aviso-info">
                     <div class="banner-aviso-icone">⚠️</div>
                     <div class="banner-aviso-texto">
@@ -624,8 +636,8 @@
             return !tanque || livre <= 0 || (vol > 0 && vol > livre);
         });
         if(!bloqueados.length) { alert('Nenhum motorista bloqueado para este produto.'); return; }
-        if(!confirm(`Enviar aviso de tanque cheio para ${bloqueados.length} motorista${bloqueados.length > 1 ? 's' : ''} de ${produto}?\n\nPlacas: ${bloqueados.map(i => i.PLACA).join(', ')}`)) return;
-        const msg = encodeURIComponent(`Olá motorista! ⚠️\nInformamos que o tanque de ${produto} está sem espaço disponível no momento.\nPor favor, aguarde no pátio. Assim que houver espaço, entraremos em contato.\nObrigado pela compreensão!`);
+        if(!confirm(`Enviar aviso para ${bloqueados.length} motorista(s) de ${produto}?\n\nPlacas: ${bloqueados.map(i => i.PLACA).join(', ')}`)) return;
+        const msg = encodeURIComponent(`Olá motorista! ⚠️\nO tanque de ${produto} está sem espaço disponível no momento.\nAguarde no pátio. Avisaremos assim que houver espaço.\nObrigado!`);
         let delay = 0;
         bloqueados.forEach(item => {
             setTimeout(() => {
@@ -648,30 +660,26 @@
         if(filtroAtivo !== 'TODOS') {
             lista = lista.filter(i => {
                 const p = i.PRODUTO.toUpperCase();
-                if(filtroAtivo === 'DIESEL') return p.includes('DIESEL S10');
+                if(filtroAtivo === 'DIESEL')    return p.includes('DIESEL S10');
                 if(filtroAtivo === 'BIODIESEL') return p.includes('BIODIESEL');
                 return p.includes(filtroAtivo);
             });
         }
-
         lista.forEach(item => {
             const id = item.ID;
             const ct = item.PRODUTO.includes('GASOLINA')?'bg-gas':item.PRODUTO.includes('BIODIESEL')?'bg-b100':item.PRODUTO.includes('ANIDRO')?'bg-ani':item.PRODUTO.includes('HIDRATADO')?'bg-hid':'bg-die';
             const tanque = memoriaTanques.find(t => t.PRODUTO === item.PRODUTO);
             const livre = tanque ? espacoLivre(tanque) : 0;
             const volCaminhao = item.VOLUME || 0;
-
             let btnWA;
             if(!tanque || livre <= 0) {
                 btnWA = `<button disabled style="background:#fef2f2;color:#ef4444;border:3px solid #fca5a5;padding:15px;border-radius:15px;font-weight:900;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;cursor:not-allowed;font-size:12px;"><i class="fa-solid fa-ban"></i> SEM ESPAÇO</button>`;
             } else if(volCaminhao > 0 && volCaminhao > livre) {
-                btnWA = `<button disabled title="Volume do caminhão (${fmtL(volCaminhao)}) ultrapassa espaço livre (${fmtL(livre)})" style="background:#fff7ed;color:#c2410c;border:3px solid #fed7aa;padding:15px;border-radius:15px;font-weight:900;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;cursor:not-allowed;font-size:12px;"><i class="fa-solid fa-triangle-exclamation"></i> VOL. EXCEDE TANQUE</button>`;
+                btnWA = `<button disabled style="background:#fff7ed;color:#c2410c;border:3px solid #fed7aa;padding:15px;border-radius:15px;font-weight:900;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;cursor:not-allowed;font-size:12px;"><i class="fa-solid fa-triangle-exclamation"></i> VOL. EXCEDE TANQUE</button>`;
             } else {
                 btnWA = `<button onclick="chamarWhatsApp('${item.TELEFONE}')" style="background:#25d366;color:white;border:none;padding:15px;border-radius:15px;cursor:pointer;font-weight:900;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;"><i class="fa-brands fa-whatsapp"></i> CONVOCAR</button>`;
             }
-
-            corpo.innerHTML += `
-            <tr>
+            corpo.innerHTML += `<tr>
                 <td style="color:var(--roxo-raizen);font-weight:900;font-size:22px;">${item.PLACA}</td>
                 <td><span class="tag-p ${ct}">${item.PRODUTO}</span></td>
                 <td>${verificarJornada(item.JORNADA)}</td>
@@ -694,7 +702,6 @@
         });
     }
 
-    /* --- SALVAR CAMPO --- */
     async function salvarCampo(id, campo) {
         let valor;
         if(campo === 'AGENDAMENTO') {
@@ -720,7 +727,6 @@
         finally { setLoader(false); }
     }
 
-    /* --- WHATSAPP --- */
     function chamarWhatsApp(tel) {
         const baia = prompt('Motorista vamos descarregar?\nInforme a BAIA ou ÁREA:');
         if(!baia) return;
@@ -728,17 +734,16 @@
         window.open(`https://wa.me/55${tel.replace(/\D/g,'')}?text=${msg}`,'_blank');
     }
 
-    /* --- SAÍDA --- */
     function abrirModalSaida(id, placa, produto, volume) {
         if(!volume || volume <= 0) {
-            alert(`⚠️ VOLUME NÃO CADASTRADO!\n\nCadastre o volume do caminhão ${placa} na coluna VOLUME (L) antes de registrar a saída.`);
+            alert(`⚠️ VOLUME NÃO CADASTRADO!\n\nCadastre o volume do caminhão ${placa} antes de registrar a saída.`);
             return;
         }
         const tanque = memoriaTanques.find(t => t.PRODUTO === produto);
-        if(!tanque) { alert(`❌ Tanque não configurado para ${produto}.\nContate o supervisor.`); return; }
+        if(!tanque) { alert(`❌ Tanque não configurado para ${produto}.`); return; }
         const livre = espacoLivre(tanque);
         if(volume > livre) {
-            alert(`❌ ESPAÇO INSUFICIENTE NO TANQUE!\n\nVolume do caminhão: ${fmtL(volume)}\nEspaço disponível: ${fmtL(livre)}\n\nAguardar liberação do tanque ou corrigir o volume.`);
+            alert(`❌ ESPAÇO INSUFICIENTE!\n\nVolume: ${fmtL(volume)}\nEspaço disponível: ${fmtL(livre)}`);
             return;
         }
         const novoLivre = livre - volume;
@@ -749,22 +754,160 @@
     async function executarSaida(id, placa, produto, volume, tanque, novoLivre) {
         setLoader(true);
         try {
-            await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${id}`, {
-                method: 'PATCH', headers: DB.H,
-                body: JSON.stringify({ SAIDA: agora() })
-            });
-            const novoUtilizado = (tanque.UTILIZADO || 0) + volume;
-            await fetch(`${DB.URL}/rest/v1/tanques?PRODUTO=eq.${encodeURIComponent(produto)}`, {
-                method: 'PATCH', headers: DB.H,
-                body: JSON.stringify({ UTILIZADO: novoUtilizado })
-            });
-            await registrarLog('SAIDA REGISTRADA', `Placa: ${placa} — Produto: ${produto} — Volume: ${fmtL(volume)} — Tanque após saída: ${fmtL(novoLivre)} livres`);
+            await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${id}`, { method:'PATCH', headers:DB.H, body:JSON.stringify({ SAIDA: agora() }) });
+            await fetch(`${DB.URL}/rest/v1/tanques?PRODUTO=eq.${encodeURIComponent(produto)}`, { method:'PATCH', headers:DB.H, body:JSON.stringify({ UTILIZADO: (tanque.UTILIZADO||0) + volume }) });
+            await registrarLog('SAIDA REGISTRADA', `Placa: ${placa} — Produto: ${produto} — Volume: ${fmtL(volume)} — Tanque após: ${fmtL(novoLivre)} livres`);
             await carregarDados();
-            alert(`✅ SAÍDA REGISTRADA!\n\n${placa} — ${fmtL(volume)}\nEspaço livre no tanque: ${fmtL(novoLivre)}`);
-        } catch(e) {
-            alert('ERRO AO REGISTRAR SAÍDA. Tente novamente.');
-            console.error(e);
-        } finally { setLoader(false); }
+            alert(`✅ SAÍDA REGISTRADA!\n\n${placa} — ${fmtL(volume)}\nEspaço livre: ${fmtL(novoLivre)}`);
+        } catch(e) { alert('ERRO AO REGISTRAR SAÍDA.'); console.error(e); }
+        finally { setLoader(false); }
+    }
+
+    /* --- IMPORTAR TABELA DO SISTEMA --- */
+    const MAPA_PRODUTOS = {
+        'ETANOL ANIDRO':    'ETANOL ANIDRO',
+        'ETANOL HIDRATADO': 'ETANOL HIDRATADO',
+        'BIODIESEL B100':   'BIODIESEL (B100)',
+        'GASOLINA A':       'GASOLINA',
+        'DIESEL S10 A':     'DIESEL S10',
+    };
+    const IGNORAR = ['JET A'];
+
+    async function parsearTabelaSupervisao() {
+        const texto = document.getElementById('textarea-importacao').value.trim();
+        if(!texto) { alert('Cole o conteúdo da tabela antes de importar.'); return; }
+
+        const linhas = texto.split('\n').map(l => l.trim()).filter(l => l);
+        let idxProduto = -1, idxEspaco = -1, idxDisponivel = -1, linhaHeader = -1;
+
+        for(let i = 0; i < linhas.length; i++) {
+            const cols = linhas[i].split(/\t+/).map(c => c.trim());
+            const hs = cols.join(' ').toUpperCase();
+            if(hs.includes('PRODUTO') && hs.includes('ESPA')) {
+                linhaHeader = i;
+                cols.forEach((c,j) => {
+                    const cu = c.toUpperCase();
+                    if(cu === 'PRODUTO')                           idxProduto   = j;
+                    if(cu.includes('ESPA') && cu.includes('M'))   idxEspaco    = j;
+                    if(cu.includes('DISPON') && cu.includes('M')) idxDisponivel = j;
+                });
+                break;
+            }
+        }
+
+        if(linhaHeader === -1 || idxProduto === -1) {
+            for(let i = 0; i < linhas.length; i++) {
+                const cols = linhas[i].split(/\s{2,}/).map(c => c.trim());
+                const hs = cols.join(' ').toUpperCase();
+                if(hs.includes('PRODUTO') && hs.includes('ESPA')) {
+                    linhaHeader = i;
+                    cols.forEach((c,j) => {
+                        const cu = c.toUpperCase();
+                        if(cu === 'PRODUTO')                           idxProduto   = j;
+                        if(cu.includes('ESPA') && cu.includes('M'))   idxEspaco    = j;
+                        if(cu.includes('DISPON') && cu.includes('M')) idxDisponivel = j;
+                    });
+                    break;
+                }
+            }
+        }
+
+        if(idxProduto === -1 || idxEspaco === -1) {
+            alert('Não foi possível identificar as colunas.\n\nVerifique se você copiou a tabela correta do Relatório de Supervisão de Tanques.');
+            return;
+        }
+
+        const espacosPorProduto = {};
+        const splitter = texto.includes('\t') ? /\t+/ : /\s{2,}/;
+
+        for(let i = linhaHeader + 1; i < linhas.length; i++) {
+            const cols = linhas[i].split(splitter).map(c => c.trim());
+            if(cols.length <= Math.max(idxProduto, idxEspaco)) continue;
+            const produtoRaw = (cols[idxProduto] || '').toUpperCase().trim();
+            if(!produtoRaw) continue;
+            if(IGNORAR.some(ig => produtoRaw.includes(ig))) continue;
+
+            let produtoBanco = null;
+            for(const [chave, valor] of Object.entries(MAPA_PRODUTOS)) {
+                if(produtoRaw.includes(chave) || chave.includes(produtoRaw)) { produtoBanco = valor; break; }
+            }
+            if(!produtoBanco) {
+                for(const [chave, valor] of Object.entries(MAPA_PRODUTOS)) {
+                    if(produtoRaw.replace(/\s+/g,'').includes(chave.replace(/\s+/g,''))) { produtoBanco = valor; break; }
+                }
+            }
+            if(!produtoBanco) continue;
+
+            const idxValor = idxDisponivel !== -1 ? idxDisponivel : idxEspaco;
+            const valorStr = (cols[idxValor] || '0').replace(',','.').replace(/[^\d.]/g,'');
+            const valorL   = Math.round((parseFloat(valorStr) || 0) * 1000);
+
+            if(!espacosPorProduto[produtoBanco]) espacosPorProduto[produtoBanco] = 0;
+            espacosPorProduto[produtoBanco] += valorL;
+        }
+
+        if(Object.keys(espacosPorProduto).length === 0) {
+            alert('Nenhum produto reconhecido.\n\nVerifique se o conteúdo colado é o Relatório de Supervisão de Tanques correto.');
+            return;
+        }
+
+        const atualizacoes = [];
+        let html = `<div style="padding:20px;">
+            <div style="font-size:15px;font-weight:900;color:#166534;margin-bottom:14px;"><i class="fa-solid fa-eye"></i> PRÉVIA — O que será atualizado:</div>
+            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                <thead><tr style="background:#dcfce7;">
+                    <th style="padding:10px;text-align:left;font-weight:900;color:#166534;">PRODUTO</th>
+                    <th style="padding:10px;text-align:right;font-weight:900;color:#166534;">ESPAÇO LIVRE IMPORTADO</th>
+                    <th style="padding:10px;text-align:right;font-weight:900;color:#166534;">UTILIZADO CALCULADO</th>
+                </tr></thead><tbody>`;
+
+        for(const [produto, espacoLivreL] of Object.entries(espacosPorProduto)) {
+            const tanque = memoriaTanques.find(t => t.PRODUTO === produto);
+            if(!tanque) continue;
+            const novoUtilizado = Math.max(0, (tanque.CAPACIDADE || 0) - espacoLivreL);
+            atualizacoes.push({ produto, espacoLivreL, novoUtilizado });
+            html += `<tr style="border-bottom:2px solid #f0fdf4;">
+                <td style="padding:10px;font-weight:700;">${produto}</td>
+                <td style="padding:10px;text-align:right;font-weight:900;color:#059669;">${espacoLivreL.toLocaleString('pt-BR')} L</td>
+                <td style="padding:10px;text-align:right;font-weight:700;color:#475569;">${novoUtilizado.toLocaleString('pt-BR')} L</td>
+            </tr>`;
+        }
+        html += `</tbody></table>
+            <button onclick="confirmarImportacao()" style="margin-top:18px;background:#16a34a;color:white;border:none;border-radius:14px;padding:16px 32px;font-size:15px;font-weight:900;cursor:pointer;width:100%;text-transform:uppercase;">
+                <i class="fa-solid fa-check"></i> CONFIRMAR E SALVAR NO BANCO
+            </button></div>`;
+
+        const preview = document.getElementById('preview-importacao');
+        preview.innerHTML = html;
+        preview.style.display = 'block';
+        preview._atualizacoes = atualizacoes;
+        preview.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }
+
+    async function confirmarImportacao() {
+        const preview = document.getElementById('preview-importacao');
+        const atualizacoes = preview._atualizacoes;
+        if(!atualizacoes || !atualizacoes.length) return;
+        if(!confirm(`Confirmar atualização de ${atualizacoes.length} tanques com os dados importados?`)) return;
+        setLoader(true);
+        let erros = 0;
+        for(const a of atualizacoes) {
+            try {
+                const r = await fetch(`${DB.URL}/rest/v1/tanques?PRODUTO=eq.${encodeURIComponent(a.produto)}`, {
+                    method:'PATCH', headers:DB.H, body:JSON.stringify({ UTILIZADO: a.novoUtilizado })
+                });
+                if(r.ok) {
+                    await registrarLog('TANQUE ATUALIZADO', `[IMPORTAÇÃO] ${a.produto} — Espaço livre: ${fmtL(a.espacoLivreL)} — Utilizado: ${fmtL(a.novoUtilizado)}`);
+                } else erros++;
+            } catch { erros++; }
+        }
+        await carregarTanques();
+        renderSupervisor();
+        setLoader(false);
+        document.getElementById('textarea-importacao').value = '';
+        preview.style.display = 'none';
+        if(erros === 0) alert(`✅ ${atualizacoes.length} tanques atualizados com sucesso!`);
+        else alert(`⚠️ ${atualizacoes.length - erros} atualizados. ${erros} com erro.`);
     }
 
     /* --- SUPERVISOR --- */
@@ -772,9 +915,7 @@
         const grid = document.getElementById('tanques-supervisor-grid');
         if(!memoriaTanques.length) {
             grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:#94a3b8;font-weight:900;font-size:20px;">
-                <i class="fa-solid fa-database" style="font-size:60px;display:block;margin-bottom:20px;opacity:.3;"></i>
-                Nenhum tanque encontrado.
-            </div>`;
+                <i class="fa-solid fa-database" style="font-size:60px;display:block;margin-bottom:20px;opacity:.3;"></i>Nenhum tanque encontrado.</div>`;
             return;
         }
         grid.innerHTML = memoriaTanques.map(t => {
@@ -782,8 +923,7 @@
             const pct   = pctLivre(t);
             const cor   = corProduto(t.PRODUTO);
             const cB    = classeBarra(pct);
-            return `
-            <div class="tanque-card">
+            return `<div class="tanque-card">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
                     <div style="font-size:22px;font-weight:900;color:#1e293b;">${t.PRODUTO}</div>
                     <span style="background:${cor};color:white;padding:8px 18px;border-radius:12px;font-size:12px;font-weight:900;">${pct}% LIVRE</span>
@@ -831,7 +971,7 @@
                 method:'PATCH', headers:DB.H, body:JSON.stringify({ CAPACIDADE: cap, UTILIZADO: util })
             });
             if(r.ok) {
-                await registrarLog('TANQUE ATUALIZADO', `Produto: ${produto} — Capacidade: ${fmtL(cap)} — Utilizado: ${fmtL(util)} — Livre: ${fmtL(cap - util)}`);
+                await registrarLog('TANQUE ATUALIZADO', `Produto: ${produto} — Capacidade: ${fmtL(cap)} — Utilizado: ${fmtL(util)} — Livre: ${fmtL(cap-util)}`);
                 await carregarTanques();
                 renderSupervisor();
                 alert('✅ TANQUE ATUALIZADO!');
@@ -841,7 +981,7 @@
     }
 
     async function zerarTanque(produto) {
-        if(!confirm(`Zerar UTILIZADO do tanque ${produto}?\nEspaço livre voltará ao máximo.`)) return;
+        if(!confirm(`Zerar UTILIZADO do tanque ${produto}?`)) return;
         setLoader(true);
         try {
             await fetch(`${DB.URL}/rest/v1/tanques?PRODUTO=eq.${encodeURIComponent(produto)}`, {
@@ -870,46 +1010,31 @@
 
     function renderPrevisao(fila) {
         const grid = document.getElementById('previsao-grid');
-        if(!memoriaTanques.length) {
-            grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:#94a3b8;font-weight:900;">Nenhum tanque configurado.</div>`;
-            return;
-        }
+        if(!memoriaTanques.length) { grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:#94a3b8;font-weight:900;">Nenhum tanque configurado.</div>`; return; }
         grid.innerHTML = memoriaTanques.map(t => {
             const livre = espacoLivre(t);
             const pct   = pctLivre(t);
             const cor   = corProduto(t.PRODUTO);
-            const caminhoesProduto = fila.filter(i => i.PRODUTO === t.PRODUTO && i.VOLUME > 0);
-            const totalVolumePatio = caminhoesProduto.reduce((s, i) => s + (i.VOLUME || 0), 0);
-            const mediaPorCaminhao = caminhoesProduto.length > 0 ? totalVolumePatio / caminhoesProduto.length : 0;
-            const descargasRestantes = mediaPorCaminhao > 0 ? Math.floor(livre / mediaPorCaminhao) : null;
+            const caminhoes = fila.filter(i => i.PRODUTO === t.PRODUTO && i.VOLUME > 0);
+            const totalVol  = caminhoes.reduce((s,i) => s+(i.VOLUME||0), 0);
+            const media     = caminhoes.length > 0 ? totalVol / caminhoes.length : 0;
+            const descargas = media > 0 ? Math.floor(livre / media) : null;
             let statusClass = 'ok', statusTxt = 'NORMAL';
             if(pct === 0) { statusClass = 'critico'; statusTxt = 'LOTADO'; }
-            else if(descargasRestantes !== null && descargasRestantes <= 1) { statusClass = 'critico'; statusTxt = 'CRÍTICO'; }
-            else if(descargasRestantes !== null && descargasRestantes <= 3) { statusClass = ''; statusTxt = 'ATENÇÃO'; }
-            const descargasTxt = descargasRestantes !== null
-                ? `${descargasRestantes} descarga${descargasRestantes !== 1 ? 's' : ''}`
-                : 'Sem dados de volume';
-            return `
-            <div class="prev-card">
+            else if(descargas !== null && descargas <= 1) { statusClass = 'critico'; statusTxt = 'CRÍTICO'; }
+            else if(descargas !== null && descargas <= 3) { statusClass = ''; statusTxt = 'ATENÇÃO'; }
+            const descTxt = descargas !== null ? `${descargas} descarga${descargas !== 1 ? 's' : ''}` : 'Sem dados de volume';
+            return `<div class="prev-card">
                 <div class="prev-produto">
                     <span style="background:${cor};color:white;padding:6px 16px;border-radius:12px;font-size:13px;">${t.PRODUTO}</span>
                     <span class="prev-destaque ${statusClass}">${statusTxt}</span>
                 </div>
-                <div class="prev-linha">
-                    <span style="color:#64748b;">Espaço livre no tanque</span>
-                    <span class="prev-valor" style="color:${livre===0?'#ef4444':'#10b981'}">${fmtL(livre)}</span>
-                </div>
-                <div class="prev-linha">
-                    <span style="color:#64748b;">Caminhões no pátio</span>
-                    <span class="prev-valor">${caminhoesProduto.length} veículo${caminhoesProduto.length !== 1 ? 's' : ''}</span>
-                </div>
-                <div class="prev-linha">
-                    <span style="color:#64748b;">Média de volume por caminhão</span>
-                    <span class="prev-valor">${mediaPorCaminhao > 0 ? fmtL(mediaPorCaminhao) : '---'}</span>
-                </div>
+                <div class="prev-linha"><span style="color:#64748b;">Espaço livre no tanque</span><span class="prev-valor" style="color:${livre===0?'#ef4444':'#10b981'}">${fmtL(livre)}</span></div>
+                <div class="prev-linha"><span style="color:#64748b;">Caminhões no pátio</span><span class="prev-valor">${caminhoes.length} veículo${caminhoes.length!==1?'s':''}</span></div>
+                <div class="prev-linha"><span style="color:#64748b;">Média por caminhão</span><span class="prev-valor">${media > 0 ? fmtL(media) : '---'}</span></div>
                 <div class="prev-linha" style="background:#fef3c7;border-radius:12px;padding:14px 16px;margin-top:10px;">
-                    <span style="color:#92400e;font-weight:900;">🔮 Descargas restantes estimadas</span>
-                    <span class="prev-valor" style="color:${descargasRestantes !== null && descargasRestantes <= 1 ? '#ef4444' : '#f59e0b'}">${descargasTxt}</span>
+                    <span style="color:#92400e;font-weight:900;">🔮 Descargas restantes</span>
+                    <span class="prev-valor" style="color:${descargas!==null&&descargas<=1?'#ef4444':'#f59e0b'}">${descTxt}</span>
                 </div>
             </div>`;
         }).join('');
@@ -949,7 +1074,7 @@
             const existentes = await chk.json();
             if(existentes && existentes.length > 0) {
                 const reg = existentes[0];
-                alert(`🚫 PLACA JÁ REGISTRADA NO PÁTIO!\n\nPlaca: ${reg.PLACA}\nProduto: ${reg.PRODUTO}\nEntrada: ${reg.ENTRADA}\nJornada: ${reg.JORNADA}\n\nEste caminhão já possui um registro ativo. Finalize a saída antes de registrar novamente.`);
+                alert(`🚫 PLACA JÁ REGISTRADA!\n\nPlaca: ${reg.PLACA}\nProduto: ${reg.PRODUTO}\nEntrada: ${reg.ENTRADA}`);
                 setLoader(false);
                 return;
             }
