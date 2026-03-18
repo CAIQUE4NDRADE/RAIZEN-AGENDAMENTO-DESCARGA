@@ -115,6 +115,17 @@
         .prev-destaque { background: #f59e0b; color: white; padding: 6px 16px; border-radius: 12px; font-size: 13px; font-weight: 900; }
         .prev-destaque.critico { background: #ef4444; }
         .prev-destaque.ok { background: #10b981; }
+
+        /* BANNER AVISO TANQUE */
+        .banner-aviso { background: #fff7ed; border: 3px solid #fed7aa; border-radius: 22px; padding: 22px 28px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+        .banner-aviso-info { display: flex; align-items: center; gap: 16px; }
+        .banner-aviso-icone { width: 44px; height: 44px; border-radius: 50%; background: #ffedd5; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 22px; }
+        .banner-aviso-texto .titulo { font-size: 16px; font-weight: 900; color: #92400e; }
+        .banner-aviso-texto .subtitulo { font-size: 13px; font-weight: 700; color: #b45309; margin-top: 3px; }
+        .banner-aviso-texto .motoristas { font-size: 12px; font-weight: 700; color: #78350f; margin-top: 6px; background: #ffedd5; padding: 4px 12px; border-radius: 10px; display: inline-block; }
+        .btn-avisar { background: #f59e0b; color: #451a03; border: none; border-radius: 16px; padding: 16px 28px; font-size: 15px; font-weight: 900; cursor: pointer; white-space: nowrap; flex-shrink: 0; text-transform: uppercase; transition: 0.2s; }
+        .btn-avisar:hover { background: #d97706; }
+        .btn-avisar:active { transform: scale(0.97); }
     </style>
 </head>
 <body>
@@ -214,6 +225,7 @@
         <button class="chip-filtro" onclick="filtrar('HIDRATADO',this)">HIDRATADO</button>
         <button class="chip-filtro" onclick="filtrar('DIESEL',this)">DIESEL S10</button>
     </div>
+    <div id="banners-aviso-tanque" style="margin-bottom:20px;"></div>
     <div class="moldura-tabela">
         <table>
             <thead>
@@ -398,7 +410,7 @@
                 return;
             }
             usuarioLogado = { nome: data[0].nome, perfil: data[0].perfil };
-            const perfilConfirmado = tipoLoginPendente; // salva ANTES de fecharLogin zerar
+            const perfilConfirmado = tipoLoginPendente;
             fecharLogin();
             mostrarBadge();
             if(perfilConfirmado === 'OPERADOR') {
@@ -535,6 +547,7 @@
             await carregarTanques();
             renderTabela();
             renderResumoTanques();
+            renderBannersAviso();
         } catch(e) { console.error('Falha sync', e); }
     }
 
@@ -561,6 +574,65 @@
                 <div class="mini-info"><span>Utilizado: ${fmtL(t.UTILIZADO)}</span><span>Total: ${fmtL(t.CAPACIDADE)}</span></div>
             </div>`;
         }).join('');
+    }
+
+    /* --- BANNERS DE AVISO TANQUE CHEIO --- */
+    function renderBannersAviso() {
+        const div = document.getElementById('banners-aviso-tanque');
+        if(!div) return;
+        const bloqueados = {};
+        memoriaFila.forEach(item => {
+            const tanque = memoriaTanques.find(t => t.PRODUTO === item.PRODUTO);
+            const livre = tanque ? espacoLivre(tanque) : 0;
+            const vol = item.VOLUME || 0;
+            const estaBloqueado = !tanque || livre <= 0 || (vol > 0 && vol > livre);
+            if(estaBloqueado) {
+                if(!bloqueados[item.PRODUTO]) bloqueados[item.PRODUTO] = [];
+                bloqueados[item.PRODUTO].push(item);
+            }
+        });
+        const produtos = Object.keys(bloqueados);
+        if(!produtos.length) { div.innerHTML = ''; return; }
+        div.innerHTML = produtos.map(produto => {
+            const lista = bloqueados[produto];
+            const placas = lista.map(i => i.PLACA).join(', ');
+            const qtd = lista.length;
+            return `
+            <div class="banner-aviso">
+                <div class="banner-aviso-info">
+                    <div class="banner-aviso-icone">⚠️</div>
+                    <div class="banner-aviso-texto">
+                        <div class="titulo">${qtd} caminhão${qtd > 1 ? 's' : ''} de ${produto} aguardando</div>
+                        <div class="subtitulo">Tanque sem espaço — motoristas não foram convocados</div>
+                        <div class="motoristas"><i class="fa-solid fa-truck"></i> ${placas}</div>
+                    </div>
+                </div>
+                <button class="btn-avisar" onclick="avisarMotoristasBlockados('${produto}')">
+                    <i class="fa-brands fa-whatsapp"></i> AVISAR MOTORISTAS
+                </button>
+            </div>`;
+        }).join('');
+    }
+
+    function avisarMotoristasBlockados(produto) {
+        const tanque = memoriaTanques.find(t => t.PRODUTO === produto);
+        const livre = tanque ? espacoLivre(tanque) : 0;
+        const bloqueados = memoriaFila.filter(item => {
+            if(item.PRODUTO !== produto) return false;
+            const vol = item.VOLUME || 0;
+            return !tanque || livre <= 0 || (vol > 0 && vol > livre);
+        });
+        if(!bloqueados.length) { alert('Nenhum motorista bloqueado para este produto.'); return; }
+        if(!confirm(`Enviar aviso de tanque cheio para ${bloqueados.length} motorista${bloqueados.length > 1 ? 's' : ''} de ${produto}?\n\nPlacas: ${bloqueados.map(i => i.PLACA).join(', ')}`)) return;
+        const msg = encodeURIComponent(`Olá motorista! ⚠️\nInformamos que o tanque de ${produto} está sem espaço disponível no momento.\nPor favor, aguarde no pátio. Assim que houver espaço, entraremos em contato.\nObrigado pela compreensão!`);
+        let delay = 0;
+        bloqueados.forEach(item => {
+            setTimeout(() => {
+                const tel = item.TELEFONE.replace(/\D/g, '');
+                window.open(`https://wa.me/55${tel}?text=${msg}`, '_blank');
+            }, delay);
+            delay += 1200;
+        });
     }
 
     /* --- TABELA OPERADOR --- */
@@ -799,21 +871,17 @@
             const livre = espacoLivre(t);
             const pct   = pctLivre(t);
             const cor   = corProduto(t.PRODUTO);
-
             const caminhoesProduto = fila.filter(i => i.PRODUTO === t.PRODUTO && i.VOLUME > 0);
             const totalVolumePatio = caminhoesProduto.reduce((s, i) => s + (i.VOLUME || 0), 0);
             const mediaPorCaminhao = caminhoesProduto.length > 0 ? totalVolumePatio / caminhoesProduto.length : 0;
             const descargasRestantes = mediaPorCaminhao > 0 ? Math.floor(livre / mediaPorCaminhao) : null;
-
             let statusClass = 'ok', statusTxt = 'NORMAL';
             if(pct === 0) { statusClass = 'critico'; statusTxt = 'LOTADO'; }
             else if(descargasRestantes !== null && descargasRestantes <= 1) { statusClass = 'critico'; statusTxt = 'CRÍTICO'; }
             else if(descargasRestantes !== null && descargasRestantes <= 3) { statusClass = ''; statusTxt = 'ATENÇÃO'; }
-
             const descargasTxt = descargasRestantes !== null
                 ? `${descargasRestantes} descarga${descargasRestantes !== 1 ? 's' : ''}`
                 : 'Sem dados de volume';
-
             return `
             <div class="prev-card">
                 <div class="prev-produto">
@@ -870,7 +938,6 @@
         const placa = document.getElementById('placa').value.toUpperCase();
         setLoader(true);
         try {
-            // Verificar placa duplicada
             const chk = await fetch(`${DB.URL}/rest/v1/registros?PLACA=eq.${placa}&SAIDA=is.null&select=*`, { headers: DB.H });
             const existentes = await chk.json();
             if(existentes && existentes.length > 0) {
