@@ -750,45 +750,45 @@
             'JET A',
         ];
 
-        // Remove cabeçalho se presente
-        let corpo=texto;
-        const dispIdx=texto.search(/Dispon[ií]vel/i);
-        if(dispIdx!==-1){
-            const posInicio=texto.slice(dispIdx).search(/\d{3}/)+dispIdx;
-            if(posInicio>dispIdx) corpo=texto.slice(posInicio);
-        }
-
-        // Regex que lê cada linha do formato colado sem separadores
-        const regexLinha=new RegExp(
-            `(\\d{3})(${PRODUTOS_CONHECIDOS.map(p=>p.replace(/[()]/g,'\\$&')).join('|')})`+
-            `([\\d.,]+)`+ // Espaço (m³)
-            `([\\d.,]+)`+ // Altura (mm)
-            `([\\d.,]+)`+ // Temperatura
-            `([\\d.,]+)`+ // Volume
-            `([\\d.,]+)`+ // Volume 20°C
-            `([\\d.,]+)`+ // Densidade
-            `([\\d.,]+)`+ // Lastro
-            `([\\d.,]+)`,  // Disponível
-            'g'
-        );
-
         const parseNum=s=>parseFloat((s||'0').replace(/\./g,'').replace(',','.'))||0;
 
+        // Processa linha a linha — funciona com qualquer separador (tab, espaço, espaços múltiplos)
+        const linhas=texto.split('\n').map(l=>l.trim()).filter(l=>l);
         const atualizacoes=[];
-        let match;
-        while((match=regexLinha.exec(corpo))!==null){
-            const numTanque=parseInt(match[1]);
-            const produtoRaw=match[2].trim().toUpperCase();
-            const espacoM3=parseNum(match[3]);
 
-            if(IGNORAR_PRODUTOS.some(ig=>produtoRaw.includes(ig))) continue;
+        for(const linha of linhas){
+            // Ignora linhas que não começam com número de tanque (cabeçalho, Fechar, Imprimir, etc.)
+            if(!/^\d{3}/.test(linha)) continue;
 
+            // Descobre qual produto está na linha
+            let produtoEncontrado=null;
             let produtoBanco=null;
+            for(const prod of PRODUTOS_CONHECIDOS){
+                if(linha.toUpperCase().includes(prod)){
+                    produtoEncontrado=prod;
+                    break;
+                }
+            }
+            if(!produtoEncontrado) continue;
+            if(IGNORAR_PRODUTOS.some(ig=>produtoEncontrado.includes(ig))) continue;
+
             for(const [chave,valor] of Object.entries(MAPA_PRODUTOS)){
-                if(produtoRaw.includes(chave)||chave.includes(produtoRaw)){produtoBanco=valor;break;}
+                if(produtoEncontrado.includes(chave)||chave.includes(produtoEncontrado)){produtoBanco=valor;break;}
             }
             if(!produtoBanco) continue;
 
+            // Extrai o número do tanque (primeiros 3 dígitos)
+            const numTanque=parseInt(linha.match(/^\d{3}/)[0]);
+
+            // Remove o número do tanque e o nome do produto, fica só com os números
+            const semProduto=linha.replace(/^\d{3}/,'').replace(new RegExp(produtoEncontrado,'i'),'').trim();
+
+            // Extrai todos os números restantes da linha
+            const nums=semProduto.match(/[\d]+[.,][\d]+/g)||semProduto.match(/[\d.,]+/g)||[];
+            if(nums.length<1) continue;
+
+            // Primeira coluna numérica após o produto = Espaço (m³)
+            const espacoM3=parseNum(nums[0]);
             const espacoL=Math.round(espacoM3*1000);
             const disponivelL=Math.max(0,espacoL-SEGURANCA_L);
             atualizacoes.push({numTanque,produto:produtoBanco,espacoM3,espacoL,disponivelL});
