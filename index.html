@@ -229,11 +229,11 @@
         <table>
             <thead>
                 <tr>
-                    <th>VEÍCULO</th><th>PRODUTO</th><th>STATUS JORNADA</th><th>HORA ENTRADA</th>
+                    <th>WHATSAPP</th><th>VEÍCULO</th><th>PRODUTO</th><th>STATUS JORNADA</th>
                     <th style="background:#fff7ed;color:#c2410c;">AGENDAMENTO</th>
                     <th style="background:#f0fdf4;color:#166534;">TELEFONE</th>
                     <th style="background:#eff6ff;color:#1d4ed8;">VOLUME (L)</th>
-                    <th>WHATSAPP</th><th>FINALIZAR</th>
+                    <th>FINALIZAR</th>
                 </tr>
             </thead>
             <tbody id="listaFila"></tbody>
@@ -448,6 +448,7 @@
                 document.getElementById('modulo-supervisor').style.display='block';
                 await carregarTanques();
                 renderSupervisor();
+                setInterval(async()=>{await carregarTanques();renderSupervisor();},30000);
             }
         }catch(e){document.getElementById('login-erro').style.display='block';console.error(e);}
         finally{setLoader(false);}
@@ -665,10 +666,10 @@
                 btnWA=`<button onclick="chamarWhatsApp('${item.TELEFONE}')" style="background:#25d366;color:white;border:none;padding:15px;border-radius:15px;cursor:pointer;font-weight:900;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;"><i class="fa-brands fa-whatsapp"></i> CONVOCAR</button>`;
             }
             corpo.innerHTML+=`<tr>
-                <td style="color:var(--roxo-raizen);font-weight:900;font-size:22px;">${item.PLACA}</td>
+                <td>${btnWA}</td>
+                <td style="color:var(--roxo-raizen);font-weight:900;font-size:22px;cursor:pointer;" onclick="alert('🕐 Hora de entrada:\\n${item.PLACA} — ${item.ENTRADA}')" title="Clique para ver hora de entrada">${item.PLACA}</td>
                 <td><span class="tag-p ${ct}">${item.PRODUTO}</span></td>
                 <td>${verificarJornada(item.JORNADA)}</td>
-                <td style="font-size:12px;color:#64748b;">${item.ENTRADA}</td>
                 <td style="background:#fffbeb;">
                     <input type="datetime-local" id="ag-${id}" value="${item.AGENDAMENTO?item.AGENDAMENTO.slice(0,16):''}" class="input-edit-table">
                     <button onclick="salvarCampo(${id},'AGENDAMENTO')" class="btn-acao-tabela" style="background:var(--verde-raizen);color:white;">SALVAR AG.</button>
@@ -681,7 +682,6 @@
                     <input type="number" id="vol-${id}" value="${item.VOLUME||''}" placeholder="Ex: 30000" class="input-edit-table" style="font-size:16px;">
                     <button onclick="salvarCampo(${id},'VOLUME')" class="btn-acao-tabela" style="background:#1d4ed8;color:white;">SALVAR VOL.</button>
                 </td>
-                <td>${btnWA}</td>
                 <td><button onclick="abrirModalSaida(${id},'${item.PLACA}','${item.PRODUTO}',${item.VOLUME||0})"
                     style="background:#3b82f6;color:white;border:none;padding:15px;border-radius:15px;cursor:pointer;font-weight:900;width:100%;">
                     <i class="fa-solid fa-right-from-bracket"></i> SAÍDA</button></td>
