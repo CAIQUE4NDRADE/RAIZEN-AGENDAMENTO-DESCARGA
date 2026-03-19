@@ -51,17 +51,17 @@
         .chip-filtro { padding: 18px 40px; border-radius: 20px; border: none; background: #e2e8f0; font-weight: 900; cursor: pointer; color: #64748b; font-size: 14px; }
         .chip-filtro.active { background: var(--roxo-raizen); color: white; transform: scale(1.1); }
 
-        .moldura-tabela { overflow-x: auto; border-radius: 30px; border: 3px solid #f1f5f9; }
-        table { width: 100%; border-collapse: collapse; min-width: 1900px; background: white; }
-        th { background: #1e293b; color: white; padding: 25px; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; }
-        td { padding: 20px; border-bottom: 3px solid #f8fafc; text-align: center; font-weight: 700; font-size: 17px; }
+        .moldura-tabela { border-radius: 20px; }
+        .fila-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 18px; }
+        .fila-card { background: white; border-radius: 22px; border: 3px solid #e2e8f0; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .fila-card-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .fila-placa { color: var(--roxo-raizen); font-weight: 900; font-size: 26px; cursor: pointer; }
+        .fila-card-mid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .fila-card-bot { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .fila-label { font-size: 10px; font-weight: 900; color: #94a3b8; text-transform: uppercase; margin-bottom: 3px; }
+        .input-edit-table { padding: 10px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 13px; font-weight: 700; width: 100%; text-align: center; background: #f8fafc; }
+        .btn-acao-tabela { padding: 8px; border: none; border-radius: 10px; cursor: pointer; font-weight: 900; font-size: 11px; text-transform: uppercase; width: 100%; margin-top: 4px; }
 
-        .tag-p { padding: 12px 20px; border-radius: 15px; font-size: 13px; font-weight: 900; color: white; display: inline-block; min-width: 160px; }
-        .bg-gas { background: #ff8c00; } .bg-b100 { background: #5d4037; } .bg-ani { background: #0056b3; }
-        .bg-hid { background: #00a8ff; border: 2px solid #0056b3; } .bg-die { background: #334155; }
-
-        .input-edit-table { padding: 12px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 14px; font-weight: 700; width: 100%; text-align: center; background: #f8fafc; }
-        .btn-acao-tabela { padding: 10px; border: none; border-radius: 10px; cursor: pointer; font-weight: 900; font-size: 12px; text-transform: uppercase; width: 100%; margin-top: 5px; }
 
         .btn-master { width: 100%; padding: 35px; background: var(--roxo-raizen); color: white; border: none; border-radius: 30px; font-size: 26px; font-weight: 900; cursor: pointer; text-transform: uppercase; box-shadow: 0 15px 0 #5e1659; margin-bottom: 25px; display: flex; justify-content: center; align-items: center; gap: 20px; }
         .btn-master:active { transform: translateY(10px); box-shadow: 0 5px 0 #5e1659; }
@@ -226,18 +226,7 @@
     </div>
     <div id="banners-aviso-tanque" style="margin-bottom:20px;"></div>
     <div class="moldura-tabela">
-        <table>
-            <thead>
-                <tr>
-                    <th>WHATSAPP</th><th>VEÍCULO</th><th>PRODUTO</th><th>STATUS JORNADA</th>
-                    <th style="background:#fff7ed;color:#c2410c;">AGENDAMENTO</th>
-                    <th style="background:#f0fdf4;color:#166534;">TELEFONE</th>
-                    <th style="background:#eff6ff;color:#1d4ed8;">VOLUME (L)</th>
-                    <th>FINALIZAR</th>
-                </tr>
-            </thead>
-            <tbody id="listaFila"></tbody>
-        </table>
+        <div class="fila-grid" id="listaFila"></div>
     </div>
     <div style="margin-top:40px;display:flex;gap:25px;">
         <button class="btn-master" style="background:#1e293b;box-shadow:0 15px 0 #0f172a;" onclick="location.reload()">VOLTAR</button>
@@ -633,7 +622,7 @@
         });
     }
 
-    /* --- TABELA OPERADOR --- */
+    /* --- CARDS OPERADOR --- */
     function renderTabela(){
         const corpo=document.getElementById('listaFila');
         corpo.innerHTML='';
@@ -650,42 +639,64 @@
                 return p.includes(filtroAtivo);
             });
         }
+        if(!lista.length){
+            corpo.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:60px;color:#94a3b8;font-weight:900;font-size:18px;">
+                <i class="fa-solid fa-truck" style="font-size:50px;display:block;margin-bottom:15px;opacity:.3;"></i>Nenhum veículo no pátio.</div>`;
+            return;
+        }
         lista.forEach(item=>{
             const id=item.ID;
-            const ct=item.PRODUTO.includes('GASOLINA')?'bg-gas':item.PRODUTO.includes('BIODIESEL')?'bg-b100':item.PRODUTO.includes('ANIDRO')?'bg-ani':item.PRODUTO.includes('HIDRATADO')?'bg-hid':'bg-die';
+            const cor=item.PRODUTO.includes('GASOLINA')?'#ff8c00':item.PRODUTO.includes('BIODIESEL')?'#5d4037':item.PRODUTO.includes('ANIDRO')?'#0056b3':item.PRODUTO.includes('HIDRATADO')?'#00a8ff':'#334155';
             const t=memoriaTanques.find(x=>x.produto===item.PRODUTO);
             const livre=t?espacoOperador(t):0;
             const temAtivo=t&&t.ativo_tanque;
             const vol=item.VOLUME||0;
             let btnWA;
             if(!t||!temAtivo||livre<=0){
-                btnWA=`<button disabled style="background:#fef2f2;color:#ef4444;border:3px solid #fca5a5;padding:15px;border-radius:15px;font-weight:900;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;cursor:not-allowed;font-size:12px;"><i class="fa-solid fa-ban"></i> SEM ESPAÇO</button>`;
+                btnWA=`<button disabled style="background:#fef2f2;color:#ef4444;border:2px solid #fca5a5;padding:12px;border-radius:14px;font-weight:900;width:100%;font-size:12px;cursor:not-allowed;"><i class="fa-solid fa-ban"></i> SEM ESPAÇO</button>`;
             } else if(vol>0&&vol>livre){
-                btnWA=`<button disabled style="background:#fff7ed;color:#c2410c;border:3px solid #fed7aa;padding:15px;border-radius:15px;font-weight:900;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;cursor:not-allowed;font-size:12px;"><i class="fa-solid fa-triangle-exclamation"></i> VOL. EXCEDE TANQUE</button>`;
+                btnWA=`<button disabled style="background:#fff7ed;color:#c2410c;border:2px solid #fed7aa;padding:12px;border-radius:14px;font-weight:900;width:100%;font-size:12px;cursor:not-allowed;"><i class="fa-solid fa-triangle-exclamation"></i> VOL. EXCEDE</button>`;
             } else {
-                btnWA=`<button onclick="chamarWhatsApp('${item.TELEFONE}')" style="background:#25d366;color:white;border:none;padding:15px;border-radius:15px;cursor:pointer;font-weight:900;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;"><i class="fa-brands fa-whatsapp"></i> CONVOCAR</button>`;
+                btnWA=`<button onclick="chamarWhatsApp('${item.TELEFONE}')" style="background:#25d366;color:white;border:none;padding:12px;border-radius:14px;cursor:pointer;font-weight:900;width:100%;font-size:13px;"><i class="fa-brands fa-whatsapp"></i> CONVOCAR</button>`;
             }
-            corpo.innerHTML+=`<tr>
-                <td>${btnWA}</td>
-                <td style="color:var(--roxo-raizen);font-weight:900;font-size:22px;cursor:pointer;" onclick="alert('🕐 Hora de entrada:\\n${item.PLACA} — ${item.ENTRADA}')" title="Clique para ver hora de entrada">${item.PLACA}</td>
-                <td><span class="tag-p ${ct}">${item.PRODUTO}</span></td>
-                <td>${verificarJornada(item.JORNADA)}</td>
-                <td style="background:#fffbeb;">
-                    <input type="datetime-local" id="ag-${id}" value="${item.AGENDAMENTO?item.AGENDAMENTO.slice(0,16):''}" class="input-edit-table">
-                    <button onclick="salvarCampo(${id},'AGENDAMENTO')" class="btn-acao-tabela" style="background:var(--verde-raizen);color:white;">SALVAR AG.</button>
-                </td>
-                <td style="background:#f0fdf4;">
-                    <input type="text" id="tel-${id}" value="${item.TELEFONE}" class="input-edit-table">
-                    <button onclick="salvarCampo(${id},'TELEFONE')" class="btn-acao-tabela" style="background:#166534;color:white;">ATUALIZAR</button>
-                </td>
-                <td style="background:#eff6ff;">
-                    <input type="number" id="vol-${id}" value="${item.VOLUME||''}" placeholder="Ex: 30000" class="input-edit-table" style="font-size:16px;">
-                    <button onclick="salvarCampo(${id},'VOLUME')" class="btn-acao-tabela" style="background:#1d4ed8;color:white;">SALVAR VOL.</button>
-                </td>
-                <td><button onclick="abrirModalSaida(${id},'${item.PLACA}','${item.PRODUTO}',${item.VOLUME||0})"
-                    style="background:#3b82f6;color:white;border:none;padding:15px;border-radius:15px;cursor:pointer;font-weight:900;width:100%;">
-                    <i class="fa-solid fa-right-from-bracket"></i> SAÍDA</button></td>
-            </tr>`;
+            const card=document.createElement('div');
+            card.className='fila-card';
+            card.innerHTML=`
+                <div class="fila-card-top">
+                    <span class="fila-placa" onclick="alert('🕐 Hora de entrada:\\n${item.PLACA} — ${item.ENTRADA}')">${item.PLACA}</span>
+                    <span style="background:${cor};color:white;padding:6px 14px;border-radius:12px;font-size:12px;font-weight:900;">${item.PRODUTO}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;background:#f8fafc;border-radius:12px;padding:10px 14px;">
+                    <span style="font-size:12px;color:#64748b;font-weight:700;">JORNADA</span>
+                    <span style="font-size:13px;">${verificarJornada(item.JORNADA)}</span>
+                </div>
+                <div class="fila-card-mid">
+                    <div>
+                        <div class="fila-label">Agendamento</div>
+                        <input type="datetime-local" id="ag-${id}" value="${item.AGENDAMENTO?item.AGENDAMENTO.slice(0,16):''}" class="input-edit-table">
+                        <button onclick="salvarCampo(${id},'AGENDAMENTO')" class="btn-acao-tabela" style="background:var(--verde-raizen);color:white;">💾 Salvar ag.</button>
+                    </div>
+                    <div>
+                        <div class="fila-label">Volume (L)</div>
+                        <input type="number" id="vol-${id}" value="${item.VOLUME||''}" placeholder="Ex: 30000" class="input-edit-table">
+                        <button onclick="salvarCampo(${id},'VOLUME')" class="btn-acao-tabela" style="background:#1d4ed8;color:white;">💾 Salvar vol.</button>
+                    </div>
+                </div>
+                <div>
+                    <div class="fila-label">Telefone</div>
+                    <div style="display:flex;gap:6px;">
+                        <input type="text" id="tel-${id}" value="${item.TELEFONE}" class="input-edit-table" style="flex:1;">
+                        <button onclick="salvarCampo(${id},'TELEFONE')" class="btn-acao-tabela" style="background:#166534;color:white;width:auto;padding:8px 12px;margin-top:0;">✔</button>
+                    </div>
+                </div>
+                <div class="fila-card-bot">
+                    ${btnWA}
+                    <button onclick="abrirModalSaida(${id},'${item.PLACA}','${item.PRODUTO}',${item.VOLUME||0})"
+                        style="background:#3b82f6;color:white;border:none;padding:12px;border-radius:14px;cursor:pointer;font-weight:900;font-size:13px;">
+                        <i class="fa-solid fa-right-from-bracket"></i> SAÍDA
+                    </button>
+                </div>`;
+            corpo.appendChild(card);
         });
     }
 
