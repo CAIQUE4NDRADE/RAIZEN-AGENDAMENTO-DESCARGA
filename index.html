@@ -220,12 +220,29 @@
             </div>
             <div class="painel-jornada">
                 <div id="area-tempo">
-                    <label><i class="fa-solid fa-clock"></i> HORÁRIO LIMITE JORNADA</label>
-                    <input type="time" id="limite" required>
+                    <div class="painel-jornada-titulo"><i class="fa-solid fa-clock"></i> ATÉ QUAL HORÁRIO VOCÊ TEM JORNADA?</div>
+                    <input type="time" id="limite">
                 </div>
-                <label style="margin-top:25px;display:flex;align-items:center;gap:20px;cursor:pointer;font-size:20px;font-weight:900;color:var(--roxo-raizen);">
-                    <input type="checkbox" id="jornada24" style="width:35px;height:35px;"> HABILITAR JORNADA 24 HORAS
-                </label>
+                <div class="opcao-jornada-master livre" id="opcao-livre-master" onclick="toggleOpcaoMaster('livre')">
+                    <input type="checkbox" id="jornada24">
+                    <div class="check-box-grande"></div>
+                    <div class="opcao-texto-master">
+                        <i class="fa-solid fa-infinity"></i> JORNADA LIVRE
+                        <small>Posso descarregar qualquer horário!</small>
+                    </div>
+                </div>
+                <div class="opcao-jornada-master semj" id="opcao-semj-master" onclick="toggleOpcaoMaster('semj')">
+                    <input type="checkbox" id="semjornada">
+                    <div class="check-box-grande"></div>
+                    <div class="opcao-texto-master">
+                        <i class="fa-solid fa-triangle-exclamation"></i> NÃO TENHO MAIS JORNADA!
+                        <small>Registra o horário atual como fim de jornada</small>
+                    </div>
+                </div>
+                <div class="horario-capturado-tag" id="tag-horario-master">
+                    <i class="fa-solid fa-clock"></i>
+                    <span>Jornada fim registrada: <strong id="horario-capturado-master">--:--</strong></span>
+                </div>
             </div>
             <button type="submit" class="btn-master">CONFIRMAR REGISTRO</button>
             <button type="button" onclick="abrirReabertura()" class="btn-master" style="background:#475569;box-shadow:0 15px 0 #2d3748;font-size:18px;">
@@ -1215,21 +1232,43 @@
     document.getElementById('formMaster').onsubmit=async e=>{
         e.preventDefault();
         const placa=document.getElementById('placa').value.toUpperCase();
+        const j24=document.getElementById('jornada24').checked;
+        const semJ=document.getElementById('semjornada').checked;
+        const limite=document.getElementById('limite').value;
+        if(!j24&&!semJ&&!limite){ alert('⚠️ Informe o horário da sua jornada ou selecione uma das opções.'); return; }
+        let jornadaValor;
+        if(j24) jornadaValor='24 HORAS';
+        else if(semJ) jornadaValor='SEM JORNADA - '+horaAtual();
+        else jornadaValor=limite;
         setLoader(true);
         try{
             const chk=await fetch(`${DB.URL}/rest/v1/registros?PLACA=eq.${placa}&SAIDA=is.null&select=*`,{headers:DB.H});
             const existentes=await chk.json();
             if(existentes&&existentes.length>0){
                 const reg=existentes[0];
-                alert(`🚫 PLACA JÁ REGISTRADA!\n\nPlaca: ${reg.PLACA}\nProduto: ${reg.PRODUTO}\nEntrada: ${reg.ENTRADA}`);
+                // Se é precheck → atualiza com telefone + jornada e mantém volume previsto
+                if(reg.PRECHECK===true){
+                    await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${reg.ID}`,{method:'PATCH',headers:DB.H,body:JSON.stringify({
+                        TELEFONE: document.getElementById('whatsapp').value,
+                        JORNADA:  jornadaValor,
+                        PRECHECK: false,
+                        ENTRADA:  agora()
+                    })});
+                    const volMsg=reg.VOLUME?`\nVolume previsto: ${Number(reg.VOLUME).toLocaleString('pt-BR')} L já registrado!`:'';
+                    alert(`✅ ENTRADA CONFIRMADA!\n\nPlaca: ${placa}\nAgendamento: ${reg.AGENDAMENTO?reg.AGENDAMENTO.slice(0,16):'—'}${volMsg}`);
+                    location.reload();
+                } else {
+                    alert(`🚫 PLACA JÁ REGISTRADA!\n\nPlaca: ${reg.PLACA}\nProduto: ${reg.PRODUTO}\nEntrada: ${reg.ENTRADA}`);
+                }
                 setLoader(false); return;
             }
             const data={
                 PLACA:    placa,
                 PRODUTO:  document.getElementById('produto').value,
                 TELEFONE: document.getElementById('whatsapp').value,
-                JORNADA:  document.getElementById('jornada24').checked?'24 HORAS':document.getElementById('limite').value,
-                ENTRADA:  agora()
+                JORNADA:  jornadaValor,
+                ENTRADA:  agora(),
+                PRECHECK: false
             };
             const r=await fetch(`${DB.URL}/rest/v1/registros`,{method:'POST',headers:DB.H,body:JSON.stringify(data)});
             if(r.ok){alert('REGISTRADO!');location.reload();}
