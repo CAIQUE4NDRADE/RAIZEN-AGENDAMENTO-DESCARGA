@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>RAÍZEN — Registro de Entrada</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#84207D">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="RAÍZEN">
+    <link rel="apple-touch-icon" href="https://via.placeholder.com/192x192/84207d/ffffff?text=R">
+
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -37,6 +47,8 @@
             position: relative;
             z-index: 10;
         }
+
+        .card + .card { margin-top: 20px; border-left-color: #475569; }
 
         .card-titulo {
             font-size: 18px;
@@ -125,13 +137,15 @@
         .btn-cinza:active { box-shadow: 0 3px 0 #2d3748; transform: translateY(5px); }
         .btn-outline { background: none; color: var(--roxo); border: 3px solid var(--roxo); box-shadow: none; }
 
+        /* TELA DE SUCESSO */
         #tela-sucesso {
             display: none;
             text-align: center;
             padding: 20px 0;
         }
         .sucesso-icone {
-            width: 90px; height: 90px;
+            width: 90px;
+            height: 90px;
             background: #dcfce7;
             border-radius: 50%;
             display: flex;
@@ -152,6 +166,7 @@
         .sucesso-placa .label { font-size: 11px; font-weight: 900; color: #166534; text-transform: uppercase; letter-spacing: 1px; }
         .sucesso-placa .valor { font-size: 28px; font-weight: 900; color: #14532d; margin-top: 4px; }
 
+        /* LOADER */
         #loader {
             display: none;
             position: fixed;
@@ -174,6 +189,7 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .loader-txt { font-size: 15px; font-weight: 900; color: var(--roxo); text-transform: uppercase; letter-spacing: 1px; }
 
+        /* ERRO */
         .msg-erro {
             background: #fef2f2;
             border: 2px solid #fca5a5;
@@ -186,10 +202,10 @@
             display: none;
             align-items: center;
             gap: 10px;
-            line-height: 1.5;
         }
         .msg-erro.visivel { display: flex; }
 
+        /* TABS */
         .tabs { display: flex; gap: 0; margin-bottom: 25px; border-radius: 16px; overflow: hidden; border: 3px solid #e2e8f0; }
         .tab {
             flex: 1; padding: 14px; text-align: center;
@@ -212,6 +228,7 @@
     <div class="logo-sub">Registro de Motorista</div>
 </header>
 
+<!-- CARD PRINCIPAL -->
 <div class="card" id="card-principal">
 
     <div class="tabs">
@@ -263,7 +280,7 @@
         <div class="jornada-box">
             <div id="campo-hora-entrada">
                 <label><i class="fa-solid fa-clock"></i> Horário Limite da Jornada</label>
-                <input type="time" id="limite">
+                <input type="time" id="limite" style="margin-top:0;">
             </div>
             <label class="check-24">
                 <input type="checkbox" id="jornada24"> Jornada 24 Horas
@@ -322,6 +339,7 @@
 
 </div>
 
+<!-- RODAPÉ -->
 <div style="text-align:center;margin-top:30px;padding:0 20px;">
     <p style="font-size:11px;font-weight:600;color:#94a3b8;">RAÍZEN — Sistema de Gestão Operacional</p>
     <p style="font-size:11px;font-weight:600;color:#cbd5e1;margin-top:4px;">Aguarde a convocação do operador após o registro</p>
@@ -341,6 +359,7 @@
     const agora = () => new Date().toLocaleString('pt-BR');
     const setLoader = v => document.getElementById('loader').style.display = v ? 'flex' : 'none';
 
+    /* --- MÁSCARAS --- */
     document.getElementById('placa').oninput = function() {
         let v = this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
         if(v.length > 3 && !isNaN(v[3])) v = v.slice(0,3)+'-'+v.slice(3,7);
@@ -365,14 +384,14 @@
         if(this.checked) c.value = '';
     };
 
+    /* --- ABAS --- */
     function trocarAba(aba) {
-        document.getElementById('aba-entrada').style.display  = aba === 'entrada' ? 'block' : 'none';
-        document.getElementById('aba-jornada').style.display  = aba === 'jornada' ? 'block' : 'none';
+        document.getElementById('aba-entrada').style.display  = aba === 'entrada'  ? 'block' : 'none';
+        document.getElementById('aba-jornada').style.display  = aba === 'jornada'  ? 'block' : 'none';
         document.getElementById('tela-sucesso').style.display = 'none';
         document.getElementById('tab-entrada').classList.toggle('active', aba === 'entrada');
         document.getElementById('tab-jornada').classList.toggle('active', aba === 'jornada');
-        ocultarErro('entrada');
-        ocultarErro('jornada');
+        ocultarErro('entrada'); ocultarErro('jornada');
     }
 
     function mostrarErro(tipo, msg) {
@@ -380,11 +399,11 @@
         document.getElementById(`erro-${tipo}-txt`).textContent = msg;
         el.classList.add('visivel');
     }
-
     function ocultarErro(tipo) {
         document.getElementById(`erro-${tipo}`)?.classList.remove('visivel');
     }
 
+    /* --- REGISTRAR ENTRADA --- */
     async function registrarEntrada() {
         ocultarErro('entrada');
         const placa   = document.getElementById('placa').value.trim().toUpperCase();
@@ -393,18 +412,19 @@
         const j24     = document.getElementById('jornada24').checked;
         const limite  = document.getElementById('limite').value;
 
-        if(!placa)            { mostrarErro('entrada','Informe a placa do veículo.'); return; }
-        if(!produto)          { mostrarErro('entrada','Selecione o produto.'); return; }
-        if(!tel)              { mostrarErro('entrada','Informe o WhatsApp.'); return; }
-        if(!j24 && !limite)   { mostrarErro('entrada','Informe o horário limite da jornada.'); return; }
+        if(!placa)   { mostrarErro('entrada','Informe a placa do veículo.'); return; }
+        if(!produto) { mostrarErro('entrada','Selecione o produto.'); return; }
+        if(!tel)     { mostrarErro('entrada','Informe o WhatsApp.'); return; }
+        if(!j24 && !limite) { mostrarErro('entrada','Informe o horário limite da jornada.'); return; }
 
         setLoader(true);
         try {
+            // Verificar placa duplicada
             const chk = await fetch(`${DB.URL}/rest/v1/registros?PLACA=eq.${placa}&SAIDA=is.null&select=*`, { headers: DB.H });
             const existentes = await chk.json();
             if(existentes && existentes.length > 0) {
                 const reg = existentes[0];
-                mostrarErro('entrada', `Placa ${placa} já está registrada no pátio desde ${reg.ENTRADA}. Aguarde a liberação ou reabra a jornada na aba ao lado.`);
+                mostrarErro('entrada', `Placa ${placa} já está registrada no pátio desde ${reg.ENTRADA}. Aguarde a liberação ou reabra a jornada.`);
                 setLoader(false);
                 return;
             }
@@ -412,16 +432,16 @@
             const r = await fetch(`${DB.URL}/rest/v1/registros`, {
                 method: 'POST', headers: DB.H,
                 body: JSON.stringify({
-                    PLACA:    placa,
-                    PRODUTO:  produto,
+                    PLACA: placa,
+                    PRODUTO: produto,
                     TELEFONE: tel,
-                    JORNADA:  j24 ? '24 HORAS' : limite,
-                    ENTRADA:  agora()
+                    JORNADA: j24 ? '24 HORAS' : limite,
+                    ENTRADA: agora()
                 })
             });
 
             if(r.ok) {
-                mostrarSucesso(placa, `Produto: ${produto}\nAguarde a convocação do operador.`, 'Entrada Confirmada!');
+                mostrarSucesso(placa, `Entrada registrada com sucesso!\nProduto: ${produto}\nAguarde a convocação do operador.`, 'Entrada Confirmada!');
             } else {
                 mostrarErro('entrada', 'Erro ao registrar. Tente novamente.');
             }
@@ -431,6 +451,7 @@
         } finally { setLoader(false); }
     }
 
+    /* --- REABRIR JORNADA --- */
     async function reabrirJornada() {
         ocultarErro('jornada');
         const placa = document.getElementById('re-placa').value.trim().toUpperCase();
@@ -456,7 +477,7 @@
             });
 
             if(upd.ok) {
-                mostrarSucesso(placa, `Jornada reaberta!\nNovo limite: ${hora}\nAguarde a convocação do operador.`, 'Jornada Reaberta!');
+                mostrarSucesso(placa, `Jornada reaberta com sucesso!\nNovo limite: ${hora}\nAguarde a convocação do operador.`, 'Jornada Reaberta!');
             } else {
                 mostrarErro('jornada', 'Erro ao reabrir jornada. Tente novamente.');
             }
@@ -466,6 +487,7 @@
         } finally { setLoader(false); }
     }
 
+    /* --- TELA SUCESSO --- */
     function mostrarSucesso(placa, msg, titulo) {
         document.getElementById('aba-entrada').style.display  = 'none';
         document.getElementById('aba-jornada').style.display  = 'none';
@@ -487,6 +509,13 @@
         document.getElementById('jornada24').checked = false;
         document.getElementById('campo-hora-entrada').style.opacity = '1';
         document.getElementById('limite').disabled = false;
+    }
+
+    // Registrar Service Worker (PWA)
+    if('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js').catch(() => {});
+        });
     }
 </script>
 </body>
