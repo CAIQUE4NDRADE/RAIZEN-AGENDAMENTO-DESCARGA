@@ -21,6 +21,7 @@
             --branco: #ffffff;
             --cor-erro: #DA291C;
             --cor-sucesso: #60903e;
+            --vermelho-jornada: #dc2626;
             --sombra-premium: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
@@ -51,7 +52,103 @@
         input, select { width: 100%; padding: 28px; border: 5px solid #f1f5f9; border-radius: 25px; font-size: 24px; font-weight: 700; background: #f8fafc; transition: all 0.3s ease; }
         input:focus, select:focus { border-color: var(--roxo-raizen); background: white; outline: none; box-shadow: 0 0 0 15px rgba(120,30,119,0.08); }
 
-        .painel-jornada { background: #f0f7ec; padding: 40px; border-radius: 40px; border: 4px dashed var(--verde-claro); margin: 45px 0; }
+        /* PAINEL JORNADA ATUALIZADO */
+        .painel-jornada { background: #fffbeb; padding: 40px; border-radius: 40px; border: 4px dashed var(--amarelo-raizen); margin: 45px 0; }
+        .painel-jornada-titulo { font-weight: 900; color: #92400e; font-size: 18px; text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+
+        /* OPÇÕES DE JORNADA GRANDES */
+        .opcao-jornada-master {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-top: 18px;
+            cursor: pointer;
+            padding: 22px 24px;
+            border-radius: 22px;
+            border: 4px solid transparent;
+            transition: 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .opcao-jornada-master:active { transform: scale(0.98); }
+
+        .opcao-jornada-master.livre {
+            background: #f3e8ff;
+            border-color: #d8b4fe;
+            color: var(--roxo-raizen);
+        }
+        .opcao-jornada-master.livre.marcado {
+            background: #ede9fe;
+            border-color: var(--roxo-raizen);
+            box-shadow: 0 0 0 6px rgba(120,30,119,0.1);
+        }
+        .opcao-jornada-master.semj {
+            background: #fef2f2;
+            border-color: #fca5a5;
+            color: var(--vermelho-jornada);
+        }
+        .opcao-jornada-master.semj.marcado {
+            background: #fee2e2;
+            border-color: var(--vermelho-jornada);
+            box-shadow: 0 0 0 6px rgba(220,38,38,0.1);
+        }
+
+        .check-box-grande {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            border-radius: 12px;
+            border: 4px solid currentColor;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: white;
+            transition: 0.2s;
+        }
+        .opcao-jornada-master.marcado .check-box-grande {
+            background: currentColor;
+        }
+        .opcao-jornada-master.marcado .check-box-grande::after {
+            content: '✓';
+            color: white;
+            font-weight: 900;
+            font-size: 22px;
+        }
+        .opcao-jornada-master input[type=checkbox] { display: none; }
+
+        .opcao-texto-master {
+            font-size: 20px;
+            font-weight: 900;
+            line-height: 1.3;
+        }
+        .opcao-texto-master small {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0.75;
+            margin-top: 4px;
+        }
+
+        /* TAG HORÁRIO CAPTURADO */
+        .horario-capturado-tag {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            background: #fef2f2;
+            border: 3px solid var(--vermelho-jornada);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-top: 14px;
+            font-size: 18px;
+            font-weight: 900;
+            color: var(--vermelho-jornada);
+        }
+        .horario-capturado-tag.visivel { display: flex; }
+
+        .opcao-jornada-master.desabilitado {
+            opacity: 0.35;
+            pointer-events: none;
+        }
 
         .filtros-top { display: flex; gap: 20px; margin-bottom: 40px; justify-content: center; flex-wrap: wrap; }
         .chip-filtro { padding: 18px 40px; border-radius: 20px; border: none; background: #e2e8f0; font-weight: 900; cursor: pointer; color: #64748b; font-size: 14px; }
@@ -68,11 +165,8 @@
         .input-edit-table { padding: 10px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 13px; font-weight: 700; width: 100%; text-align: center; background: #f8fafc; }
         .btn-acao-tabela { padding: 8px; border: none; border-radius: 10px; cursor: pointer; font-weight: 900; font-size: 11px; text-transform: uppercase; width: 100%; margin-top: 4px; }
 
-
         .btn-master { width: 100%; padding: 35px; background: var(--roxo-raizen); color: white; border: none; border-radius: 30px; font-size: 26px; font-weight: 900; cursor: pointer; text-transform: uppercase; box-shadow: 0 15px 0 var(--roxo-sombra); margin-bottom: 25px; display: flex; justify-content: center; align-items: center; gap: 20px; }
         .btn-master:active { transform: translateY(10px); box-shadow: 0 5px 0 var(--roxo-sombra); }
-        .chip-filtro { padding: 18px 40px; border-radius: 20px; border: none; background: #e2e8f0; font-weight: 900; cursor: pointer; color: var(--cinza-escuro); font-size: 14px; }
-        .chip-filtro.active { background: var(--verde-vivo); color: white; transform: scale(1.1); }
 
         #loader-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; }
         .raizen-spinner { width: 90px; height: 90px; border: 12px solid #f3f3f3; border-top: 12px solid var(--roxo-raizen); border-radius: 50%; animation: girar 1s linear infinite; }
@@ -184,15 +278,41 @@
                 <label><i class="fa-brands fa-whatsapp"></i> WHATSAPP MOTORISTA</label>
                 <input type="tel" id="whatsapp" placeholder="(19) 99999-9999" required>
             </div>
+
+            <!-- PAINEL JORNADA ATUALIZADO -->
             <div class="painel-jornada">
                 <div id="area-tempo">
-                    <label><i class="fa-solid fa-clock"></i> ATÉ QUAL HORARIO VOCE TEM JORNADA? </label>
-                    <input type="time" id="limite" required>
+                    <div class="painel-jornada-titulo"><i class="fa-solid fa-clock"></i> ATÉ QUAL HORÁRIO VOCÊ TEM JORNADA?</div>
+                    <input type="time" id="limite">
                 </div>
-                <label style="margin-top:25px;display:flex;align-items:center;gap:20px;cursor:pointer;font-size:20px;font-weight:900;color:var(--roxo-raizen);">
-                    <input type="checkbox" id="jornada24" style="width:35px;height:35px;"> JORNADA LIVRE, POSSO DESCARREGAR QUALQUER HORARIO!
-                </label>
+
+                <!-- OPÇÃO 1: JORNADA LIVRE -->
+                <div class="opcao-jornada-master livre" id="opcao-livre-master" onclick="toggleOpcaoMaster('livre')">
+                    <input type="checkbox" id="jornada24">
+                    <div class="check-box-grande"></div>
+                    <div class="opcao-texto-master">
+                        <i class="fa-solid fa-infinity"></i> JORNADA LIVRE
+                        <small>Posso descarregar qualquer horário!</small>
+                    </div>
+                </div>
+
+                <!-- OPÇÃO 2: SEM JORNADA -->
+                <div class="opcao-jornada-master semj" id="opcao-semj-master" onclick="toggleOpcaoMaster('semj')">
+                    <input type="checkbox" id="semjornada">
+                    <div class="check-box-grande"></div>
+                    <div class="opcao-texto-master">
+                        <i class="fa-solid fa-triangle-exclamation"></i> NÃO TENHO MAIS JORNADA!
+                        <small>Registra o horário atual como fim de jornada</small>
+                    </div>
+                </div>
+
+                <!-- TAG HORÁRIO CAPTURADO -->
+                <div class="horario-capturado-tag" id="tag-horario-master">
+                    <i class="fa-solid fa-clock"></i>
+                    <span>Jornada fim registrada: <strong id="horario-capturado-master">--:--</strong></span>
+                </div>
             </div>
+
             <button type="submit" class="btn-master">CONFIRMAR REGISTRO</button>
             <button type="button" onclick="abrirReabertura()" class="btn-master" style="background:#475569;box-shadow:0 15px 0 #2d3748;font-size:18px;">
                 <i class="fa-solid fa-clock-rotate-left"></i> REABRIR JORNADA EXISTENTE
@@ -372,6 +492,11 @@
     const SESSAO_KEY = 'raizen_sessao';
     const SESSAO_HORAS = 8;
 
+    const horaAtual = () => {
+        const now = new Date();
+        return now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+    };
+
     function salvarSessao(usuario){
         const expira = Date.now() + SESSAO_HORAS * 60 * 60 * 1000;
         localStorage.setItem(SESSAO_KEY, JSON.stringify({usuario, expira}));
@@ -424,7 +549,6 @@
     const setLoader      = v  => document.getElementById('loader-overlay').style.display = v ? 'flex' : 'none';
     const fmtL           = n  => n != null ? Number(n).toLocaleString('pt-BR') + ' L' : '---';
     const agora          = () => new Date().toLocaleString('pt-BR');
-    // ── usa campo minúsculo "disponivel" ──
     const espacoOperador = t  => Math.max(0, (t.disponivel || 0) - SEGURANCA_L);
     const espacoLivre    = t  => espacoOperador(t);
     const pctLivre       = t  => { const l=espacoOperador(t), b=Math.max(t.disponivel||1,1); return Math.min(100,Math.round(l/b*100)); };
@@ -465,12 +589,50 @@
         e.target.value=!v[2]?v[1]:'('+v[1]+') '+v[2]+(v[3]?'-'+v[3]:'');
     };
 
-    document.getElementById('jornada24').onchange=function(){
-        const c=document.getElementById('limite');
-        document.getElementById('area-tempo').style.opacity=this.checked?'.3':'1';
-        c.disabled=this.checked; c.required=!this.checked;
-        if(this.checked) c.value='';
-    };
+    /* --- TOGGLE OPÇÕES DE JORNADA --- */
+    function toggleOpcaoMaster(tipo) {
+        const isLivre = tipo === 'livre';
+
+        const elLivre = document.getElementById('opcao-livre-master');
+        const elSemJ  = document.getElementById('opcao-semj-master');
+        const cbLivre = document.getElementById('jornada24');
+        const cbSemJ  = document.getElementById('semjornada');
+        const campo   = document.getElementById('area-tempo');
+        const limite  = document.getElementById('limite');
+        const tag     = document.getElementById('tag-horario-master');
+
+        const jaEraMarcado = isLivre ? cbLivre.checked : cbSemJ.checked;
+
+        // Desmarca tudo
+        cbLivre.checked = false;
+        cbSemJ.checked  = false;
+        elLivre.classList.remove('marcado', 'desabilitado');
+        elSemJ.classList.remove('marcado', 'desabilitado');
+        campo.style.opacity = '1';
+        limite.disabled = false;
+        limite.value = '';
+        tag.classList.remove('visivel');
+
+        if (!jaEraMarcado) {
+            if (isLivre) {
+                cbLivre.checked = true;
+                elLivre.classList.add('marcado');
+                elSemJ.classList.add('desabilitado');
+                campo.style.opacity = '.3';
+                limite.disabled = true;
+            } else {
+                cbSemJ.checked = true;
+                elSemJ.classList.add('marcado');
+                elLivre.classList.add('desabilitado');
+                const hora = horaAtual();
+                limite.value = hora;
+                campo.style.opacity = '.3';
+                limite.disabled = true;
+                document.getElementById('horario-capturado-master').textContent = hora;
+                tag.classList.add('visivel');
+            }
+        }
+    }
 
     /* --- LOGIN --- */
     function abrirLogin(tipo) {
@@ -598,7 +760,6 @@
     /* --- CARGA --- */
     async function carregarTanques(){
         try{
-            // ── select com nomes minúsculos ──
             const r=await fetch(`${DB.URL}/rest/v1/tanques_individuais?select=tanque,produto,disponivel,ativo&order=tanque.asc`,{headers:DB.H});
             if(r.ok){
                 memoriaTanquesIndividuais=await r.json();
@@ -845,7 +1006,6 @@
         setLoader(true);
         try{
             await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${id}`,{method:'PATCH',headers:DB.H,body:JSON.stringify({SAIDA:agora()})});
-            // ── coluna minúscula "disponivel", filtro minúsculo "tanque" ──
             await fetch(`${DB.URL}/rest/v1/tanques_individuais?tanque=eq.${t.ativo_tanque}`,{method:'PATCH',headers:DB.H,body:JSON.stringify({disponivel:novoDisp})});
             await registrarLog('SAIDA REGISTRADA',`Placa: ${placa} — ${produto} — Volume: ${fmtL(volume)} — Tanque ${t.ativo_tanque} — Disponível após: ${fmtL(novoDisp)}`);
             await carregarDados();
@@ -859,63 +1019,35 @@
         const texto=document.getElementById('textarea-importacao').value.trim();
         if(!texto){alert('Cole o conteúdo da tabela antes de importar.');return;}
 
-        const PRODUTOS_CONHECIDOS=[
-            'ETANOL HIDRATADO',
-            'ETANOL ANIDRO',
-            'BIODIESEL B100',
-            'GASOLINA A',
-            'DIESEL S10 A',
-            'JET A',
-        ];
-
+        const PRODUTOS_CONHECIDOS=['ETANOL HIDRATADO','ETANOL ANIDRO','BIODIESEL B100','GASOLINA A','DIESEL S10 A','JET A'];
         const parseNum=s=>parseFloat((s||'0').replace(/\./g,'').replace(',','.'))||0;
-
-        // Processa linha a linha — funciona com qualquer separador (tab, espaço, espaços múltiplos)
         const linhas=texto.split('\n').map(l=>l.trim()).filter(l=>l);
         const atualizacoes=[];
 
         for(const linha of linhas){
-            // Ignora linhas que não começam com número de tanque (cabeçalho, Fechar, Imprimir, etc.)
             if(!/^\d{3}/.test(linha)) continue;
-
-            // Descobre qual produto está na linha
             let produtoEncontrado=null;
-            let produtoBanco=null;
             for(const prod of PRODUTOS_CONHECIDOS){
-                if(linha.toUpperCase().includes(prod)){
-                    produtoEncontrado=prod;
-                    break;
-                }
+                if(linha.toUpperCase().includes(prod)){produtoEncontrado=prod;break;}
             }
             if(!produtoEncontrado) continue;
             if(IGNORAR_PRODUTOS.some(ig=>produtoEncontrado.includes(ig))) continue;
-
+            let produtoBanco=null;
             for(const [chave,valor] of Object.entries(MAPA_PRODUTOS)){
                 if(produtoEncontrado.includes(chave)||chave.includes(produtoEncontrado)){produtoBanco=valor;break;}
             }
             if(!produtoBanco) continue;
-
-            // Extrai o número do tanque (primeiros 3 dígitos)
             const numTanque=parseInt(linha.match(/^\d{3}/)[0]);
-
-            // Remove o número do tanque e o nome do produto, fica só com os números
             const semProduto=linha.replace(/^\d{3}/,'').replace(new RegExp(produtoEncontrado,'i'),'').trim();
-
-            // Extrai todos os números restantes da linha
             const nums=semProduto.match(/[\d]+[.,][\d]+/g)||semProduto.match(/[\d.,]+/g)||[];
             if(nums.length<1) continue;
-
-            // Primeira coluna numérica após o produto = Espaço (m³)
             const espacoM3=parseNum(nums[0]);
             const espacoL=Math.round(espacoM3*1000);
             const disponivelL=Math.max(0,espacoL-SEGURANCA_L);
             atualizacoes.push({numTanque,produto:produtoBanco,espacoM3,espacoL,disponivelL});
         }
 
-        if(!atualizacoes.length){
-            alert('Nenhum produto reconhecido.\n\nVerifique se o conteúdo colado é o Relatório de Supervisão de Tanques correto.');
-            return;
-        }
+        if(!atualizacoes.length){alert('Nenhum produto reconhecido.\n\nVerifique se o conteúdo colado é o Relatório de Supervisão de Tanques correto.');return;}
 
         let html=`<div style="padding:20px;">
             <div style="font-size:15px;font-weight:900;color:#166534;margin-bottom:14px;"><i class="fa-solid fa-eye"></i> PRÉVIA — O que será atualizado:</div>
@@ -958,7 +1090,6 @@
         for(const a of atualizacoes){
             if(!a.numTanque) continue;
             try{
-                // ── filtro "tanque" minúsculo, campo "disponivel" minúsculo ──
                 const r=await fetch(`${DB.URL}/rest/v1/tanques_individuais?tanque=eq.${a.numTanque}`,{
                     method:'PATCH',headers:DB.H,body:JSON.stringify({disponivel:a.espacoL})
                 });
@@ -1045,7 +1176,6 @@
         try{
             for(const t of tanquesDosProduto){
                 if(t.ativo||t.tanque===numTanque){
-                    // ── filtro e campo minúsculos ──
                     await fetch(`${DB.URL}/rest/v1/tanques_individuais?tanque=eq.${t.tanque}`,{method:'PATCH',headers:DB.H,body:JSON.stringify({ativo:false})});
                 }
             }
@@ -1095,26 +1225,11 @@
                     <span style="background:${cor};color:white;padding:7px 18px;border-radius:12px;font-size:14px;font-weight:900;">${t.produto}</span>
                     <span class="prev-destaque ${stClass}">${stTxt}</span>
                 </div>
-                <div class="prev-linha">
-                    <span class="prev-label">Tanque ativo</span>
-                    <span class="prev-valor">${t.ativo_tanque||'—'}</span>
-                </div>
-                <div class="prev-linha">
-                    <span class="prev-label">Espaço livre p/ receber</span>
-                    <span class="prev-valor" style="color:${livre===0?'#ef4444':'#10b981'}">${livre===0?'LOTADO':fmtL(livre)}</span>
-                </div>
-                <div class="prev-linha">
-                    <span class="prev-label">Caminhões no pátio</span>
-                    <span class="prev-valor">${caminhoes.length} veículo${caminhoes.length!==1?'s':''}</span>
-                </div>
-                <div class="prev-linha">
-                    <span class="prev-label">Volume total no pátio</span>
-                    <span class="prev-valor">${totalVol>0?fmtL(totalVol):'---'}</span>
-                </div>
-                <div class="prev-linha">
-                    <span class="prev-label">Média por caminhão</span>
-                    <span class="prev-valor">${media>0?fmtL(media):'---'}</span>
-                </div>
+                <div class="prev-linha"><span class="prev-label">Tanque ativo</span><span class="prev-valor">${t.ativo_tanque||'—'}</span></div>
+                <div class="prev-linha"><span class="prev-label">Espaço livre p/ receber</span><span class="prev-valor" style="color:${livre===0?'#ef4444':'#10b981'}">${livre===0?'LOTADO':fmtL(livre)}</span></div>
+                <div class="prev-linha"><span class="prev-label">Caminhões no pátio</span><span class="prev-valor">${caminhoes.length} veículo${caminhoes.length!==1?'s':''}</span></div>
+                <div class="prev-linha"><span class="prev-label">Volume total no pátio</span><span class="prev-valor">${totalVol>0?fmtL(totalVol):'---'}</span></div>
+                <div class="prev-linha"><span class="prev-label">Média por caminhão</span><span class="prev-valor">${media>0?fmtL(media):'---'}</span></div>
                 <div style="background:#fffbeb;border-radius:14px;padding:14px 16px;margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;">
                     <span style="font-size:13px;font-weight:900;color:#92400e;">🛢️ Capacidade restante</span>
                     <span style="font-size:15px;font-weight:900;color:${descargasRestantes!==null&&descargasRestantes<=2?'#ef4444':'#f59e0b'}">${descTxt}</span>
@@ -1148,7 +1263,21 @@
 
     document.getElementById('formMaster').onsubmit=async e=>{
         e.preventDefault();
-        const placa=document.getElementById('placa').value.toUpperCase();
+        const placa   = document.getElementById('placa').value.toUpperCase();
+        const j24     = document.getElementById('jornada24').checked;
+        const semJ    = document.getElementById('semjornada').checked;
+        const limite  = document.getElementById('limite').value;
+
+        if(!j24 && !semJ && !limite) {
+            alert('⚠️ Informe o horário da sua jornada ou selecione uma das opções.');
+            return;
+        }
+
+        let jornadaValor;
+        if(j24)       jornadaValor = '24 HORAS';
+        else if(semJ) jornadaValor = 'SEM JORNADA - ' + horaAtual();
+        else          jornadaValor = limite;
+
         setLoader(true);
         try{
             const chk=await fetch(`${DB.URL}/rest/v1/registros?PLACA=eq.${placa}&SAIDA=is.null&select=*`,{headers:DB.H});
@@ -1162,7 +1291,7 @@
                 PLACA:    placa,
                 PRODUTO:  document.getElementById('produto').value,
                 TELEFONE: document.getElementById('whatsapp').value,
-                JORNADA:  document.getElementById('jornada24').checked?'24 HORAS':document.getElementById('limite').value,
+                JORNADA:  jornadaValor,
                 ENTRADA:  agora()
             };
             const r=await fetch(`${DB.URL}/rest/v1/registros`,{method:'POST',headers:DB.H,body:JSON.stringify(data)});
