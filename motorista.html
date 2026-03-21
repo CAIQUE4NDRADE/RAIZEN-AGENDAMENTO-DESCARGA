@@ -178,7 +178,7 @@
             <div class="label">Veículo</div>
             <div class="valor" id="sucesso-placa-val">---</div>
         </div>
-        <div class="sucesso-sub" id="sucesso-msg">Seu registro foi realizado com sucesso. Aguarde a convocação do operador.</div>
+        <div class="sucesso-sub" id="sucesso-msg">Seu registro foi realizado com sucesso. Aguarde a convocação do gate.</div>
         <button class="btn btn-outline" onclick="novoRegistro()">
             <i class="fa-solid fa-plus"></i> NOVO REGISTRO
         </button>
@@ -187,7 +187,7 @@
 
 <div style="text-align:center;margin-top:30px;padding:0 20px;">
     <p style="font-size:11px;font-weight:600;color:#94a3b8;">RAÍZEN — Sistema de Gestão Operacional</p>
-    <p style="font-size:11px;font-weight:600;color:#cbd5e1;margin-top:4px;">Aguarde a convocação do operador após o registro</p>
+    <p style="font-size:11px;font-weight:600;color:#cbd5e1;margin-top:4px;">Aguarde a convocação do gate após o registro</p>
 </div>
 
 <script>
@@ -319,7 +319,7 @@
                         })
                     });
                     if(r.ok) {
-                        mostrarSucesso(placa, `Entrada registrada com sucesso!\nProduto: ${produto}\nAguarde a convocação do operador.`, 'Entrada Confirmada!');
+                        mostrarSucesso(placa, `Entrada registrada com sucesso!\nProduto: ${produto}\nAguarde a convocação do gate.`, 'Entrada Confirmada!');
                     } else {
                         mostrarErro('entrada', 'Erro ao registrar. Tente novamente.');
                     }
@@ -341,7 +341,7 @@
                 })
             });
             if(r.ok) {
-                mostrarSucesso(placa, `Entrada registrada com sucesso!\nProduto: ${produto}\nAguarde a convocação do operador.`, 'Entrada Confirmada!');
+                mostrarSucesso(placa, `Entrada registrada com sucesso!\nProduto: ${produto}\nAguarde a convocação do gate.`, 'Entrada Confirmada!');
             } else {
                 mostrarErro('entrada', 'Erro ao registrar. Tente novamente.');
             }
@@ -367,7 +367,7 @@
                 body: JSON.stringify({ JORNADA: hora })
             });
             if(upd.ok) {
-                mostrarSucesso(placa, `Jornada reaberta com sucesso!\nNovo limite: ${hora}\nAguarde a convocação do operador.`, 'Jornada Reaberta!');
+                mostrarSucesso(placa, `Jornada reaberta com sucesso!\nNovo limite: ${hora}\nAguarde a convocação do gate.`, 'Jornada Reaberta!');
             } else {
                 mostrarErro('jornada', 'Erro ao reabrir jornada. Tente novamente.');
             }
