@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>RAÍZEN — Registro de Entrada</title>
-
-    <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#84207D">
     <meta name="mobile-web-app-capable" content="yes">
@@ -13,322 +11,75 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="RAÍZEN">
     <link rel="apple-touch-icon" href="https://via.placeholder.com/192x192/84207d/ffffff?text=R">
-
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --roxo: #84207d;
-            --verde: #4d6d5d;
-            --ouro: #ffc107;
-            --vermelho: #dc2626;
-            --fundo: #f1f5f9;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
-        body { background: var(--fundo); min-height: 100vh; padding-bottom: 40px; }
-
-        header {
-            background: linear-gradient(135deg, var(--verde) 0%, #1a241f 100%);
-            padding: 35px 20px 50px;
-            text-align: center;
-            border-bottom: 12px solid var(--roxo);
-        }
-        .logo { color: white; font-size: 42px; font-weight: 900; letter-spacing: 10px; text-transform: uppercase; }
-        .logo-sub { color: rgba(255,255,255,0.7); font-size: 13px; font-weight: 600; margin-top: 6px; letter-spacing: 3px; text-transform: uppercase; }
-
-        .card {
-            width: 92%;
-            max-width: 480px;
-            margin: -25px auto 0;
-            background: white;
-            border-radius: 28px;
-            padding: 35px 28px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
-            border-left: 10px solid var(--roxo);
-            position: relative;
-            z-index: 10;
-        }
-
-        .card + .card { margin-top: 20px; border-left-color: #475569; }
-
-        .card-titulo {
-            font-size: 18px;
-            font-weight: 900;
-            color: var(--roxo);
-            text-transform: uppercase;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #f1f5f9;
-        }
-        .card-titulo.cinza { color: #475569; }
-
-        .field { margin-bottom: 20px; }
-        .field label {
-            display: block;
-            font-size: 11px;
-            font-weight: 900;
-            color: var(--verde);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-        .field input, .field select {
-            width: 100%;
-            padding: 18px 16px;
-            border: 3px solid #e2e8f0;
-            border-radius: 16px;
-            font-size: 18px;
-            font-weight: 700;
-            background: #f8fafc;
-            color: #1e293b;
-            transition: 0.2s;
-            -webkit-appearance: none;
-        }
-        .field input:focus, .field select:focus {
-            border-color: var(--roxo);
-            background: white;
-            outline: none;
-            box-shadow: 0 0 0 6px rgba(132,32,125,0.08);
-        }
-
-        /* JORNADA BOX */
-        .jornada-box {
-            background: #fffbeb;
-            border: 3px dashed var(--ouro);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .jornada-box > label.titulo-jornada {
-            color: #92400e;
-            font-size: 11px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        /* CHECKBOXES GRANDES */
-        .opcao-jornada {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-top: 12px;
-            cursor: pointer;
-            padding: 16px 18px;
-            border-radius: 16px;
-            border: 3px solid transparent;
-            transition: 0.2s;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .opcao-jornada:active { transform: scale(0.98); }
-
-        /* Estilo: Jornada Livre */
-        .opcao-jornada.livre {
-            background: #f3e8ff;
-            border-color: #d8b4fe;
-            color: var(--roxo);
-        }
-        .opcao-jornada.livre.marcado {
-            background: #ede9fe;
-            border-color: var(--roxo);
-            box-shadow: 0 0 0 4px rgba(132,32,125,0.12);
-        }
-
-        /* Estilo: Sem Jornada */
-        .opcao-jornada.semj {
-            background: #fef2f2;
-            border-color: #fca5a5;
-            color: var(--vermelho);
-        }
-        .opcao-jornada.semj.marcado {
-            background: #fee2e2;
-            border-color: var(--vermelho);
-            box-shadow: 0 0 0 4px rgba(220,38,38,0.12);
-        }
-
-        /* Checkbox customizado GRANDE */
-        .check-custom {
-            width: 36px;
-            height: 36px;
-            min-width: 36px;
-            border-radius: 10px;
-            border: 3px solid currentColor;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            background: white;
-            transition: 0.2s;
-        }
-        .opcao-jornada.marcado .check-custom {
-            background: currentColor;
-        }
-        .opcao-jornada.marcado .check-custom::after {
-            content: '✓';
-            color: white;
-            font-weight: 900;
-            font-size: 18px;
-        }
-
-        /* Esconde o input nativo */
-        .opcao-jornada input[type=checkbox] { display: none; }
-
-        .opcao-texto {
-            font-size: 15px;
-            font-weight: 900;
-            line-height: 1.3;
-        }
-        .opcao-texto small {
-            display: block;
-            font-size: 11px;
-            font-weight: 600;
-            opacity: 0.75;
-            margin-top: 3px;
-        }
-
-        /* TAG HORÁRIO CAPTURADO */
-        .horario-atual-tag {
-            display: none;
-            align-items: center;
-            gap: 8px;
-            background: #fef2f2;
-            border: 2px solid var(--vermelho);
-            border-radius: 12px;
-            padding: 10px 14px;
-            margin-top: 10px;
-            font-size: 13px;
-            font-weight: 900;
-            color: var(--vermelho);
-        }
-        .horario-atual-tag.visivel { display: flex; }
-
-        .btn {
-            width: 100%;
-            padding: 20px;
-            border: none;
-            border-radius: 18px;
-            font-size: 17px;
-            font-weight: 900;
-            cursor: pointer;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: 0.2s;
-            margin-bottom: 12px;
-        }
-        .btn:active { transform: scale(0.97); }
-        .btn-roxo { background: var(--roxo); color: white; box-shadow: 0 8px 0 #5e1659; }
-        .btn-roxo:active { box-shadow: 0 3px 0 #5e1659; transform: translateY(5px); }
-        .btn-cinza { background: #475569; color: white; box-shadow: 0 8px 0 #2d3748; }
-        .btn-cinza:active { box-shadow: 0 3px 0 #2d3748; transform: translateY(5px); }
-        .btn-outline { background: none; color: var(--roxo); border: 3px solid var(--roxo); box-shadow: none; }
-
-        /* TELA DE SUCESSO */
-        #tela-sucesso {
-            display: none;
-            text-align: center;
-            padding: 20px 0;
-        }
-        .sucesso-icone {
-            width: 90px;
-            height: 90px;
-            background: #dcfce7;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 40px;
-        }
-        .sucesso-titulo { font-size: 24px; font-weight: 900; color: #166534; margin-bottom: 8px; }
-        .sucesso-sub { font-size: 14px; font-weight: 600; color: #64748b; margin-bottom: 25px; line-height: 1.6; }
-        .sucesso-placa {
-            background: #f0fdf4;
-            border: 3px solid #86efac;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 25px;
-        }
-        .sucesso-placa .label { font-size: 11px; font-weight: 900; color: #166534; text-transform: uppercase; letter-spacing: 1px; }
-        .sucesso-placa .valor { font-size: 28px; font-weight: 900; color: #14532d; margin-top: 4px; }
-
-        /* LOADER */
-        #loader {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(255,255,255,0.92);
-            z-index: 9999;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-        }
-        .spinner {
-            width: 60px; height: 60px;
-            border: 8px solid #f1f5f9;
-            border-top: 8px solid var(--roxo);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loader-txt { font-size: 15px; font-weight: 900; color: var(--roxo); text-transform: uppercase; letter-spacing: 1px; }
-
-        /* ERRO */
-        .msg-erro {
-            background: #fef2f2;
-            border: 2px solid #fca5a5;
-            border-radius: 14px;
-            padding: 14px 16px;
-            font-size: 13px;
-            font-weight: 700;
-            color: #ef4444;
-            margin-bottom: 16px;
-            display: none;
-            align-items: center;
-            gap: 10px;
-        }
-        .msg-erro.visivel { display: flex; }
-
-        /* TABS */
-        .tabs { display: flex; gap: 0; margin-bottom: 25px; border-radius: 16px; overflow: hidden; border: 3px solid #e2e8f0; }
-        .tab {
-            flex: 1; padding: 14px; text-align: center;
-            font-size: 13px; font-weight: 900; text-transform: uppercase;
-            cursor: pointer; background: #f8fafc; color: #94a3b8;
-            transition: 0.2s;
-        }
-        .tab.active { background: var(--roxo); color: white; }
-
-        .opcao-jornada.desabilitado {
-            opacity: 0.35;
-            pointer-events: none;
-        }
+        :root { --roxo:#84207d; --verde:#4d6d5d; --ouro:#ffc107; --vermelho:#dc2626; --fundo:#f1f5f9; }
+        * { box-sizing:border-box; margin:0; padding:0; font-family:'Montserrat',sans-serif; }
+        body { background:var(--fundo); min-height:100vh; padding-bottom:40px; }
+        header { background:linear-gradient(135deg,var(--verde) 0%,#1a241f 100%); padding:35px 20px 50px; text-align:center; border-bottom:12px solid var(--roxo); }
+        .logo { color:white; font-size:42px; font-weight:900; letter-spacing:10px; text-transform:uppercase; }
+        .logo-sub { color:rgba(255,255,255,0.7); font-size:13px; font-weight:600; margin-top:6px; letter-spacing:3px; text-transform:uppercase; }
+        .card { width:92%; max-width:480px; margin:-25px auto 0; background:white; border-radius:28px; padding:35px 28px; box-shadow:0 20px 40px rgba(0,0,0,0.12); border-left:10px solid var(--roxo); position:relative; z-index:10; }
+        .card + .card { margin-top:20px; border-left-color:#475569; }
+        .card-titulo { font-size:18px; font-weight:900; color:var(--roxo); text-transform:uppercase; margin-bottom:25px; display:flex; align-items:center; gap:12px; padding-bottom:15px; border-bottom:3px solid #f1f5f9; }
+        .card-titulo.cinza { color:#475569; }
+        .field { margin-bottom:20px; }
+        .field label { display:block; font-size:11px; font-weight:900; color:var(--verde); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+        .field input, .field select { width:100%; padding:18px 16px; border:3px solid #e2e8f0; border-radius:16px; font-size:18px; font-weight:700; background:#f8fafc; color:#1e293b; transition:0.2s; -webkit-appearance:none; }
+        .field input:focus, .field select:focus { border-color:var(--roxo); background:white; outline:none; box-shadow:0 0 0 6px rgba(132,32,125,0.08); }
+        .jornada-box { background:#fffbeb; border:3px dashed var(--ouro); border-radius:20px; padding:20px; margin-bottom:20px; }
+        .jornada-box > label.titulo-jornada { color:#92400e; font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; display:block; }
+        .opcao-jornada { display:flex; align-items:center; gap:16px; margin-top:12px; cursor:pointer; padding:16px 18px; border-radius:16px; border:3px solid transparent; transition:0.2s; -webkit-tap-highlight-color:transparent; }
+        .opcao-jornada:active { transform:scale(0.98); }
+        .opcao-jornada.livre { background:#f3e8ff; border-color:#d8b4fe; color:var(--roxo); }
+        .opcao-jornada.livre.marcado { background:#ede9fe; border-color:var(--roxo); box-shadow:0 0 0 4px rgba(132,32,125,0.12); }
+        .opcao-jornada.semj { background:#fef2f2; border-color:#fca5a5; color:var(--vermelho); }
+        .opcao-jornada.semj.marcado { background:#fee2e2; border-color:var(--vermelho); box-shadow:0 0 0 4px rgba(220,38,38,0.12); }
+        .check-custom { width:36px; height:36px; min-width:36px; border-radius:10px; border:3px solid currentColor; display:flex; align-items:center; justify-content:center; font-size:20px; background:white; transition:0.2s; }
+        .opcao-jornada.marcado .check-custom { background:currentColor; }
+        .opcao-jornada.marcado .check-custom::after { content:'✓'; color:white; font-weight:900; font-size:18px; }
+        .opcao-jornada input[type=checkbox] { display:none; }
+        .opcao-texto { font-size:15px; font-weight:900; line-height:1.3; }
+        .opcao-texto small { display:block; font-size:11px; font-weight:600; opacity:0.75; margin-top:3px; }
+        .horario-atual-tag { display:none; align-items:center; gap:8px; background:#fef2f2; border:2px solid var(--vermelho); border-radius:12px; padding:10px 14px; margin-top:10px; font-size:13px; font-weight:900; color:var(--vermelho); }
+        .horario-atual-tag.visivel { display:flex; }
+        .opcao-jornada.desabilitado { opacity:0.35; pointer-events:none; }
+        .btn { width:100%; padding:20px; border:none; border-radius:18px; font-size:17px; font-weight:900; cursor:pointer; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:10px; transition:0.2s; margin-bottom:12px; }
+        .btn:active { transform:scale(0.97); }
+        .btn-roxo { background:var(--roxo); color:white; box-shadow:0 8px 0 #5e1659; }
+        .btn-roxo:active { box-shadow:0 3px 0 #5e1659; transform:translateY(5px); }
+        .btn-cinza { background:#475569; color:white; box-shadow:0 8px 0 #2d3748; }
+        .btn-cinza:active { box-shadow:0 3px 0 #2d3748; transform:translateY(5px); }
+        .btn-outline { background:none; color:var(--roxo); border:3px solid var(--roxo); box-shadow:none; }
+        #tela-sucesso { display:none; text-align:center; padding:20px 0; }
+        .sucesso-icone { width:90px; height:90px; background:#dcfce7; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:40px; }
+        .sucesso-titulo { font-size:24px; font-weight:900; color:#166534; margin-bottom:8px; }
+        .sucesso-sub { font-size:14px; font-weight:600; color:#64748b; margin-bottom:25px; line-height:1.6; }
+        .sucesso-placa { background:#f0fdf4; border:3px solid #86efac; border-radius:16px; padding:16px; margin-bottom:25px; }
+        .sucesso-placa .label { font-size:11px; font-weight:900; color:#166534; text-transform:uppercase; letter-spacing:1px; }
+        .sucesso-placa .valor { font-size:28px; font-weight:900; color:#14532d; margin-top:4px; }
+        #loader { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.92); z-index:9999; flex-direction:column; align-items:center; justify-content:center; gap:20px; }
+        .spinner { width:60px; height:60px; border:8px solid #f1f5f9; border-top:8px solid var(--roxo); border-radius:50%; animation:spin 0.8s linear infinite; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .loader-txt { font-size:15px; font-weight:900; color:var(--roxo); text-transform:uppercase; letter-spacing:1px; }
+        .msg-erro { background:#fef2f2; border:2px solid #fca5a5; border-radius:14px; padding:14px 16px; font-size:13px; font-weight:700; color:#ef4444; margin-bottom:16px; display:none; align-items:center; gap:10px; }
+        .msg-erro.visivel { display:flex; }
+        .tabs { display:flex; gap:0; margin-bottom:25px; border-radius:16px; overflow:hidden; border:3px solid #e2e8f0; }
+        .tab { flex:1; padding:14px; text-align:center; font-size:13px; font-weight:900; text-transform:uppercase; cursor:pointer; background:#f8fafc; color:#94a3b8; transition:0.2s; }
+        .tab.active { background:var(--roxo); color:white; }
     </style>
 </head>
 <body>
 
-<div id="loader">
-    <div class="spinner"></div>
-    <div class="loader-txt">Aguarde...</div>
-</div>
+<div id="loader"><div class="spinner"></div><div class="loader-txt">Aguarde...</div></div>
 
 <header>
     <div class="logo">RAÍZEN</div>
     <div class="logo-sub">Registro de Motorista</div>
 </header>
 
-<!-- CARD PRINCIPAL -->
 <div class="card" id="card-principal">
-
     <div class="tabs">
         <div class="tab active" id="tab-entrada" onclick="trocarAba('entrada')">
             <i class="fa-solid fa-truck-arrow-right"></i> Entrada
@@ -338,23 +89,17 @@
         </div>
     </div>
 
-    <!-- ABA ENTRADA -->
     <div id="aba-entrada">
         <div class="card-titulo">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#84207d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="1" y="8" width="13" height="9" rx="1"/>
-                <path d="M14 10h4l3 3v4h-7V10z"/>
-                <circle cx="5.5" cy="18.5" r="1.5"/>
-                <circle cx="18.5" cy="18.5" r="1.5"/>
+                <rect x="1" y="8" width="13" height="9" rx="1"/><path d="M14 10h4l3 3v4h-7V10z"/>
+                <circle cx="5.5" cy="18.5" r="1.5"/><circle cx="18.5" cy="18.5" r="1.5"/>
             </svg>
             Registrar Entrada
         </div>
-
         <div id="erro-entrada" class="msg-erro">
-            <i class="fa-solid fa-circle-exclamation"></i>
-            <span id="erro-entrada-txt">Erro</span>
+            <i class="fa-solid fa-circle-exclamation"></i><span id="erro-entrada-txt">Erro</span>
         </div>
-
         <div class="field">
             <label><i class="fa-solid fa-barcode"></i> Placa do Veículo</label>
             <input type="text" id="placa" placeholder="AAA-0000" maxlength="8" autocomplete="off" autocapitalize="characters">
@@ -374,14 +119,11 @@
             <label><i class="fa-brands fa-whatsapp"></i> WhatsApp</label>
             <input type="tel" id="whatsapp" placeholder="(19) 99999-9999" inputmode="numeric">
         </div>
-
         <div class="jornada-box">
             <div id="campo-hora-entrada">
                 <label class="titulo-jornada"><i class="fa-solid fa-clock"></i> Até qual horário você tem jornada?</label>
-                <input type="time" id="limite" style="margin-top:0; width:100%; padding:18px 16px; border:3px solid #e2e8f0; border-radius:16px; font-size:18px; font-weight:700; background:#f8fafc; color:#1e293b;">
+                <input type="time" id="limite" style="margin-top:0;width:100%;padding:18px 16px;border:3px solid #e2e8f0;border-radius:16px;font-size:18px;font-weight:700;background:#f8fafc;color:#1e293b;">
             </div>
-
-            <!-- OPÇÃO 1: JORNADA LIVRE -->
             <div class="opcao-jornada livre" id="opcao-livre" onclick="toggleOpcao('livre')">
                 <input type="checkbox" id="jornada24">
                 <div class="check-custom"></div>
@@ -390,8 +132,6 @@
                     <small>Posso descarregar qualquer horário!</small>
                 </div>
             </div>
-
-            <!-- OPÇÃO 2: SEM JORNADA -->
             <div class="opcao-jornada semj" id="opcao-semj" onclick="toggleOpcao('semj')">
                 <input type="checkbox" id="semjornada">
                 <div class="check-custom"></div>
@@ -400,36 +140,24 @@
                     <small>Registra o horário atual como fim de jornada</small>
                 </div>
             </div>
-
-            <!-- TAG HORÁRIO CAPTURADO -->
             <div class="horario-atual-tag" id="tag-horario-atual">
                 <i class="fa-solid fa-clock"></i>
                 <span>Jornada fim registrada: <strong id="horario-capturado">--:--</strong></span>
             </div>
         </div>
-
         <button class="btn btn-roxo" onclick="registrarEntrada()">
             <i class="fa-solid fa-circle-check"></i> CONFIRMAR ENTRADA
         </button>
     </div>
 
-    <!-- ABA REABRIR JORNADA -->
     <div id="aba-jornada" style="display:none;">
-        <div class="card-titulo cinza">
-            <i class="fa-solid fa-clock-rotate-left"></i>
-            Reabrir Jornada
-        </div>
-
+        <div class="card-titulo cinza"><i class="fa-solid fa-clock-rotate-left"></i> Reabrir Jornada</div>
         <div id="erro-jornada" class="msg-erro">
-            <i class="fa-solid fa-circle-exclamation"></i>
-            <span id="erro-jornada-txt">Erro</span>
+            <i class="fa-solid fa-circle-exclamation"></i><span id="erro-jornada-txt">Erro</span>
         </div>
-
         <div style="background:#f0f9ff;border-radius:16px;padding:16px;margin-bottom:20px;font-size:13px;font-weight:600;color:#0369a1;line-height:1.6;">
-            <i class="fa-solid fa-circle-info"></i>
-            Informe sua placa e o novo horário limite para reabrir sua jornada.
+            <i class="fa-solid fa-circle-info"></i> Informe sua placa e o novo horário limite para reabrir sua jornada.
         </div>
-
         <div class="field">
             <label>Placa do Veículo</label>
             <input type="text" id="re-placa" placeholder="AAA-0000" maxlength="8" autocomplete="off" autocapitalize="characters">
@@ -438,13 +166,11 @@
             <label>Nova Hora Limite</label>
             <input type="time" id="re-hora">
         </div>
-
         <button class="btn btn-cinza" onclick="reabrirJornada()">
             <i class="fa-solid fa-rotate"></i> REABRIR JORNADA
         </button>
     </div>
 
-    <!-- TELA SUCESSO -->
     <div id="tela-sucesso">
         <div class="sucesso-icone">✅</div>
         <div class="sucesso-titulo" id="sucesso-titulo">Registrado!</div>
@@ -457,10 +183,8 @@
             <i class="fa-solid fa-plus"></i> NOVO REGISTRO
         </button>
     </div>
-
 </div>
 
-<!-- RODAPÉ -->
 <div style="text-align:center;margin-top:30px;padding:0 20px;">
     <p style="font-size:11px;font-weight:600;color:#94a3b8;">RAÍZEN — Sistema de Gestão Operacional</p>
     <p style="font-size:11px;font-weight:600;color:#cbd5e1;margin-top:4px;">Aguarde a convocação do operador após o registro</p>
@@ -484,29 +208,23 @@
     };
     const setLoader = v => document.getElementById('loader').style.display = v ? 'flex' : 'none';
 
-    /* --- MÁSCARAS --- */
     document.getElementById('placa').oninput = function() {
         let v = this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
         if(v.length > 3 && !isNaN(v[3])) v = v.slice(0,3)+'-'+v.slice(3,7);
         this.value = v.slice(0,8);
     };
-
     document.getElementById('re-placa').oninput = function() {
         let v = this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
         if(v.length > 3 && !isNaN(v[3])) v = v.slice(0,3)+'-'+v.slice(3,7);
         this.value = v.slice(0,8);
     };
-
     document.getElementById('whatsapp').oninput = function(e) {
         let v = e.target.value.replace(/\D/g,'').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
         e.target.value = !v[2] ? v[1] : '('+v[1]+') '+v[2]+(v[3] ? '-'+v[3] : '');
     };
 
-    /* --- TOGGLE OPÇÕES DE JORNADA --- */
     function toggleOpcao(tipo) {
         const isLivre = tipo === 'livre';
-        const isSemJ  = tipo === 'semj';
-
         const elLivre = document.getElementById('opcao-livre');
         const elSemJ  = document.getElementById('opcao-semj');
         const cbLivre = document.getElementById('jornada24');
@@ -514,46 +232,31 @@
         const campo   = document.getElementById('campo-hora-entrada');
         const limite  = document.getElementById('limite');
         const tag     = document.getElementById('tag-horario-atual');
-
-        // Verifica se já estava marcado (toggle off)
         const jaEraMarcado = isLivre ? cbLivre.checked : cbSemJ.checked;
-
-        // Desmarca tudo
-        cbLivre.checked = false;
-        cbSemJ.checked  = false;
-        elLivre.classList.remove('marcado', 'desabilitado');
-        elSemJ.classList.remove('marcado', 'desabilitado');
-        campo.style.opacity = '1';
-        limite.disabled = false;
-        limite.value = '';
+        cbLivre.checked = false; cbSemJ.checked = false;
+        elLivre.classList.remove('marcado','desabilitado');
+        elSemJ.classList.remove('marcado','desabilitado');
+        campo.style.opacity = '1'; limite.disabled = false; limite.value = '';
         tag.classList.remove('visivel');
-
-        if (!jaEraMarcado) {
-            if (isLivre) {
-                cbLivre.checked = true;
-                elLivre.classList.add('marcado');
+        if(!jaEraMarcado) {
+            if(isLivre) {
+                cbLivre.checked = true; elLivre.classList.add('marcado');
                 elSemJ.classList.add('desabilitado');
-                campo.style.opacity = '.3';
-                limite.disabled = true;
-                limite.value = '';
+                campo.style.opacity = '.3'; limite.disabled = true;
             } else {
-                cbSemJ.checked = true;
-                elSemJ.classList.add('marcado');
+                cbSemJ.checked = true; elSemJ.classList.add('marcado');
                 elLivre.classList.add('desabilitado');
                 const hora = horaAtual();
-                limite.value = hora;
-                campo.style.opacity = '.3';
-                limite.disabled = true;
+                limite.value = hora; campo.style.opacity = '.3'; limite.disabled = true;
                 document.getElementById('horario-capturado').textContent = hora;
                 tag.classList.add('visivel');
             }
         }
     }
 
-    /* --- ABAS --- */
     function trocarAba(aba) {
-        document.getElementById('aba-entrada').style.display  = aba === 'entrada'  ? 'block' : 'none';
-        document.getElementById('aba-jornada').style.display  = aba === 'jornada'  ? 'block' : 'none';
+        document.getElementById('aba-entrada').style.display  = aba === 'entrada' ? 'block' : 'none';
+        document.getElementById('aba-jornada').style.display  = aba === 'jornada' ? 'block' : 'none';
         document.getElementById('tela-sucesso').style.display = 'none';
         document.getElementById('tab-entrada').classList.toggle('active', aba === 'entrada');
         document.getElementById('tab-jornada').classList.toggle('active', aba === 'jornada');
@@ -561,15 +264,13 @@
     }
 
     function mostrarErro(tipo, msg) {
-        const el = document.getElementById(`erro-${tipo}`);
         document.getElementById(`erro-${tipo}-txt`).textContent = msg;
-        el.classList.add('visivel');
+        document.getElementById(`erro-${tipo}`).classList.add('visivel');
     }
     function ocultarErro(tipo) {
         document.getElementById(`erro-${tipo}`)?.classList.remove('visivel');
     }
 
-    /* --- REGISTRAR ENTRADA --- */
     async function registrarEntrada() {
         ocultarErro('entrada');
         const placa   = document.getElementById('placa').value.trim().toUpperCase();
@@ -593,24 +294,45 @@
         try {
             const chk = await fetch(`${DB.URL}/rest/v1/registros?PLACA=eq.${placa}&SAIDA=is.null&select=*`, { headers: DB.H });
             const existentes = await chk.json();
+
             if(existentes && existentes.length > 0) {
                 const reg = existentes[0];
+                // Se está no precheck: atualiza mantendo agendamento e volume já importados
+                if(reg.PRECHECK === true) {
+                    const r = await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${reg.ID}`, {
+                        method: 'PATCH', headers: DB.H,
+                        body: JSON.stringify({
+                            PRODUTO:     produto,
+                            TELEFONE:    tel,
+                            JORNADA:     jornadaValor,
+                            PRECHECK:    false,
+                            ENTRADA:     agora(),
+                            AGENDAMENTO: reg.AGENDAMENTO || null,
+                            VOLUME:      reg.VOLUME      || null
+                        })
+                    });
+                    if(r.ok) {
+                        mostrarSucesso(placa, `Entrada registrada com sucesso!\nProduto: ${produto}\nAguarde a convocação do operador.`, 'Entrada Confirmada!');
+                    } else {
+                        mostrarErro('entrada', 'Erro ao registrar. Tente novamente.');
+                    }
+                    return;
+                }
+                // Já registrado normalmente
                 mostrarErro('entrada', `Placa ${placa} já está registrada no pátio desde ${reg.ENTRADA}. Aguarde a liberação ou reabra a jornada.`);
                 setLoader(false);
                 return;
             }
 
+            // Registro novo
             const r = await fetch(`${DB.URL}/rest/v1/registros`, {
                 method: 'POST', headers: DB.H,
                 body: JSON.stringify({
-                    PLACA: placa,
-                    PRODUTO: produto,
-                    TELEFONE: tel,
-                    JORNADA: jornadaValor,
-                    ENTRADA: agora()
+                    PLACA: placa, PRODUTO: produto,
+                    TELEFONE: tel, JORNADA: jornadaValor,
+                    ENTRADA: agora(), PRECHECK: false
                 })
             });
-
             if(r.ok) {
                 mostrarSucesso(placa, `Entrada registrada com sucesso!\nProduto: ${produto}\nAguarde a convocação do operador.`, 'Entrada Confirmada!');
             } else {
@@ -622,31 +344,21 @@
         } finally { setLoader(false); }
     }
 
-    /* --- REABRIR JORNADA --- */
     async function reabrirJornada() {
         ocultarErro('jornada');
         const placa = document.getElementById('re-placa').value.trim().toUpperCase();
         const hora  = document.getElementById('re-hora').value;
-
         if(!placa) { mostrarErro('jornada','Informe a placa do veículo.'); return; }
         if(!hora)  { mostrarErro('jornada','Informe a nova hora limite.'); return; }
-
         setLoader(true);
         try {
             const r = await fetch(`${DB.URL}/rest/v1/registros?PLACA=eq.${placa}&SAIDA=is.null&select=*`, { headers: DB.H });
             const data = await r.json();
-
-            if(!data || data.length === 0) {
-                mostrarErro('jornada', `Placa ${placa} não encontrada no pátio.`);
-                setLoader(false);
-                return;
-            }
-
+            if(!data || data.length === 0) { mostrarErro('jornada',`Placa ${placa} não encontrada no pátio.`); setLoader(false); return; }
             const upd = await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${data[0].ID}`, {
                 method: 'PATCH', headers: DB.H,
                 body: JSON.stringify({ JORNADA: hora })
             });
-
             if(upd.ok) {
                 mostrarSucesso(placa, `Jornada reaberta com sucesso!\nNovo limite: ${hora}\nAguarde a convocação do operador.`, 'Jornada Reaberta!');
             } else {
@@ -654,11 +366,9 @@
             }
         } catch(e) {
             mostrarErro('jornada', 'Erro de conexão. Verifique sua internet.');
-            console.error(e);
         } finally { setLoader(false); }
     }
 
-    /* --- TELA SUCESSO --- */
     function mostrarSucesso(placa, msg, titulo) {
         document.getElementById('aba-entrada').style.display  = 'none';
         document.getElementById('aba-jornada').style.display  = 'none';
@@ -686,11 +396,8 @@
         document.getElementById('tag-horario-atual').classList.remove('visivel');
     }
 
-    // Registrar Service Worker (PWA)
     if('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js').catch(() => {});
-        });
+        window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
     }
 </script>
 </body>
