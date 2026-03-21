@@ -169,13 +169,28 @@
     <div class="login-box">
         <h3 id="login-titulo" style="color:var(--roxo-raizen);"><i class="fa-solid fa-lock"></i> ACESSO AO SISTEMA</h3>
         <input type="text" id="login-usuario" class="login-input" placeholder="Seu nome de usuário">
-        <input type="password" id="login-senha" class="login-input" placeholder="Senha">
+        <input type="password" id="login-senha" class="login-input" placeholder="Senha" autocomplete="current-password">
         <div id="login-erro" style="color:#ef4444;font-weight:900;font-size:14px;text-align:center;margin-bottom:15px;display:none;">Usuário ou senha incorretos</div>
         <button onclick="processarLogin()" class="login-btn" style="background:var(--roxo-raizen);color:white;">ENTRAR</button>
         <button onclick="fecharLogin()" class="login-btn" style="background:#f1f5f9;color:#475569;">CANCELAR</button>
     </div>
 </div>
 
+<!-- MODAL PRIMEIRO ACESSO — CRIAR SENHA -->
+<div id="modal-primeira-senha" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:10000;align-items:center;justify-content:center;">
+    <div class="login-box" style="border-top:6px solid var(--verde-vivo);">
+        <h3 style="color:var(--verde-vivo);margin-bottom:10px;"><i class="fa-solid fa-key"></i> PRIMEIRO ACESSO</h3>
+        <p style="font-size:13px;font-weight:600;color:#64748b;text-align:center;margin-bottom:28px;line-height:1.6;">
+            Bem-vindo! Crie sua senha pessoal para os próximos acessos.
+        </p>
+        <input type="password" id="nova-senha" class="login-input" placeholder="Digite sua nova senha" autocomplete="new-password">
+        <input type="password" id="confirma-senha" class="login-input" placeholder="Confirme sua senha" autocomplete="new-password">
+        <div id="primeira-senha-erro" style="color:#ef4444;font-weight:900;font-size:13px;text-align:center;margin-bottom:15px;display:none;"></div>
+        <button onclick="salvarPrimeiraSenha()" class="login-btn" style="background:var(--verde-vivo);color:white;">
+            <i class="fa-solid fa-check"></i> CRIAR SENHA E ENTRAR
+        </button>
+    </div>
+</div>
 
 <!-- MODAL IMPORTAR AGENDAMENTOS -->
 <div id="modal-agendamentos">
@@ -641,20 +656,94 @@
         document.getElementById('modal-login').classList.add('aberto');
         setTimeout(()=>document.getElementById('login-usuario').focus(),100);
     }
+    async function salvarPrimeiraSenha(){
+        const nova=document.getElementById('nova-senha').value.trim();
+        const confirma=document.getElementById('confirma-senha').value.trim();
+        const erroEl=document.getElementById('primeira-senha-erro');
+        erroEl.style.display='none';
+        if(!nova||nova.length<4){ erroEl.textContent='A senha deve ter pelo menos 4 caracteres.'; erroEl.style.display='block'; return; }
+        if(nova!==confirma){ erroEl.textContent='As senhas não coincidem. Tente novamente.'; erroEl.style.display='block'; return; }
+        setLoader(true);
+        try{
+            // Salvar senha no banco
+            const r=await fetch(`${DB.URL}/rest/v1/usuarios?id=eq.${_usuarioPrimeiroAcesso.id}`,{
+                method:'PATCH', headers:DB.H,
+                body:JSON.stringify({senha:nova})
+            });
+            if(!r.ok) throw new Error();
+            // Fazer login automaticamente
+            document.getElementById('modal-primeira-senha').style.display='none';
+            document.getElementById('nova-senha').value='';
+            document.getElementById('confirma-senha').value='';
+            usuarioLogado={nome:_usuarioPrimeiroAcesso.nome, perfil:_usuarioPrimeiroAcesso.perfil};
+            salvarSessao(usuarioLogado);
+            const perfilConfirmado=_usuarioPrimeiroAcesso.perfil;
+            _usuarioPrimeiroAcesso=null;
+            mostrarBadge();
+            if(perfilConfirmado==='GATE'){
+                document.getElementById('secao-entrada').style.display='none';
+                document.getElementById('modulo-operador-full').style.display='block';
+                await pedirPermissaoNotificacao();
+                await carregarDados();
+                setInterval(carregarDados,30000);
+            } else {
+                document.getElementById('secao-entrada').style.display='none';
+                document.getElementById('modulo-supervisor').style.display='block';
+                await carregarTanques();
+                renderSupervisor();
+                setInterval(async()=>{await carregarTanques();renderSupervisor();},30000);
+            }
+        }catch(e){ erroEl.textContent='Erro ao salvar senha. Tente novamente.'; erroEl.style.display='block'; }
+        finally{ setLoader(false); }
+    }
+
     function fecharLogin(){
         document.getElementById('modal-login').classList.remove('aberto');
         tipoLoginPendente=null;
     }
     document.getElementById('login-senha').addEventListener('keydown',e=>{if(e.key==='Enter')processarLogin();});
 
+    let _usuarioPrimeiroAcesso = null; // guarda dados do usuário no primeiro acesso
+
     async function processarLogin(){
         const nome=document.getElementById('login-usuario').value.trim();
         const senha=document.getElementById('login-senha').value.trim();
-        if(!nome||!senha){document.getElementById('login-erro').style.display='block';return;}
+        if(!nome){document.getElementById('login-erro').style.display='block';return;}
         setLoader(true);
         try{
-            const r=await fetch(`${DB.URL}/rest/v1/usuarios?nome=eq.${encodeURIComponent(nome)}&senha=eq.${encodeURIComponent(senha)}&perfil=eq.${tipoLoginPendente}&select=*`,{headers:DB.H});
-            const data=await r.json();
+            // Buscar usuário só pelo nome e perfil (sem senha ainda)
+            // Tenta com perfil atual, e também com OPERADOR como fallback (migração)
+            let rCheck=await fetch(`${DB.URL}/rest/v1/usuarios?nome=eq.${encodeURIComponent(nome)}&perfil=eq.${tipoLoginPendente}&select=*`,{headers:DB.H});
+            let dataCheck=await rCheck.json();
+            // Fallback: se não achou com GATE, tenta com OPERADOR (banco ainda não foi migrado)
+            if((!dataCheck||dataCheck.length===0) && tipoLoginPendente==='GATE'){
+                const rFallback=await fetch(`${DB.URL}/rest/v1/usuarios?nome=eq.${encodeURIComponent(nome)}&perfil=eq.OPERADOR&select=*`,{headers:DB.H});
+                const dataFallback=await rFallback.json();
+                if(dataFallback&&dataFallback.length>0) dataCheck=dataFallback;
+            }
+            if(!dataCheck||dataCheck.length===0){document.getElementById('login-erro').style.display='block';setLoader(false);return;}
+            const usuario=dataCheck[0];
+
+            // Primeiro acesso: senha vazia no banco
+            if(!usuario.senha||usuario.senha.trim()===''){
+                _usuarioPrimeiroAcesso=usuario;
+                setLoader(false);
+                fecharLogin();
+                document.getElementById('modal-primeira-senha').style.display='flex';
+                setTimeout(()=>document.getElementById('nova-senha').focus(),100);
+                return;
+            }
+
+            // Acesso normal: verificar senha
+            if(!senha){document.getElementById('login-erro').style.display='block';setLoader(false);return;}
+            let r=await fetch(`${DB.URL}/rest/v1/usuarios?nome=eq.${encodeURIComponent(nome)}&senha=eq.${encodeURIComponent(senha)}&perfil=eq.${tipoLoginPendente}&select=*`,{headers:DB.H});
+            let data=await r.json();
+            // Fallback OPERADOR
+            if((!data||data.length===0) && tipoLoginPendente==='GATE'){
+                const rFallback2=await fetch(`${DB.URL}/rest/v1/usuarios?nome=eq.${encodeURIComponent(nome)}&senha=eq.${encodeURIComponent(senha)}&perfil=eq.OPERADOR&select=*`,{headers:DB.H});
+                const dataFallback2=await rFallback2.json();
+                if(dataFallback2&&dataFallback2.length>0) data=dataFallback2;
+            }
             if(!data||data.length===0){document.getElementById('login-erro').style.display='block';setLoader(false);return;}
             usuarioLogado={nome:data[0].nome,perfil:data[0].perfil};
             salvarSessao(usuarioLogado);
