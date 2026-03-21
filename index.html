@@ -552,6 +552,7 @@
 
     const setLoader      = v  => document.getElementById('loader-overlay').style.display = v ? 'flex' : 'none';
     const fmtL           = n  => n != null ? Number(n).toLocaleString('pt-BR') + ' L' : '---';
+    const horaAtual = () => { const n=new Date(); return n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0'); };
     const agora          = () => new Date().toLocaleString('pt-BR');
     // ── usa campo minúsculo "disponivel" ──
     const espacoOperador = t  => Math.max(0, (t.disponivel || 0) - SEGURANCA_L);
@@ -586,7 +587,38 @@
             this.value=v.slice(0,8);
         };
     }
-    mascaraPlaca(document.getElementById('placa'));
+    function toggleOpcaoMaster(tipo){
+        const isLivre=tipo==='livre';
+        const elLivre=document.getElementById('opcao-livre-master');
+        const elSemJ=document.getElementById('opcao-semj-master');
+        const cbLivre=document.getElementById('jornada24');
+        const cbSemJ=document.getElementById('semjornada');
+        const campo=document.getElementById('area-tempo');
+        const limite=document.getElementById('limite');
+        const tag=document.getElementById('tag-horario-master');
+        const jaEraMarcado=isLivre?cbLivre.checked:cbSemJ.checked;
+        cbLivre.checked=false; cbSemJ.checked=false;
+        elLivre.classList.remove('marcado','desabilitado');
+        elSemJ.classList.remove('marcado','desabilitado');
+        campo.style.opacity='1'; limite.disabled=false; limite.value='';
+        tag.classList.remove('visivel');
+        if(!jaEraMarcado){
+            if(isLivre){
+                cbLivre.checked=true; elLivre.classList.add('marcado');
+                elSemJ.classList.add('desabilitado');
+                campo.style.opacity='.3'; limite.disabled=true;
+            } else {
+                cbSemJ.checked=true; elSemJ.classList.add('marcado');
+                elLivre.classList.add('desabilitado');
+                const hora=horaAtual(); limite.value=hora;
+                campo.style.opacity='.3'; limite.disabled=true;
+                document.getElementById('horario-capturado-master').textContent=hora;
+                tag.classList.add('visivel');
+            }
+        }
+    }
+
+        mascaraPlaca(document.getElementById('placa'));
     mascaraPlaca(document.getElementById('re_placa'));
 
     document.getElementById('whatsapp').oninput=function(e){
@@ -594,12 +626,7 @@
         e.target.value=!v[2]?v[1]:'('+v[1]+') '+v[2]+(v[3]?'-'+v[3]:'');
     };
 
-    document.getElementById('jornada24').onchange=function(){
-        const c=document.getElementById('limite');
-        document.getElementById('area-tempo').style.opacity=this.checked?'.3':'1';
-        c.disabled=this.checked; c.required=!this.checked;
-        if(this.checked) c.value='';
-    };
+
 
     /* --- LOGIN --- */
     function abrirLogin(tipo) {
