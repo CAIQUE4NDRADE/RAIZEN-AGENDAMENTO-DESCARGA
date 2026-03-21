@@ -820,10 +820,18 @@
             const novaFila=await r.json();
             if(idsConhecidos.size>0) novaFila.forEach(item=>{if(!idsConhecidos.has(item.ID)) dispararNotificacao(item.PLACA,item.PRODUTO);});
             idsConhecidos=new Set(novaFila.map(i=>i.ID));
-            // Precheck: agendados sem telefone (ainda não deram entrada)
-            memoriaPrecheck=novaFila.filter(i=>i.PRECHECK===true && (!i.TELEFONE||i.TELEFONE.trim()===''));
-            // Fila normal: todos que já têm telefone OU que não são precheck
-            memoriaFila=novaFila.filter(i=>!(i.PRECHECK===true && (!i.TELEFONE||i.TELEFONE.trim()==='')));
+            // Precheck: PRECHECK=true E sem telefone E sem jornada
+            memoriaPrecheck=novaFila.filter(i=>
+                i.PRECHECK===true &&
+                (!i.TELEFONE||i.TELEFONE.trim()==='') &&
+                (!i.JORNADA||i.JORNADA.trim()==='')
+            );
+            // Fila normal: tudo que não é precheck pendente
+            memoriaFila=novaFila.filter(i=>!(
+                i.PRECHECK===true &&
+                (!i.TELEFONE||i.TELEFONE.trim()==='') &&
+                (!i.JORNADA||i.JORNADA.trim()==='')
+            ));
             await carregarTanques();
             renderTabela(); renderPrecheck(); renderResumoTanques(); renderBannersAviso();
         }catch(e){console.error('Falha sync',e);}
@@ -1360,8 +1368,16 @@
         else jornadaValor=limite;
         setLoader(true);
         try{
+            // Normalizar placa: tentar com hífen e sem hífen (Coleta salva sem hífen)
+            const placaSemHifen=placa.replace('-','');
             const chk=await fetch(`${DB.URL}/rest/v1/registros?PLACA=eq.${placa}&SAIDA=is.null&select=*`,{headers:DB.H});
-            const existentes=await chk.json();
+            let existentes=await chk.json();
+            // Se não achou com hífen, tenta sem hífen
+            if((!existentes||existentes.length===0) && placaSemHifen!==placa){
+                const chk2=await fetch(`${DB.URL}/rest/v1/registros?PLACA=eq.${placaSemHifen}&SAIDA=is.null&select=*`,{headers:DB.H});
+                const existentes2=await chk2.json();
+                if(existentes2&&existentes2.length>0) existentes=existentes2;
+            }
             if(existentes&&existentes.length>0){
                 const reg=existentes[0];
                 // Se é precheck → atualiza com telefone + jornada e mantém volume previsto
@@ -1370,6 +1386,7 @@
                     const produtoFinal = reg.PRODUTO || document.getElementById('produto').value;
                     // Reenvia TODOS os campos incluindo agendamento e volume para garantir que não se percam
                     const patchData = {
+                        PLACA:       placa,
                         TELEFONE:    document.getElementById('whatsapp').value,
                         JORNADA:     jornadaValor,
                         PRECHECK:    false,
@@ -1378,6 +1395,8 @@
                         AGENDAMENTO: reg.AGENDAMENTO || null,
                         VOLUME:      reg.VOLUME      || null
                     };
+                    // Aguardar um pouco para garantir que o Supabase processou
+                    await new Promise(r=>setTimeout(r,500));
                     await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${reg.ID}`,{method:'PATCH',headers:DB.H,body:JSON.stringify(patchData)});
                     const volMsg=reg.VOLUME?`\nVolume: ${Number(reg.VOLUME).toLocaleString('pt-BR')} L`:'';
                     const agMsg=reg.AGENDAMENTO?`\nAgendamento: ${String(reg.AGENDAMENTO).slice(0,16).replace('T',' ')}`:'';
@@ -1435,8 +1454,12 @@
             if(cols.length<=Math.max(idxPlaca,idxStatus)) continue;
             const status=(cols[idxStatus]||'').toLowerCase().trim();
             if(!STATUS_ACEITOS.includes(status)) continue;
-            const placaRaw=(cols[idxPlaca]||'').replace('*','').trim().toUpperCase();
+            let placaRaw=(cols[idxPlaca]||'').replace('*','').trim().toUpperCase();
             if(!placaRaw) continue;
+            // Adicionar hífen se não tiver (ex: EVF3988 → EVF-3988, ABC1234 → ABC-1234)
+            if(placaRaw.length===7 && !placaRaw.includes('-')){
+                placaRaw=placaRaw.slice(0,3)+'-'+placaRaw.slice(3);
+            }
             const produtoRaw=(cols[idxProduto]||'').toLowerCase().trim();
             const dataRaw=(cols[idxData]||'').trim();
             const periodoRaw=(cols[idxPeriodo]||'').trim();
@@ -1471,7 +1494,11 @@
         for(const a of agendados){
             if(placasExistentes.has(a.placa)){ignorados++;continue;}
             try{
-                const data={PLACA:a.placa,PRODUTO:a.produto||'',TELEFONE:'',JORNADA:'',ENTRADA:agora(),AGENDAMENTO:a.agendamento||null,VOLUME:a.volume||null,PRECHECK:true};
+                // Formatar placa com hífen padrão (AAA-0000 ou AAAA000)
+                const placaFormatada = a.placa.length===7 && !a.placa.includes('-')
+                    ? a.placa.slice(0,3)+'-'+a.placa.slice(3)
+                    : a.placa;
+                const data={PLACA:placaFormatada,PRODUTO:a.produto||'',TELEFONE:'',JORNADA:'',ENTRADA:agora(),AGENDAMENTO:a.agendamento||null,VOLUME:a.volume||null,PRECHECK:true};
                 const r=await fetch(`${DB.URL}/rest/v1/registros`,{method:'POST',headers:DB.H,body:JSON.stringify(data)});
                 if(r.ok) inseridos++; else erros++;
             }catch{erros++;}
