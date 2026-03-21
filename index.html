@@ -720,8 +720,8 @@
             const novaFila=await r.json();
             if(idsConhecidos.size>0) novaFila.forEach(item=>{if(!idsConhecidos.has(item.ID)) dispararNotificacao(item.PLACA,item.PRODUTO);});
             idsConhecidos=new Set(novaFila.map(i=>i.ID));
-            memoriaPrecheck=novaFila.filter(i=>i.PRECHECK===true&&(!i.TELEFONE||i.TELEFONE===''));
-            memoriaFila=novaFila.filter(i=>!i.PRECHECK||(i.TELEFONE&&i.TELEFONE!==''));
+            memoriaPrecheck=novaFila.filter(i=>i.PRECHECK===true&&(!i.TELEFONE||i.TELEFONE.trim()===''));
+            memoriaFila=novaFila.filter(i=>i.PRECHECK!==true||(i.TELEFONE&&i.TELEFONE.trim()!==''));
             await carregarTanques();
             renderTabela(); renderPrecheck(); renderResumoTanques(); renderBannersAviso();
         }catch(e){console.error('Falha sync',e);}
@@ -1264,14 +1264,20 @@
                 const reg=existentes[0];
                 // Se é precheck → atualiza com telefone + jornada e mantém volume previsto
                 if(reg.PRECHECK===true){
+                    // Pega produto do formulário se o do precheck estiver vazio
+                    const produtoFinal = reg.PRODUTO || document.getElementById('produto').value;
                     await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${reg.ID}`,{method:'PATCH',headers:DB.H,body:JSON.stringify({
-                        TELEFONE: document.getElementById('whatsapp').value,
-                        JORNADA:  jornadaValor,
-                        PRECHECK: false,
-                        ENTRADA:  agora()
+                        TELEFONE:    document.getElementById('whatsapp').value,
+                        JORNADA:     jornadaValor,
+                        PRECHECK:    false,
+                        ENTRADA:     agora(),
+                        PRODUTO:     produtoFinal,
+                        AGENDAMENTO: reg.AGENDAMENTO || null,
+                        VOLUME:      reg.VOLUME      || null
                     })});
-                    const volMsg=reg.VOLUME?`\nVolume previsto: ${Number(reg.VOLUME).toLocaleString('pt-BR')} L já registrado!`:'';
-                    alert(`✅ ENTRADA CONFIRMADA!\n\nPlaca: ${placa}\nAgendamento: ${reg.AGENDAMENTO?reg.AGENDAMENTO.slice(0,16):'—'}${volMsg}`);
+                    const volMsg=reg.VOLUME?`\nVolume: ${Number(reg.VOLUME).toLocaleString('pt-BR')} L já registrado!`:'';
+                    const agMsg=reg.AGENDAMENTO?`\nAgendamento: ${reg.AGENDAMENTO.slice(0,16)}`:'';
+                    alert(`✅ ENTRADA CONFIRMADA!\n\nPlaca: ${placa}${agMsg}${volMsg}`);
                     location.reload();
                 } else {
                     alert(`🚫 PLACA JÁ REGISTRADA!\n\nPlaca: ${reg.PLACA}\nProduto: ${reg.PRODUTO}\nEntrada: ${reg.ENTRADA}`);
