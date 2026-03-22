@@ -1767,41 +1767,44 @@
         let ph = null, cond = null;
 
         if(isHidratado){
-            ph   = parseFloat(document.getElementById('input-ph').value);
-            cond = parseFloat(document.getElementById('input-condutividade').value);
-            if(isNaN(ph))  { alert('Informe o pH do tanque.'); return; }
-            if(isNaN(cond)){ alert('Informe a Condutividade do tanque.'); return; }
+            // Converter vírgula para ponto antes de parsear
+            const phRaw   = document.getElementById('input-ph').value.trim().replace(',','.');
+            const condRaw = document.getElementById('input-condutividade').value.trim().replace(',','.');
+            ph   = parseFloat(phRaw);
+            cond = parseFloat(condRaw);
+
+            if(!phRaw || isNaN(ph)){
+                alert('Informe o pH do tanque (use vírgula, ex: 6,5).');
+                return;
+            }
+            if(!condRaw || isNaN(cond)){
+                alert('Informe a Condutividade do tanque (use vírgula, ex: 74,5).');
+                return;
+            }
+            // pH deve estar entre 6 e 8
+            if(ph < 6 || ph > 8){
+                alert('\u274c pH inválido: ' + ph.toString().replace('.',',') + '\n\nO pH deve estar entre 6 e 8.\nCorriga o valor antes de continuar.');
+                return;
+            }
+            // Condutividade deve ser menor que 300
+            if(cond >= 300){
+                alert('\u274c Condutividade inválida: ' + cond.toString().replace('.',',') + ' \u00b5S/m\n\nA condutividade deve ser menor que 300 \u00b5S/m.\nCorriga o valor antes de continuar.');
+                return;
+            }
 
             const avisoPhEl   = document.getElementById('aviso-ph');
             const avisoCondEl = document.getElementById('aviso-condutividade');
-            let alertas = [];
-            if(ph < 6 || ph > 8){
-                avisoPhEl.textContent = '\u26a0\ufe0f pH ' + ph + ' FORA DO LIMITE (6 a 8)';
-                avisoPhEl.style.cssText='display:block;background:#fef2f2;color:#dc2626;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:900;margin-top:6px;';
-                alertas.push('pH fora do limite');
-            } else {
-                avisoPhEl.textContent = '\u2705 pH ' + ph + ' — OK';
-                avisoPhEl.style.cssText='display:block;background:#dcfce7;color:#166534;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:900;margin-top:6px;';
-            }
-            if(cond >= 300){
-                avisoCondEl.textContent = '\u26a0\ufe0f Condutividade ' + cond + ' \u00b5S/m ACIMA DO LIMITE (300)';
-                avisoCondEl.style.cssText='display:block;background:#fef2f2;color:#dc2626;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:900;margin-top:6px;';
-                alertas.push('Condutividade acima de 300');
-            } else {
-                avisoCondEl.textContent = '\u2705 Condutividade ' + cond + ' \u00b5S/m — OK';
-                avisoCondEl.style.cssText='display:block;background:#dcfce7;color:#166534;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:900;margin-top:6px;';
-            }
-            if(alertas.length > 0){
-                document.getElementById('planilha-alerta-texto').textContent =
-                    'ATEN\u00c7\u00c3O: ' + alertas.join(' | ') + ' — Realize análises em 100% dos recebimentos.';
-                document.getElementById('planilha-alerta').style.display='block';
-            }
+            avisoPhEl.textContent   = '\u2705 pH ' + ph.toString().replace('.',',') + ' — dentro do limite (6 a 8)';
+            avisoPhEl.style.cssText = 'display:block;background:#dcfce7;color:#166534;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:900;margin-top:6px;';
+            avisoCondEl.textContent   = '\u2705 Condutividade ' + cond.toString().replace('.',',') + ' \u00b5S/m — dentro do limite';
+            avisoCondEl.style.cssText = 'display:block;background:#dcfce7;color:#166534;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:900;margin-top:6px;';
+            document.getElementById('planilha-alerta').style.display='none';
         }
 
         setLoader(true);
         try{
             const espaco    = espacoOperador(tanque);
-            const espacoM3  = (espaco / 1000).toFixed(2);
+            const espacoM3  = Math.round(espaco / 1000);
             const numTanque = String(tanque.ativo_tanque);
             const agora     = new Date();
             const dataStr   = agora.toLocaleDateString('pt-BR');
@@ -1884,14 +1887,16 @@
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
                 <div>
                     <div style="font-size:11px;font-weight:900;color:#64748b;text-transform:uppercase;margin-bottom:8px;">pH do Tanque</div>
-                    <input type="number" id="input-ph" step="0.01" min="0" max="14" placeholder="Ex: 6.5"
-                        class="login-input" style="margin-bottom:0;font-size:18px;">
+                    <input type="text" id="input-ph" placeholder="Ex: 6,5" inputmode="decimal"
+                        class="login-input" style="margin-bottom:0;font-size:18px;"
+                        oninput="this.value=this.value.replace(/[^0-9,]/g,'').replace(/(,.*),/g,'$1')">
                     <div id="aviso-ph" style="display:none;font-size:11px;font-weight:900;margin-top:6px;padding:6px 10px;border-radius:8px;"></div>
                 </div>
                 <div>
                     <div style="font-size:11px;font-weight:900;color:#64748b;text-transform:uppercase;margin-bottom:8px;">Condutividade (µS/m)</div>
-                    <input type="number" id="input-condutividade" step="0.01" min="0" placeholder="Ex: 74.5"
-                        class="login-input" style="margin-bottom:0;font-size:18px;">
+                    <input type="text" id="input-condutividade" placeholder="Ex: 74,5" inputmode="decimal"
+                        class="login-input" style="margin-bottom:0;font-size:18px;"
+                        oninput="this.value=this.value.replace(/[^0-9,]/g,'').replace(/(,.*),/g,'$1')">
                     <div id="aviso-condutividade" style="display:none;font-size:11px;font-weight:900;margin-top:6px;padding:6px 10px;border-radius:8px;"></div>
                 </div>
             </div>
