@@ -169,7 +169,9 @@
     <div class="login-box">
         <h3 id="login-titulo" style="color:var(--roxo-raizen);"><i class="fa-solid fa-lock"></i> ACESSO AO SISTEMA</h3>
         <input type="text" id="login-usuario" class="login-input" placeholder="Seu nome de usuário">
-        <input type="password" id="login-senha" class="login-input" placeholder="Senha">
+        <div id="login-senha-wrap" style="display:none;">
+            <input type="password" id="login-senha" class="login-input" placeholder="Sua senha" autocomplete="current-password">
+        </div>
         <div id="login-erro" style="color:#ef4444;font-weight:900;font-size:14px;text-align:center;margin-bottom:15px;display:none;">Usuário ou senha incorretos</div>
         <button onclick="processarLogin()" class="login-btn" style="background:var(--roxo-raizen);color:white;">ENTRAR</button>
         <button onclick="fecharLogin()" class="login-btn" style="background:#f1f5f9;color:#475569;">CANCELAR</button>
@@ -651,8 +653,13 @@
     function abrirLogin(tipo) {
         tipoLoginPendente=tipo;
         document.getElementById('login-usuario').value='';
+        document.getElementById('login-usuario').disabled=false;
+        document.getElementById('login-usuario').style.opacity='1';
         document.getElementById('login-senha').value='';
+        document.getElementById('login-senha-wrap').style.display='none';
         document.getElementById('login-erro').style.display='none';
+        _loginStep='nome';
+        _usuarioEncontrado=null;
         document.getElementById('login-titulo').innerHTML=
             tipo==='GATE'
                 ?'<i class="fa-solid fa-lock"></i> ACESSO GATE'
@@ -704,44 +711,75 @@
     function fecharLogin(){
         document.getElementById('modal-login').classList.remove('aberto');
         tipoLoginPendente=null;
+        _loginStep='nome';
+        _usuarioEncontrado=null;
+        document.getElementById('login-usuario').disabled=false;
+        document.getElementById('login-usuario').style.opacity='1';
+        document.getElementById('login-senha').value='';
+        document.getElementById('login-senha-wrap').style.display='none';
     }
     document.getElementById('login-senha').addEventListener('keydown',e=>{if(e.key==='Enter')processarLogin();});
 
-    let _usuarioPrimeiroAcesso = null; // guarda dados do usuário no primeiro acesso
+    let _usuarioPrimeiroAcesso = null;
+    let _loginStep = 'nome';
+    let _usuarioEncontrado = null;
 
     let _usuarioPrimeiroAcesso = null;
 
     async function processarLogin(){
         const nome=document.getElementById('login-usuario').value.trim();
+        const senhaWrap=document.getElementById('login-senha-wrap');
+        document.getElementById('login-erro').style.display='none';
+
+        // PASSO 1: verificar se usuário existe
+        if(_loginStep === 'nome'){
+            if(!nome){document.getElementById('login-erro').style.display='block';return;}
+            setLoader(true);
+            try{
+                let rCheck=await fetch(`${DB.URL}/rest/v1/usuarios?nome=eq.${encodeURIComponent(nome)}&perfil=eq.${tipoLoginPendente}&select=*`,{headers:DB.H});
+                let dataCheck=await rCheck.json();
+                // Fallback OPERADOR
+                if((!dataCheck||dataCheck.length===0) && tipoLoginPendente==='GATE'){
+                    const rFb=await fetch(`${DB.URL}/rest/v1/usuarios?nome=eq.${encodeURIComponent(nome)}&perfil=eq.OPERADOR&select=*`,{headers:DB.H});
+                    const dFb=await rFb.json();
+                    if(dFb&&dFb.length>0) dataCheck=dFb;
+                }
+                if(!dataCheck||dataCheck.length===0){
+                    document.getElementById('login-erro').style.display='block';
+                    setLoader(false); return;
+                }
+                const usuario=dataCheck[0];
+                // Primeiro acesso: senha vazia
+                if(!usuario.senha||usuario.senha.trim()===''){
+                    _usuarioPrimeiroAcesso=usuario;
+                    setLoader(false);
+                    fecharLogin();
+                    document.getElementById('modal-primeira-senha').style.display='flex';
+                    setTimeout(()=>document.getElementById('nova-senha').focus(),100);
+                    return;
+                }
+                // Tem senha: mostrar campo de senha
+                _usuarioEncontrado=usuario;
+                _loginStep='senha';
+                document.getElementById('login-usuario').disabled=true;
+                document.getElementById('login-usuario').style.opacity='0.5';
+                senhaWrap.style.display='block';
+                setTimeout(()=>document.getElementById('login-senha').focus(),100);
+            }catch(e){document.getElementById('login-erro').style.display='block';}
+            finally{setLoader(false);}
+            return;
+        }
+
+        // PASSO 2: verificar senha
         const senha=document.getElementById('login-senha').value.trim();
-        if(!nome||!senha){document.getElementById('login-erro').style.display='block';return;}
+        if(!senha){document.getElementById('login-erro').style.display='block';return;}
         setLoader(true);
         try{
-            // Buscar usuário pelo nome e perfil
-            let rCheck=await fetch(`${DB.URL}/rest/v1/usuarios?nome=eq.${encodeURIComponent(nome)}&perfil=eq.${tipoLoginPendente}&select=*`,{headers:DB.H});
-            let dataCheck=await rCheck.json();
-            // Fallback: tenta OPERADOR se não achar GATE (migração)
-            if((!dataCheck||dataCheck.length===0) && tipoLoginPendente==='GATE'){
-                const rFb=await fetch(`${DB.URL}/rest/v1/usuarios?nome=eq.${encodeURIComponent(nome)}&perfil=eq.OPERADOR&select=*`,{headers:DB.H});
-                const dFb=await rFb.json();
-                if(dFb&&dFb.length>0) dataCheck=dFb;
+            const usuario=_usuarioEncontrado;
+            if(usuario.senha!==senha){
+                document.getElementById('login-erro').style.display='block';
+                setLoader(false); return;
             }
-            if(!dataCheck||dataCheck.length===0){document.getElementById('login-erro').style.display='block';setLoader(false);return;}
-            const usuario=dataCheck[0];
-
-            // Primeiro acesso: senha vazia no banco → pedir para criar senha
-            if(!usuario.senha||usuario.senha.trim()===''){
-                _usuarioPrimeiroAcesso=usuario;
-                setLoader(false);
-                fecharLogin();
-                document.getElementById('modal-primeira-senha').style.display='flex';
-                setTimeout(()=>document.getElementById('nova-senha').focus(),100);
-                return;
-            }
-
-            // Verificar senha
-            if(usuario.senha!==senha){document.getElementById('login-erro').style.display='block';setLoader(false);return;}
-
             usuarioLogado={nome:usuario.nome,perfil:usuario.perfil};
             salvarSessao(usuarioLogado);
             const perfilConfirmado=tipoLoginPendente;
