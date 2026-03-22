@@ -1844,16 +1844,36 @@
             // Altura: inteiro sem decimal; Temperatura: vírgula em vez de ponto
             const alturaNum = tanque.altura != null ? Number(tanque.altura) : null;
             const tempNum   = tanque.temperatura != null ? Number(tanque.temperatura) : null;
-            const alturaVal = alturaNum != null ? (Number.isInteger(alturaNum) ? String(alturaNum) : String(alturaNum).replace('.',',')) : '';
-            const tempVal   = tempNum   != null ? String(tempNum).replace('.',',') : '';
-            xml = xml.replace(/__ALT__/g, alturaVal);
-            xml = xml.replace(/__TMP__/g, tempVal);
+            // Altura e temperatura como números (substituir inlineStr por valor numérico)
+            if(alturaNum != null){
+                xml = xml.replace(/(<c r="N7"[^>]*)t="inlineStr"([^>]*)><is><t>__ALT__<\/t><\/is><\/c>/,
+                    '$1$2><v>' + alturaNum + '<\/v><\/c>');
+                xml = xml.replace(/(<c r="O7"[^>]*)t="inlineStr"([^>]*)><is><t>__ALT__<\/t><\/is><\/c>/,
+                    '$1$2><v>' + alturaNum + '<\/v><\/c>');
+                // fallback texto caso regex não bata
+                xml = xml.replace(/__ALT__/g, String(alturaNum));
+            } else {
+                xml = xml.replace(/__ALT__/g, '');
+            }
+            if(tempNum != null){
+                xml = xml.replace(/(<c r="N8"[^>]*)t="inlineStr"([^>]*)><is><t>__TMP__<\/t><\/is><\/c>/,
+                    '$1$2><v>' + tempNum + '<\/v><\/c>');
+                xml = xml.replace(/(<c r="O8"[^>]*)t="inlineStr"([^>]*)><is><t>__TMP__<\/t><\/is><\/c>/,
+                    '$1$2><v>' + tempNum + '<\/v><\/c>');
+                xml = xml.replace(/__TMP__/g, String(tempNum));
+            } else {
+                xml = xml.replace(/__TMP__/g, '');
+            }
             if(isHidratado){
-                // pH e condutividade: exatamente como digitado pelo usuário (já com vírgula)
-                const phStr   = document.getElementById('input-ph').value.trim();
-                const condStr = document.getElementById('input-condutividade').value.trim();
-                xml = xml.replace(/__CND__/g, condStr);
-                xml = xml.replace(/__PHH__/g, phStr);
+                // pH e condutividade: converter para número (ponto decimal interno do Excel)
+                // O Excel exibe automaticamente com vírgula conforme configuração regional
+                const phNum   = parseFloat(document.getElementById('input-ph').value.trim().replace(',','.'));
+                const condNum = parseFloat(document.getElementById('input-condutividade').value.trim().replace(',','.'));
+                // Substituir placeholder inlineStr por valor numérico
+                xml = xml.replace(/<c r="C89"([^>]*)t="inlineStr"([^>]*)><is><t>__CND__<\/t><\/is><\/c>/,
+                    '<c r="C89"$1$2><v>' + condNum + '<\/v><\/c>');
+                xml = xml.replace(/<c r="C90"([^>]*)t="inlineStr"([^>]*)><is><t>__PHH__<\/t><\/is><\/c>/,
+                    '<c r="C90"$1$2><v>' + phNum + '<\/v><\/c>');
             }
 
             // Salvar sheet modificado de volta no zip
