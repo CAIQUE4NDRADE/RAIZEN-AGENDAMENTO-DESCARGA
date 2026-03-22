@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=1200">
     <title>RAÍZEN - GESTÃO OPERACIONAL V28.0</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -152,6 +153,11 @@
         #modal-agendamentos { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; }
         #modal-agendamentos.aberto { display:flex; }
         .agend-box { background:white; border-radius:28px; padding:40px; width:95%; max-width:700px; max-height:90vh; overflow-y:auto; box-shadow:0 30px 60px rgba(0,0,0,0.3); }
+
+        /* MODAL GERAR PLANILHA */
+        #modal-gerar-planilha { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; }
+        #modal-gerar-planilha.aberto { display:flex; }
+        .planilha-box { background:white; border-radius:28px; padding:40px; width:95%; max-width:600px; max-height:90vh; overflow-y:auto; box-shadow:0 30px 60px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
@@ -400,6 +406,9 @@
     <div id="tanques-supervisor-grid"></div>
 
     <div style="display:flex;gap:20px;margin-top:30px;flex-wrap:wrap;">
+        <button onclick="abrirModalPlanilha()" class="btn-master" style="background:var(--verde-vivo);box-shadow:0 15px 0 #3d6e1f;">
+            <i class="fa-solid fa-file-excel"></i> GERAR PLANILHA DE ESPAÇO
+        </button>
         <button onclick="abrirPrevisao()" class="btn-master" style="background:var(--amarelo-raizen);color:#2a1a00;box-shadow:0 15px 0 #c8900f;">
             <i class="fa-solid fa-chart-line"></i> PREVISÃO DE ENCHIMENTO
         </button>
@@ -1676,6 +1685,199 @@
         });
     }
 
+
+    /* --- GERAR PLANILHA DE ESPAÇO --- */
+    let _dadosPlanilha = null;
+
+    function abrirModalPlanilha(){
+        if(!memoriaTanquesIndividuais.length){ alert('Nenhum tanque carregado.'); return; }
+        const tanquesAtivos = memoriaTanques.filter(t => t.ativo_tanque);
+        if(!tanquesAtivos.length){ alert('Nenhum tanque ativo. Ative um tanque primeiro.'); return; }
+
+        document.getElementById('input-ph').value = '';
+        document.getElementById('input-condutividade').value = '';
+        document.getElementById('aviso-ph').style.display = 'none';
+        document.getElementById('aviso-condutividade').style.display = 'none';
+        document.getElementById('planilha-alerta').style.display = 'none';
+
+        const infoHtml = tanquesAtivos.map(t => {
+            const espaco = espacoOperador(t);
+            return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <span style="font-weight:900;">${t.produto} — Tanque ${t.ativo_tanque}</span>
+                <span style="background:#dcfce7;color:#166534;padding:3px 12px;border-radius:8px;font-size:13px;font-weight:900;">${fmtL(espaco)}</span>
+            </div>`;
+        }).join('');
+        document.getElementById('planilha-info-produto').innerHTML =
+            `<div style="font-size:12px;font-weight:700;color:#64748b;margin-bottom:8px;text-transform:uppercase;">Tanques ativos que entrarão na planilha:</div>${infoHtml}`;
+
+        const temHidratado = tanquesAtivos.some(t => t.produto.toUpperCase().includes('HIDRATADO'));
+        document.getElementById('planilha-campos-hidratado').style.display = temHidratado ? 'block' : 'none';
+
+        _dadosPlanilha = tanquesAtivos;
+        document.getElementById('modal-gerar-planilha').classList.add('aberto');
+    }
+
+    function fecharModalPlanilha(){
+        document.getElementById('modal-gerar-planilha').classList.remove('aberto');
+        _dadosPlanilha = null;
+    }
+
+    function validarCamposHidratado(){
+        const ph = parseFloat(document.getElementById('input-ph').value);
+        const cond = parseFloat(document.getElementById('input-condutividade').value);
+        const avisoPhEl = document.getElementById('aviso-ph');
+        const avisoCondEl = document.getElementById('aviso-condutividade');
+        let alertas = [];
+
+        if(isNaN(ph)){ alert('Informe o pH do tanque.'); return null; }
+        if(isNaN(cond)){ alert('Informe a Condutividade do tanque.'); return null; }
+
+        if(ph < 6 || ph > 8){
+            avisoPhEl.textContent = '\u26a0\ufe0f pH ' + ph + ' FORA DO LIMITE (6 a 8) — atenção redobrada!';
+            avisoPhEl.style.cssText = 'display:block;background:#fef2f2;color:#dc2626;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:900;margin-top:6px;';
+            alertas.push('pH: ' + ph + ' (fora do limite 6-8)');
+        } else {
+            avisoPhEl.textContent = '\u2705 pH ' + ph + ' — dentro do limite';
+            avisoPhEl.style.cssText = 'display:block;background:#dcfce7;color:#166534;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:900;margin-top:6px;';
+        }
+
+        if(cond >= 300){
+            avisoCondEl.textContent = '\u26a0\ufe0f Condutividade ' + cond + ' µS/m ACIMA DO LIMITE (300) — atenção redobrada!';
+            avisoCondEl.style.cssText = 'display:block;background:#fef2f2;color:#dc2626;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:900;margin-top:6px;';
+            alertas.push('Condutividade: ' + cond + ' µS/m (acima de 300)');
+        } else {
+            avisoCondEl.textContent = '\u2705 Condutividade ' + cond + ' µS/m — dentro do limite';
+            avisoCondEl.style.cssText = 'display:block;background:#dcfce7;color:#166534;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:900;margin-top:6px;';
+        }
+
+        if(alertas.length > 0){
+            document.getElementById('planilha-alerta-texto').textContent =
+                'ATENÇÃO: ' + alertas.join(' | ') + ' — Realize análises em 100% dos recebimentos conforme procedimento.';
+            document.getElementById('planilha-alerta').style.display = 'block';
+        }
+        return {ph, cond, alertas};
+    }
+
+    function gerarPlanilha(){
+        if(!_dadosPlanilha || !_dadosPlanilha.length) return;
+        const temHidratado = _dadosPlanilha.some(t => t.produto.toUpperCase().includes('HIDRATADO'));
+        let dadosHidratado = null;
+        if(temHidratado){
+            dadosHidratado = validarCamposHidratado();
+            if(!dadosHidratado) return;
+        }
+
+        const wb = XLSX.utils.book_new();
+        const hoje = new Date();
+        const dataStr = hoje.toLocaleDateString('pt-BR');
+        const horaStr = hoje.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+
+        _dadosPlanilha.forEach(tanque => {
+            const produto = tanque.produto;
+            const numTanque = tanque.ativo_tanque;
+            const espacoDisp = espacoOperador(tanque);
+            const espacoM3 = (espacoDisp / 1000).toFixed(2).replace('.', ',');
+            const espacoL = espacoDisp.toLocaleString('pt-BR');
+            const isHidratado = produto.toUpperCase().includes('HIDRATADO');
+            const d = [];
+
+            d.push(['TERMINAL DE PAULÍNIA', '', '', '', '', '', '', '']);
+            d.push(['CONTROLE DE ESPACO DO TANQUE RECEBEDOR', '', '', '', 'Data:', dataStr, '', '']);
+            d.push(['', '', '', '', 'Hora Impressao:', horaStr, '', '']);
+            d.push(['']);
+            d.push(['Produto', 'Tanque', 'Espaco Disponivel (L)', 'Espaco Disponivel (m³)', '', '', '', '']);
+            d.push([produto, numTanque, espacoDisp, espacoM3, '', '', '', '']);
+            d.push(['']);
+
+            if(isHidratado && dadosHidratado){
+                d.push(['CONTROLE DE QUALIDADE DO TANQUE RECEBEDOR', '', '', '', '', '', '', '']);
+                d.push(['pH do Tanque:', dadosHidratado.ph, 'Condutividade (µS/m):', dadosHidratado.cond, '', '', '', '']);
+                if(dadosHidratado.alertas.length > 0){
+                    d.push(['ATENCAO: ' + dadosHidratado.alertas.join(' | '), '', '', '', '', '', '', '']);
+                    d.push(['Realizar analises em 100% dos recebimentos conforme procedimento.', '', '', '', '', '', '', '']);
+                } else {
+                    d.push(['Parametros dentro do limite.', '', '', '', '', '', '', '']);
+                }
+                d.push(['']);
+            }
+
+            // Tabela header
+            const header = ['No', 'Placa', 'Origem', 'NF', 'Vol. Ambiente (L)', 'Espaco Vazio (m³)', 'Saldo (m³)', 'Baia'];
+            if(isHidratado) { header.push('pH Caminhao'); header.push('Condutividade'); }
+            d.push(header);
+
+            for(let i = 1; i <= 30; i++){
+                const linha = [i, '', '', '', '', '', '', ''];
+                if(isHidratado){ linha.push(''); linha.push(''); }
+                d.push(linha);
+            }
+
+            d.push(['']);
+            d.push(['Inicial Recebimento - Altura (mm) TQ:', '', 'Temp. (°C) TQ:', '', '', '', '', '']);
+            d.push(['Final Recebimento - Altura (mm) TQ:', '', 'Temp. (°C) TQ:', '', '', '', '', '']);
+            d.push(['']);
+            d.push(['Supervisor de Operacoes:', '', '_______________________________', '', '', '', '', '']);
+            d.push(['']);
+            d.push(['Dupla Conferencia:', '', '_______________________________', '', '', '', '', '']);
+            d.push(['']);
+            d.push(['A dupla conferencia pode ser validada por qualquer funcionario nao envolvido diretamente no preenchimento inicial do formulario.']);
+
+            const ws = XLSX.utils.aoa_to_sheet(d);
+            ws['!cols'] = [{wch:4},{wch:12},{wch:10},{wch:14},{wch:18},{wch:18},{wch:14},{wch:8}];
+            if(isHidratado){ ws['!cols'].push({wch:12}); ws['!cols'].push({wch:16}); }
+            const nomeProduto = produto.replace(/[^A-Za-z0-9]/g, '_').slice(0, 28);
+            XLSX.utils.book_append_sheet(wb, ws, nomeProduto);
+        });
+
+        const dataArq = hoje.toISOString().slice(0,10);
+        XLSX.writeFile(wb, 'Espaco_Tanques_' + dataArq + '.xlsx');
+        fecharModalPlanilha();
+        alert('Planilha gerada com sucesso! Verifique seus downloads.');
+    }
+
 </script>
+
+<!-- MODAL GERAR PLANILHA -->
+<div id="modal-gerar-planilha">
+    <div class="planilha-box">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+            <div style="font-size:20px;font-weight:900;color:var(--verde-vivo);display:flex;align-items:center;gap:12px;">
+                <i class="fa-solid fa-file-excel"></i> GERAR PLANILHA DE ESPAÇO
+            </div>
+            <button onclick="fecharModalPlanilha()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#94a3b8;">✕</button>
+        </div>
+        <div id="planilha-info-produto" style="background:#f0fdf4;border-radius:14px;padding:16px 20px;margin-bottom:20px;font-size:14px;font-weight:700;color:#166534;"></div>
+
+        <!-- Campos extras para Hidratado -->
+        <div id="planilha-campos-hidratado" style="display:none;margin-bottom:20px;">
+            <div style="background:#fffbeb;border-radius:14px;padding:16px 20px;margin-bottom:16px;font-size:13px;font-weight:700;color:#92400e;">
+                <i class="fa-solid fa-flask"></i> Informe os dados de qualidade do tanque recebedor:
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div>
+                    <div style="font-size:11px;font-weight:900;color:#64748b;text-transform:uppercase;margin-bottom:8px;">pH do Tanque</div>
+                    <input type="number" id="input-ph" step="0.01" min="0" max="14" placeholder="Ex: 6.5"
+                        class="login-input" style="margin-bottom:0;font-size:18px;">
+                    <div id="aviso-ph" style="display:none;font-size:11px;font-weight:900;margin-top:6px;padding:6px 10px;border-radius:8px;"></div>
+                </div>
+                <div>
+                    <div style="font-size:11px;font-weight:900;color:#64748b;text-transform:uppercase;margin-bottom:8px;">Condutividade (µS/m)</div>
+                    <input type="number" id="input-condutividade" step="0.01" min="0" placeholder="Ex: 74.5"
+                        class="login-input" style="margin-bottom:0;font-size:18px;">
+                    <div id="aviso-condutividade" style="display:none;font-size:11px;font-weight:900;margin-top:6px;padding:6px 10px;border-radius:8px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="planilha-alerta" style="display:none;background:#fef2f2;border:2px solid #fca5a5;border-radius:14px;padding:14px 18px;margin-bottom:16px;font-size:13px;font-weight:900;color:#dc2626;">
+            <i class="fa-solid fa-triangle-exclamation"></i> <span id="planilha-alerta-texto"></span>
+        </div>
+
+        <button onclick="gerarPlanilha()" style="width:100%;background:var(--verde-vivo);color:white;border:none;border-radius:16px;padding:20px;font-size:16px;font-weight:900;cursor:pointer;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:12px;">
+            <i class="fa-solid fa-file-arrow-down"></i> GERAR E BAIXAR PLANILHA
+        </button>
+    </div>
+</div>
+
 </body>
 </html>
