@@ -169,9 +169,7 @@
     <div class="login-box">
         <h3 id="login-titulo" style="color:var(--roxo-raizen);"><i class="fa-solid fa-lock"></i> ACESSO AO SISTEMA</h3>
         <input type="text" id="login-usuario" class="login-input" placeholder="Seu nome de usuário">
-        <div id="login-senha-wrap" style="display:none;">
-            <input type="password" id="login-senha" class="login-input" placeholder="Sua senha" autocomplete="current-password">
-        </div>
+        <input type="password" id="login-senha" class="login-input" placeholder="Senha">
         <div id="login-erro" style="color:#ef4444;font-weight:900;font-size:14px;text-align:center;margin-bottom:15px;display:none;">Usuário ou senha incorretos</div>
         <button onclick="processarLogin()" class="login-btn" style="background:var(--roxo-raizen);color:white;">ENTRAR</button>
         <button onclick="fecharLogin()" class="login-btn" style="background:#f1f5f9;color:#475569;">CANCELAR</button>
@@ -356,7 +354,7 @@
 
     <div id="banners-aviso-tanque" style="margin-top:28px;"></div>
     <div style="margin-top:40px;display:flex;gap:25px;">
-        <button class="btn-master" style="background:#1e293b;box-shadow:0 15px 0 #0f172a;" onclick="location.reload()">VOLTAR</button>
+        <button class="btn-master" style="background:#1e293b;box-shadow:0 15px 0 #0f172a;" onclick="carregarDados()">ATUALIZAR</button>
         <button class="btn-master" style="background:var(--verde-raizen);box-shadow:0 15px 0 #2d3e35;" onclick="carregarDados()">ATUALIZAR</button>
     </div>
 </div>
@@ -486,13 +484,17 @@
 
     // Mapeamento produto Coleta → produto sistema
     const MAPA_PRODUTO_COLETA = {
-        'hidratado':  'ETANOL HIDRATADO',
-        'anidro':     'ETANOL ANIDRO',
-        'biodiesel':  'BIODIESEL (B100)',
-        'gasolina a': 'GASOLINA',
-        'gasolina':   'GASOLINA',
-        'diesel s10': 'DIESEL S10',
-        'diesel':     'DIESEL S10',
+        'hidratado':   'ETANOL HIDRATADO',
+        'anidro':      'ETANOL ANIDRO',
+        'biodiesel':   'BIODIESEL (B100)',
+        'gasolina a':  'GASOLINA',
+        'gasolina':    'GASOLINA',
+        'diesel s10':  'DIESEL S10',
+        'diesel s-10': 'DIESEL S10',
+        'diesel s 10': 'DIESEL S10',
+        's-10':        'DIESEL S10',
+        's10':         'DIESEL S10',
+        'diesel':      'DIESEL S10',
     };
 
     const MAPA_PRODUTOS = {
@@ -544,7 +546,7 @@
         if(!usuario) return false;
         usuarioLogado = usuario;
         mostrarBadge();
-        if(usuario.perfil === 'GATE'){
+        if(usuario.perfil === 'GATE' || usuario.perfil === 'OPERADOR'){
             document.getElementById('secao-entrada').style.display='none';
             document.getElementById('modulo-operador-full').style.display='block';
             await pedirPermissaoNotificacao();
@@ -649,13 +651,8 @@
     function abrirLogin(tipo) {
         tipoLoginPendente=tipo;
         document.getElementById('login-usuario').value='';
-        document.getElementById('login-usuario').disabled=false;
-        document.getElementById('login-usuario').style.opacity='1';
         document.getElementById('login-senha').value='';
-        document.getElementById('login-senha-wrap').style.display='none';
         document.getElementById('login-erro').style.display='none';
-        _loginStep='nome';
-        _usuarioEncontrado=null;
         document.getElementById('login-titulo').innerHTML=
             tipo==='GATE'
                 ?'<i class="fa-solid fa-lock"></i> ACESSO GATE'
@@ -707,81 +704,49 @@
     function fecharLogin(){
         document.getElementById('modal-login').classList.remove('aberto');
         tipoLoginPendente=null;
-        _loginStep='nome';
-        _usuarioEncontrado=null;
-        document.getElementById('login-usuario').disabled=false;
-        document.getElementById('login-usuario').style.opacity='1';
-        document.getElementById('login-senha').value='';
-        document.getElementById('login-senha-wrap').style.display='none';
     }
     document.getElementById('login-senha').addEventListener('keydown',e=>{if(e.key==='Enter')processarLogin();});
 
     let _usuarioPrimeiroAcesso = null; // guarda dados do usuário no primeiro acesso
 
-    let _loginStep = 'nome'; // 'nome' ou 'senha'
-    let _usuarioEncontrado = null;
+    let _usuarioPrimeiroAcesso = null;
 
     async function processarLogin(){
         const nome=document.getElementById('login-usuario').value.trim();
-        const senhaWrap=document.getElementById('login-senha-wrap');
-        document.getElementById('login-erro').style.display='none';
-
-        // PASSO 1: verificar se usuário existe
-        if(_loginStep === 'nome'){
-            if(!nome){document.getElementById('login-erro').style.display='block';return;}
-            setLoader(true);
-            try{
-                let rCheck=await fetch(`${DB.URL}/rest/v1/usuarios?nome=eq.${encodeURIComponent(nome)}&perfil=eq.${tipoLoginPendente}&select=*`,{headers:DB.H});
-                let dataCheck=await rCheck.json();
-                // Fallback OPERADOR
-                if((!dataCheck||dataCheck.length===0) && tipoLoginPendente==='GATE'){
-                    const rFb=await fetch(`${DB.URL}/rest/v1/usuarios?nome=eq.${encodeURIComponent(nome)}&perfil=eq.OPERADOR&select=*`,{headers:DB.H});
-                    const dFb=await rFb.json();
-                    if(dFb&&dFb.length>0) dataCheck=dFb;
-                }
-                if(!dataCheck||dataCheck.length===0){
-                    document.getElementById('login-erro').style.display='block';
-                    setLoader(false); return;
-                }
-                const usuario=dataCheck[0];
-                // Primeiro acesso: senha vazia
-                if(!usuario.senha||usuario.senha.trim()===''){
-                    _usuarioPrimeiroAcesso=usuario;
-                    setLoader(false);
-                    fecharLogin();
-                    document.getElementById('modal-primeira-senha').style.display='flex';
-                    setTimeout(()=>document.getElementById('nova-senha').focus(),100);
-                    return;
-                }
-                // Tem senha: mostrar campo de senha
-                _usuarioEncontrado=usuario;
-                _loginStep='senha';
-                document.getElementById('login-usuario').disabled=true;
-                document.getElementById('login-usuario').style.opacity='0.5';
-                senhaWrap.style.display='block';
-                setTimeout(()=>document.getElementById('login-senha').focus(),100);
-            }catch(e){document.getElementById('login-erro').style.display='block';}
-            finally{setLoader(false);}
-            return;
-        }
-
-        // PASSO 2: verificar senha
         const senha=document.getElementById('login-senha').value.trim();
-        if(!senha){document.getElementById('login-erro').style.display='block';return;}
+        if(!nome||!senha){document.getElementById('login-erro').style.display='block';return;}
         setLoader(true);
         try{
-            const usuario=_usuarioEncontrado;
-            if(usuario.senha!==senha){
-                document.getElementById('login-erro').style.display='block';
-                setLoader(false); return;
+            // Buscar usuário pelo nome e perfil
+            let rCheck=await fetch(`${DB.URL}/rest/v1/usuarios?nome=eq.${encodeURIComponent(nome)}&perfil=eq.${tipoLoginPendente}&select=*`,{headers:DB.H});
+            let dataCheck=await rCheck.json();
+            // Fallback: tenta OPERADOR se não achar GATE (migração)
+            if((!dataCheck||dataCheck.length===0) && tipoLoginPendente==='GATE'){
+                const rFb=await fetch(`${DB.URL}/rest/v1/usuarios?nome=eq.${encodeURIComponent(nome)}&perfil=eq.OPERADOR&select=*`,{headers:DB.H});
+                const dFb=await rFb.json();
+                if(dFb&&dFb.length>0) dataCheck=dFb;
             }
-            const data=[usuario];
-            if(!data||data.length===0){document.getElementById('login-erro').style.display='block';setLoader(false);return;}
-            usuarioLogado={nome:data[0].nome,perfil:data[0].perfil};
+            if(!dataCheck||dataCheck.length===0){document.getElementById('login-erro').style.display='block';setLoader(false);return;}
+            const usuario=dataCheck[0];
+
+            // Primeiro acesso: senha vazia no banco → pedir para criar senha
+            if(!usuario.senha||usuario.senha.trim()===''){
+                _usuarioPrimeiroAcesso=usuario;
+                setLoader(false);
+                fecharLogin();
+                document.getElementById('modal-primeira-senha').style.display='flex';
+                setTimeout(()=>document.getElementById('nova-senha').focus(),100);
+                return;
+            }
+
+            // Verificar senha
+            if(usuario.senha!==senha){document.getElementById('login-erro').style.display='block';setLoader(false);return;}
+
+            usuarioLogado={nome:usuario.nome,perfil:usuario.perfil};
             salvarSessao(usuarioLogado);
             const perfilConfirmado=tipoLoginPendente;
             fecharLogin(); mostrarBadge();
-            if(perfilConfirmado==='GATE'){
+            if(perfilConfirmado==='GATE'||usuario.perfil==='GATE'||usuario.perfil==='OPERADOR'){
                 document.getElementById('secao-entrada').style.display='none';
                 document.getElementById('modulo-operador-full').style.display='block';
                 await pedirPermissaoNotificacao();
@@ -797,6 +762,7 @@
         }catch(e){document.getElementById('login-erro').style.display='block';console.error(e);}
         finally{setLoader(false);}
     }
+
 
     function mostrarBadge(){
         if(!usuarioLogado) return;
@@ -1080,7 +1046,6 @@
                     <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
                         <span style="background:${cor};color:white;padding:6px 14px;border-radius:12px;font-size:12px;font-weight:900;">${item.PRODUTO}</span>
                         ${item.FRETE?`<span style="background:${item.FRETE==='CIF'?'#dbeafe':'#dcfce7'};color:${item.FRETE==='CIF'?'#1d4ed8':'#166534'};padding:4px 10px;border-radius:10px;font-size:11px;font-weight:900;border:2px solid ${item.FRETE==='CIF'?'#93c5fd':'#86efac'};">${item.FRETE}</span>`:''}
-                        ${item.TRANSPORTADORA?`<span style="background:#f1f5f9;color:#475569;padding:4px 10px;border-radius:10px;font-size:11px;font-weight:900;border:2px solid #e2e8f0;">${item.TRANSPORTADORA}</span>`:''}
                     </div>
                 </div>
                 <div style="display:flex;justify-content:space-between;align-items:center;background:#f8fafc;border-radius:12px;padding:10px 14px;">
@@ -1519,8 +1484,7 @@
                         PRODUTO:     produtoFinal,
                         AGENDAMENTO: reg.AGENDAMENTO || null,
                         VOLUME:      reg.VOLUME      || null,
-                        FRETE:       reg.FRETE       || 'FOB',
-                        TRANSPORTADORA: reg.TRANSPORTADORA || ''
+                        FRETE:       reg.FRETE       || 'FOB'
                     };
                     // Aguardar um pouco para garantir que o Supabase processou
                     await new Promise(r=>setTimeout(r,500));
@@ -1557,7 +1521,7 @@
         if(!texto){ alert('Cole o conteúdo do Excel antes de processar.'); return; }
         const STATUS_ACEITOS=['agendado','agendado automaticamente'];
         const linhas=texto.split('\n').map(l=>l.trim()).filter(l=>l);
-        let idxPlaca=-1,idxProduto=-1,idxData=-1,idxPeriodo=-1,idxStatus=-1,idxVolume=-1,idxFrete=-1,idxTransp=-1,linhaHeader=-1;
+        let idxPlaca=-1,idxProduto=-1,idxData=-1,idxPeriodo=-1,idxStatus=-1,idxVolume=-1,idxFrete=-1,linhaHeader=-1;
         for(let i=0;i<linhas.length;i++){
             const cols=linhas[i].split('\t').map(c=>c.trim().toLowerCase());
             if(cols.includes('status')&&cols.some(c=>c.includes('placa'))){
@@ -1571,7 +1535,6 @@
                     if(c==='status') idxStatus=j;
                     if(c==='volume') idxVolume=j;
                     if(c==='frete') idxFrete=j;
-                    if(c==='transportadora') idxTransp=j;
                 });
                 break;
             }
@@ -1597,25 +1560,24 @@
             const frete=freteRaw.includes('CIF')?'CIF':'FOB';
             const transpRaw=(idxTransp>=0?(cols[idxTransp]||''):'').trim();
             // Pegar primeira palavra significativa (ignorar artigos)
-            const transpNome = transpRaw
-                .split(/[\s\-\/]/)[0]
-                .replace(/[^A-Za-zÀ-ú0-9]/g,'')
-                .toUpperCase()
-                .slice(0,10) || '';
+            const transpNome = (transpRaw.split(' ')[0]||'').replace(/[^A-Za-z0-9]/g,'').toUpperCase().slice(0,10);
             let produto='';
-            for(const [chave,valor] of Object.entries(MAPA_PRODUTO_COLETA)){ if(produtoRaw.includes(chave)){produto=valor;break;} }
+            const produtoNorm=produtoRaw.replace(/-/g,' ').split('  ').join(' ').trim();
+            for(const [chave,valor] of Object.entries(MAPA_PRODUTO_COLETA)){
+                if(produtoNorm.includes(chave)||produtoRaw.includes(chave)){produto=valor;break;}
+            }
             let agendamento='';
             if(dataRaw){
                 const match=dataRaw.match(/(\d{2})\/(\d{2})\/(\d{4})/);
                 const horaInicio=periodoRaw?periodoRaw.split('-')[0].trim():'00:00';
                 if(match) agendamento=`${match[3]}-${match[2]}-${match[1]} ${horaInicio}`;
             }
-            agendados.push({placa:placaRaw,produto,agendamento,volume:volumeRaw,frete,transp:transpNome});
+            agendados.push({placa:placaRaw,produto,agendamento,volume:volumeRaw,frete});
         }
         if(!agendados.length){ alert('Nenhum agendamento com status "Agendado" ou "Agendado Automaticamente" encontrado.'); return; }
         const preview=document.getElementById('preview-agendamentos');
         preview.style.display='block';
-        preview.innerHTML=`<div style="background:#eff6ff;border-radius:14px;padding:16px 20px;margin-bottom:14px;"><div style="font-size:14px;font-weight:900;color:#1d4ed8;margin-bottom:10px;"><i class="fa-solid fa-eye"></i> ${agendados.length} agendamentos encontrados:</div><table style="width:100%;border-collapse:collapse;font-size:12px;"><thead><tr style="background:#dbeafe;"><th style="padding:8px;text-align:left;color:#1d4ed8;font-weight:900;">PLACA</th><th style="padding:8px;text-align:left;color:#1d4ed8;font-weight:900;">PRODUTO</th><th style="padding:8px;text-align:left;color:#1d4ed8;font-weight:900;">AGENDAMENTO</th><th style="padding:8px;text-align:left;color:#1d4ed8;font-weight:900;">TRANSPORTADORA</th><th style="padding:8px;text-align:center;color:#1d4ed8;font-weight:900;">FRETE</th><th style="padding:8px;text-align:right;color:#1d4ed8;font-weight:900;">VOLUME</th></tr></thead><tbody>${agendados.map(a=>`<tr style="border-bottom:1px solid #e0f2fe;"><td style="padding:7px 8px;font-weight:900;">${a.placa}</td><td style="padding:7px 8px;">${a.produto||'—'}</td><td style="padding:7px 8px;color:#475569;">${a.agendamento||'—'}</td><td style="padding:7px 8px;font-size:11px;">${a.transp||'—'}</td><td style="padding:7px 8px;text-align:center;"><span style=\"background:${a.frete==='CIF'?'#dbeafe':'#dcfce7'};color:${a.frete==='CIF'?'#1d4ed8':'#166534'};padding:2px 8px;border-radius:6px;font-weight:900;font-size:11px;\">${a.frete}</span></td><td style="padding:7px 8px;text-align:right;">${a.volume?a.volume.toLocaleString('pt-BR')+' L':'—'}</td></tr>`).join('')}</tbody></table></div><button onclick="confirmarAgendamentos()" style="width:100%;background:var(--roxo-raizen);color:white;border:none;border-radius:14px;padding:16px;font-size:15px;font-weight:900;cursor:pointer;text-transform:uppercase;"><i class="fa-solid fa-check"></i> CONFIRMAR E LANÇAR NO SISTEMA</button>`;
+        preview.innerHTML=`<div style="background:#eff6ff;border-radius:14px;padding:16px 20px;margin-bottom:14px;"><div style="font-size:14px;font-weight:900;color:#1d4ed8;margin-bottom:10px;"><i class="fa-solid fa-eye"></i> ${agendados.length} agendamentos encontrados:</div><table style="width:100%;border-collapse:collapse;font-size:12px;"><thead><tr style="background:#dbeafe;"><th style="padding:8px;text-align:left;color:#1d4ed8;font-weight:900;">PLACA</th><th style="padding:8px;text-align:left;color:#1d4ed8;font-weight:900;">PRODUTO</th><th style="padding:8px;text-align:left;color:#1d4ed8;font-weight:900;">AGENDAMENTO</th><th style="padding:8px;text-align:center;color:#1d4ed8;font-weight:900;">FRETE</th><th style="padding:8px;text-align:right;color:#1d4ed8;font-weight:900;">VOLUME</th></tr></thead><tbody>${agendados.map(a=>`<tr style="border-bottom:1px solid #e0f2fe;"><td style="padding:7px 8px;font-weight:900;">${a.placa}</td><td style="padding:7px 8px;">${a.produto||'—'}</td><td style="padding:7px 8px;color:#475569;">${a.agendamento||'—'}</td><td style="padding:7px 8px;text-align:center;"><span style=\"background:${a.frete==='CIF'?'#dbeafe':'#dcfce7'};color:${a.frete==='CIF'?'#1d4ed8':'#166534'};padding:2px 8px;border-radius:6px;font-weight:900;font-size:11px;\">${a.frete}</span></td><td style="padding:7px 8px;text-align:right;">${a.volume?a.volume.toLocaleString('pt-BR')+' L':'—'}</td></tr>`).join('')}</tbody></table></div><button onclick="confirmarAgendamentos()" style="width:100%;background:var(--roxo-raizen);color:white;border:none;border-radius:14px;padding:16px;font-size:15px;font-weight:900;cursor:pointer;text-transform:uppercase;"><i class="fa-solid fa-check"></i> CONFIRMAR E LANÇAR NO SISTEMA</button>`;
         preview._agendados=agendados;
         preview.scrollIntoView({behavior:'smooth',block:'nearest'});
     }
@@ -1636,7 +1598,7 @@
                 const placaFormatada = a.placa.length===7 && !a.placa.includes('-')
                     ? a.placa.slice(0,3)+'-'+a.placa.slice(3)
                     : a.placa;
-                const data={PLACA:placaFormatada,PRODUTO:a.produto||'',TELEFONE:'',JORNADA:'',ENTRADA:agora(),AGENDAMENTO:a.agendamento||null,VOLUME:a.volume||null,PRECHECK:true,FRETE:a.frete||'FOB',TRANSPORTADORA:a.transp||''};
+                const data={PLACA:placaFormatada,PRODUTO:a.produto||'',TELEFONE:'',JORNADA:'',ENTRADA:agora(),AGENDAMENTO:a.agendamento||null,VOLUME:a.volume||null,PRECHECK:true,FRETE:a.frete||'FOB'};
                 const r=await fetch(`${DB.URL}/rest/v1/registros`,{method:'POST',headers:DB.H,body:JSON.stringify(data)});
                 if(r.ok) inseridos++; else erros++;
             }catch{erros++;}
@@ -1673,7 +1635,7 @@
         [...lista].sort((a,b)=>{ const da=a.AGENDAMENTO?new Date(a.AGENDAMENTO):new Date(8640000000000000); const db2=b.AGENDAMENTO?new Date(b.AGENDAMENTO):new Date(8640000000000000); return da-db2; }).forEach(item=>{
             const id=item.ID; const cor=corProduto(item.PRODUTO||'');
             const card=document.createElement('div'); card.className='fila-card precheck';
-            card.innerHTML=`<div class="fila-card-top"><span class="fila-placa">${item.PLACA}</span><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;"><span style="background:${cor};color:white;padding:6px 14px;border-radius:12px;font-size:12px;font-weight:900;">${item.PRODUTO||'—'}</span>${item.FRETE?`<span style="background:${item.FRETE==='CIF'?'#dbeafe':'#dcfce7'};color:${item.FRETE==='CIF'?'#1d4ed8':'#166534'};padding:4px 10px;border-radius:10px;font-size:11px;font-weight:900;border:2px solid ${item.FRETE==='CIF'?'#93c5fd':'#86efac'};">${item.FRETE}</span>`:''} ${item.TRANSPORTADORA?`<span style="background:#f1f5f9;color:#475569;padding:4px 10px;border-radius:10px;font-size:11px;font-weight:900;border:2px solid #e2e8f0;">${item.TRANSPORTADORA}</span>`:''}</div></div><div style="background:#fff7ed;border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px;"><i class="fa-solid fa-calendar-clock" style="color:var(--laranja-raizen);"></i><div><div style="font-size:10px;font-weight:900;color:#94a3b8;text-transform:uppercase;">Agendamento</div><div style="font-size:14px;font-weight:900;color:#92400e;">${item.AGENDAMENTO?item.AGENDAMENTO.replace('T',' ').slice(0,16):'—'}</div></div></div>${item.VOLUME?`<div style="font-size:12px;font-weight:700;color:#64748b;text-align:center;">Volume previsto: <b>${Number(item.VOLUME).toLocaleString('pt-BR')} L</b></div>`:''}<div style="background:#fef2f2;border-radius:12px;padding:12px 14px;text-align:center;font-size:13px;font-weight:900;color:var(--cor-erro);"><i class="fa-solid fa-triangle-exclamation"></i> AGUARDANDO PRECHECK — MOTORISTA NÃO DEU ENTRADA</div><button onclick="excluirRegistro(${id},'${item.PLACA}')" style="background:none;border:2px solid var(--cor-erro);color:var(--cor-erro);border-radius:14px;padding:10px;font-size:12px;font-weight:900;cursor:pointer;width:100%;"><i class="fa-solid fa-trash"></i> REMOVER</button>`;
+            card.innerHTML=`<div class="fila-card-top"><span class="fila-placa">${item.PLACA}</span><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;"><span style="background:${cor};color:white;padding:6px 14px;border-radius:12px;font-size:12px;font-weight:900;">${item.PRODUTO||'—'}</span>${item.FRETE?`<span style="background:${item.FRETE==='CIF'?'#dbeafe':'#dcfce7'};color:${item.FRETE==='CIF'?'#1d4ed8':'#166534'};padding:4px 10px;border-radius:10px;font-size:11px;font-weight:900;border:2px solid ${item.FRETE==='CIF'?'#93c5fd':'#86efac'};">${item.FRETE}</span>`:''}</div></div><div style="background:#fff7ed;border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px;"><i class="fa-solid fa-calendar-clock" style="color:var(--laranja-raizen);"></i><div><div style="font-size:10px;font-weight:900;color:#94a3b8;text-transform:uppercase;">Agendamento</div><div style="font-size:14px;font-weight:900;color:#92400e;">${item.AGENDAMENTO?item.AGENDAMENTO.replace('T',' ').slice(0,16):'—'}</div></div></div>${item.VOLUME?`<div style="font-size:12px;font-weight:700;color:#64748b;text-align:center;">Volume previsto: <b>${Number(item.VOLUME).toLocaleString('pt-BR')} L</b></div>`:''}<div style="background:#fef2f2;border-radius:12px;padding:12px 14px;text-align:center;font-size:13px;font-weight:900;color:var(--cor-erro);"><i class="fa-solid fa-triangle-exclamation"></i> AGUARDANDO PRECHECK — MOTORISTA NÃO DEU ENTRADA</div><button onclick="excluirRegistro(${id},'${item.PLACA}')" style="background:none;border:2px solid var(--cor-erro);color:var(--cor-erro);border-radius:14px;padding:10px;font-size:12px;font-weight:900;cursor:pointer;width:100%;"><i class="fa-solid fa-trash"></i> REMOVER</button>`;
             corpo.appendChild(card);
         });
     }
