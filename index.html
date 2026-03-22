@@ -1832,8 +1832,8 @@
             xml = xml.replace(/__ALT__/g, alturaVal);
             xml = xml.replace(/__TMP__/g, tempVal);
             if(isHidratado){
-                xml = xml.replace(/__CND__/g, String(cond));
-                xml = xml.replace(/__PHH__/g, String(ph));
+                xml = xml.replace(/__CND__/g, String(cond).replace('.',','));
+                xml = xml.replace(/__PHH__/g, String(ph).replace('.',','));
             }
 
             // Salvar sheet modificado de volta no zip
