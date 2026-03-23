@@ -1167,10 +1167,23 @@
     }
 
     function chamarWhatsApp(tel){
-        const baia=prompt('Motorista vamos descarregar?\nInforme a BAIA ou ÁREA:');
-        if(!baia) return;
-        const msg=encodeURIComponent(`Olá\nMotorista vamos descarregar?\nBaia ${baia}\nObrigado!\n\nObs: aguarde a instrução do gate para entrar na baia!`);
-        window.open(`https://wa.me/55${tel.replace(/\D/g,'')}?text=${msg}`,'_blank');
+        const baiaStr = prompt('Informe o número da BAIA (209 a 214):');
+        if(!baiaStr) return;
+        const baia = parseInt(baiaStr.trim());
+        if(isNaN(baia) || baia < 209 || baia > 214){
+            alert('❌ BAIA INVÁLIDA: ' + baiaStr + '\n\nInforme um número entre 209 e 214.');
+            return;
+        }
+        // Mapeamento baia → área
+        const AREA = {209:'Área 02',210:'Área 02',211:'Área 02',212:'Área 02',213:'Área 02',214:'Área 02'};
+        const area = AREA[baia] || '';
+        const msg = encodeURIComponent(
+            'Olá Motorista vamos descarregar?\n\n' +
+            'Baia ' + baia + ' - ' + area + '\n\n' +
+            'Obrigado!\n\n' +
+            'Obs: aguarde a instrução do operador para entrar na baia!'
+        );
+        window.open('https://wa.me/55' + tel.replace(/\D/g,'') + '?text=' + msg, '_blank');
     }
 
     function abrirModalSaida(id,placa,produto,volume){
