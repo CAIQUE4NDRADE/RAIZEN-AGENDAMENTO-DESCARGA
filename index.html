@@ -1266,21 +1266,18 @@
                 <div class="fila-card-mid">
                     <div>
                         <div class="fila-label">Agendamento</div>
-                        <input type="datetime-local" id="ag-${id}" value="${item.AGENDAMENTO?item.AGENDAMENTO.replace(' ','T').slice(0,16):''}" class="input-edit-table">
-                        <button onclick="salvarCampo(${id},'AGENDAMENTO')" class="btn-acao-tabela" style="background:#6c757d;color:white;">💾</button>
+                        <input type="datetime-local" id="ag-${id}"value="${item.AGENDAMENTO?item.AGENDAMENTO.replace(' ','T').slice(0,16):''}"class="input-edit-table"onkeydown="if(event.key==='Enter'){ event.preventDefault(); salvarCampo(${id},'AGENDAMENTO'); }">
                     </div>
                     <div>
                         <div class="fila-label">Volume (L)</div>
-                        <input type="number" id="vol-${id}" value="${item.VOLUME||''}" placeholder="Ex: 30000" class="input-edit-table"
-                            onkeydown="if(event.key==='Enter'){ event.preventDefault(); confirmarSalvarVolume(${id}); }">
-                        <button onclick="confirmarSalvarVolume(${id})" class="btn-acao-tabela" style="background:#6c757d;color:white;">💾</button>
+                        <input type="number" id="vol-${id}"value="${item.VOLUME||''}"placeholder="Ex: 30000"class="input-edit-table"onkeydown="if(event.key==='Enter'){ event.preventDefault(); confirmarSalvarVolume(${id}); }">
                     </div>
                 </div>
                 <div>
                     <div class="fila-label">Telefone</div>
                     <div style="display:flex;gap:6px;">
                         <input type="text" id="tel-${id}" value="${item.TELEFONE}" class="input-edit-table" style="flex:1;">
-                        <button onclick="salvarCampo(${id},'TELEFONE')" class="btn-acao-tabela" style="background:#166534;color:white;width:auto;padding:8px 12px;margin-top:0;">✔</button>
+                        <input type="text" id="tel-${id}"value="${item.TELEFONE}"class="input-edit-table"style="flex:1;"onkeydown="if(event.key==='Enter'){ event.preventDefault(); salvarCampo(${id},'TELEFONE'); }">
                     </div>
                 </div>
                 <div class="fila-card-bot">
