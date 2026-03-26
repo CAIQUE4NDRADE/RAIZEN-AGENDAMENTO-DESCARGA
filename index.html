@@ -1170,7 +1170,7 @@
         const msg=encodeURIComponent(`Olá motorista! ⚠️\nO tanque de ${produto} está sem espaço disponível.\nAguarde no pátio. Avisaremos assim que houver espaço.\nObrigado!`);
         let delay=0;
         lista.forEach(item=>{
-            setTimeout(()=>{window.open(`https://wa.me/55${item.TELEFONE.replace(/\D/g,'')}?text=${msg}`,'_whatsapp_raizen');},delay);
+            setTimeout(()=>{window.open(`https://wa.me/55${item.TELEFONE.replace(/\D/g,'')}?text=${msg}`,'_blank');},delay);
             delay+=1200;
         });
     }
@@ -1276,7 +1276,6 @@
                 <div>
                     <div class="fila-label">Telefone</div>
                     <div style="display:flex;gap:6px;">
-                        <input type="text" id="tel-${id}" value="${item.TELEFONE}" class="input-edit-table" style="flex:1;">
                         <input type="text" id="tel-${id}"value="${item.TELEFONE}"class="input-edit-table"style="flex:1;"onkeydown="if(event.key==='Enter'){ event.preventDefault(); salvarCampo(${id},'TELEFONE'); }">
                     </div>
                 </div>
@@ -1364,7 +1363,7 @@
             'Obrigado!\n\n' +
             'Obs: aguarde a instrução do operador para entrar na baia!'
         );
-        window.open('https://wa.me/55' + tel.replace(/\D/g,'') + '?text=' + msg, '_whatsapp_raizen');
+        window.open('https://wa.me/55' + tel.replace(/\D/g,'') + '?text=' + msg, '_blank');
     }
 
     function abrirModalSaida(id,placa,produto,volume){
@@ -1522,7 +1521,7 @@
             <div style="background:#f8fafc;border-radius:16px;padding:16px 20px;margin-bottom:8px;">
                 <div style="font-size:11px;font-weight:900;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">📱 Contato do Motorista</div>
                 <div style="font-size:16px;font-weight:900;color:#1e293b;">${item.TELEFONE||'Não informado'}</div>
-                ${item.TELEFONE?`<a href="https://wa.me/55${(item.TELEFONE||'').replace(/\D/g,'')}" target="_whatsapp_raizen"
+                ${item.TELEFONE?`<a href="https://wa.me/55${(item.TELEFONE||'').replace(/\D/g,'')}" target="_blank"
                     style="display:inline-flex;align-items:center;gap:8px;margin-top:10px;background:#25d366;color:white;padding:10px 18px;border-radius:12px;font-size:13px;font-weight:900;text-decoration:none;">
                     <i class="fa-brands fa-whatsapp"></i> Abrir WhatsApp
                 </a>`:''}
