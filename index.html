@@ -1266,19 +1266,16 @@
                 <div class="fila-card-mid">
                     <div>
                         <div class="fila-label">Agendamento</div>
-                        <input type="datetime-local" id="ag-${id}"value="${item.AGENDAMENTO?item.AGENDAMENTO.replace(' ','T').slice(0,16):''}"class="input-edit-table"onkeydown="if(event.key==='Enter'){ event.preventDefault(); salvarCampo(${id},'AGENDAMENTO'); }">
+                        <input type="datetime-local" id="ag-${id}"value="${item.AGENDAMENTO?item.AGENDAMENTO.replace(' ','T').slice(0,16):''}"class="input-edit-table"onkeydown="if(event.key==='Enter'){ event.preventDefault(); confirmarSalvarCampo(${id},'AGENDAMENTO'); }">
                     </div>
                     <div>
                         <div class="fila-label">Volume (L)</div>
-                        <input type="number" id="vol-${id}"value="${item.VOLUME||''}"placeholder="Ex: 30000"class="input-edit-table"onkeydown="if(event.key==='Enter'){ event.preventDefault(); confirmarSalvarVolume(${id}); }">
+                        <input type="number" id="vol-${id}"value="${item.VOLUME||''}"placeholder="Ex: 30000"class="input-edit-table"onkeydown="if(event.key==='Enter'){ event.preventDefault(); confirmarSalvarCampo(${id},'VOLUME'); }">
                     </div>
                 </div>
                 <div>
                     <div class="fila-label">Telefone</div>
-                    <div style="display:flex;gap:6px;">
-                        <input type="text" id="tel-${id}" value="${item.TELEFONE}" class="input-edit-table" style="flex:1;">
-                        <input type="text" id="tel-${id}"value="${item.TELEFONE}"class="input-edit-table"style="flex:1;"onkeydown="if(event.key==='Enter'){ event.preventDefault(); salvarCampo(${id},'TELEFONE'); }">
-                    </div>
+                    <input type="text" id="tel-${id}" value="${item.TELEFONE}" class="input-edit-table" style="width:100%;" onkeydown="if(event.key==='Enter'){ event.preventDefault(); confirmarSalvarCampo(${id},'TELEFONE'); }">
                 </div>
                 <div class="fila-card-bot">
                     <button class="${waBtn}" ${waDisabled} style="flex:1;max-width:80px;" title="${waTitle}">
@@ -1316,16 +1313,33 @@
         finally{setLoader(false);}
     }
 
-    // ── SALVAR VOLUME COM CONFIRMAÇÃO (Enter ou botão) ──
-    async function confirmarSalvarVolume(id){
-        const volInput = document.getElementById(`vol-${id}`);
-        const valor = parseFloat(volInput.value) || null;
+    // ── CONFIRMAR SALVAR (qualquer campo) com Enter ──
+    async function confirmarSalvarCampo(id, campo){
         const item = memoriaFila.find(i=>i.ID===id);
         const placa = item ? item.PLACA : `ID ${id}`;
-        const volFormatado = valor ? Number(valor).toLocaleString('pt-BR') + ' L' : 'sem volume';
+        let valorDisplay = '';
+        let labelCampo = '';
 
-        if(!confirm(`CONFIRMAR ALTERAÇÃO DE VOLUME\n\nPlaca: ${placa}\nNovo volume: ${volFormatado}\n\nConfirmar?`)) return;
-        await salvarCampo(id, 'VOLUME');
+        if(campo === 'TELEFONE'){
+            valorDisplay = document.getElementById(`tel-${id}`).value;
+            labelCampo = 'Telefone';
+        } else if(campo === 'AGENDAMENTO'){
+            const raw = document.getElementById(`ag-${id}`).value;
+            valorDisplay = raw ? raw.replace('T',' ') : '(sem agendamento)';
+            labelCampo = 'Agendamento';
+        } else if(campo === 'VOLUME'){
+            const v = parseFloat(document.getElementById(`vol-${id}`).value) || null;
+            valorDisplay = v ? Number(v).toLocaleString('pt-BR') + ' L' : '(sem volume)';
+            labelCampo = 'Volume';
+        }
+
+        if(!confirm(`CONFIRMAR ALTERAÇÃO\n\nPlaca: ${placa}\n${labelCampo}: ${valorDisplay}\n\nDeseja salvar?`)) return;
+        await salvarCampo(id, campo);
+    }
+
+    // ── SALVAR VOLUME COM CONFIRMAÇÃO (Enter ou botão) ──
+    async function confirmarSalvarVolume(id){
+        await confirmarSalvarCampo(id, 'VOLUME');
     }
 
     async function salvarCampo(id,campo){
