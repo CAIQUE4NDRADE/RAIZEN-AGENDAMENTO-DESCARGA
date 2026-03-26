@@ -3,7 +3,7 @@ Sistema web completo para controle de entrada e saída de caminhões tanque, ges
 Hospedado no GitHub Pages com backend em Supabase (PostgreSQL).
 
 🔗 Links do Sistema
-TelaURL🖥️ Painel Principal (Operador/Supervisor)https://kiqand21-rgb.github.io/RAIZEN-AGENDAMENTO-DESCARGA/📱 App do Motoristahttps://kiqand21-rgb.github.io/RAIZEN-AGENDAMENTO-DESCARGA/motorista.html🔍 Status do Motoristahttps://kiqand21-rgb.github.io/RAIZEN-AGENDAMENTO-DESCARGA/status.html
+TelaURL🖥️ Painel Principal (Operador/Supervisor)(https://caique4ndrade.github.io/RAIZEN-AGENDAMENTO-DESCARGA/)📱 App do Motoristahttps://kiqand21-rgb.github.io/RAIZEN-AGENDAMENTO-DESCARGA/motorista.html🔍 Status do Motoristahttps://kiqand21-rgb.github.io/RAIZEN-AGENDAMENTO-DESCARGA/status.html
 
 📁 Arquivos do Projeto
 ArquivoDescriçãoraizen.htmlSistema principal — registro de entrada, painel operador e supervisormotorista.htmlPágina mobile para o motorista registrar entrada e reabrir jornadastatus.htmlPainel público — motorista consulta o status do veículo pela placamanifest.jsonConfiguração PWA (instalação como app no celular)sw.jsService Worker para PWAREADME.mdEste documento
