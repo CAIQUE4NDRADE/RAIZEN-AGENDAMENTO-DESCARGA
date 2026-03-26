@@ -499,27 +499,16 @@
     <h2 style="color:var(--verde-vivo);"><i class="fa-solid fa-shield-halved"></i> GESTÃO DE TANQUES — SUPERVISOR</h2>
 
     <div style="background:#fff7ed;border:3px solid #fed7aa;border-radius:22px;padding:22px 28px;margin-bottom:28px;">
-        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-            <div style="font-size:32px;">🔒</div>
-            <div style="flex:1;min-width:220px;">
-                <div style="font-size:16px;font-weight:900;color:#92400e;">MARGEM DE SEGURANÇA</div>
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+            <div style="font-size:28px;">🔒</div>
+            <div>
+                <div style="font-size:16px;font-weight:900;color:#92400e;">MARGEM DE SEGURANÇA POR PRODUTO</div>
                 <div style="font-size:13px;font-weight:600;color:#b45309;margin-top:3px;">
-                    Ao importar o relatório, o sistema subtrai este valor do Espaço de cada tanque antes de liberar para o gate.
+                    Ao importar o relatório, o sistema subtrai este valor do Espaço de cada produto antes de liberar para o gate.
                 </div>
             </div>
-            <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
-                <input type="number" id="input-margem-seguranca"
-                    style="width:140px;padding:12px 16px;border:3px solid #fed7aa;border-radius:14px;font-size:18px;font-weight:900;color:#92400e;background:#fffbeb;outline:none;text-align:center;"
-                    min="0" step="1000"
-                    onfocus="this.style.borderColor='#f59e0b'"
-                    onblur="this.style.borderColor='#fed7aa'">
-                <span style="font-size:14px;font-weight:900;color:#92400e;">L</span>
-                <button onclick="salvarMargemSeguranca()"
-                    style="background:#f59e0b;color:white;border:none;border-radius:14px;padding:12px 20px;font-size:14px;font-weight:900;cursor:pointer;">
-                    <i class="fa-solid fa-check"></i> SALVAR
-                </button>
-            </div>
         </div>
+        <div id="margem-por-produto-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;"></div>
     </div>
 
     <div style="background:#f0fdf4;border-radius:25px;padding:30px;margin-bottom:35px;border:3px solid #86efac;">
@@ -528,7 +517,7 @@
             <div>
                 <div style="font-size:17px;font-weight:900;color:#166534;">IMPORTAR DO RELATÓRIO DE SUPERVISÃO DE TANQUES</div>
                 <div style="font-size:13px;font-weight:600;color:#16a34a;margin-top:2px;">
-                    Copie toda a tabela (Ctrl+A → Ctrl+C) e cole abaixo. O sistema lê a coluna <b>Espaço (m³)</b>, subtrai 120.000 L e atualiza cada tanque automaticamente.
+                    Copie toda a tabela (Ctrl+A → Ctrl+C) e cole abaixo. O sistema lê a coluna <b>Espaço (m³)</b>, subtrai a margem de segurança configurada por produto e atualiza cada tanque automaticamente.
                 </div>
             </div>
         </div>
@@ -655,24 +644,77 @@
         }
     };
 
-    function salvarMargemSeguranca(){
-        const input = document.getElementById('input-margem-seguranca');
+    // ── MARGEM DE SEGURANÇA POR PRODUTO ──────────────────
+    const PRODUTOS_MARGEM = ['ETANOL HIDRATADO','ETANOL ANIDRO','BIODIESEL (B100)','GASOLINA','DIESEL S10'];
+
+    function carregarMargens(){
+        const obj = {};
+        PRODUTOS_MARGEM.forEach(p=>{
+            const key = 'raizen_margem_' + p.replace(/[^A-Za-z0-9]/g,'_');
+            obj[p] = parseInt(localStorage.getItem(key) || '120000');
+        });
+        return obj;
+    }
+
+    let MARGENS = carregarMargens();
+
+    // Compatibilidade: espacoOperador usa margem do produto
+    const SEGURANCA_L = 120000; // fallback legado (não usado diretamente mais)
+    const getMargemProduto = p => {
+        const found = PRODUTOS_MARGEM.find(x => (p||'').toUpperCase().includes(x.toUpperCase().split(' ')[0])) ||
+                      PRODUTOS_MARGEM.find(x => x === p);
+        return MARGENS[found] ?? 120000;
+    };
+
+    function salvarMargemProduto(produto){
+        const key_id = 'margem-input-' + produto.replace(/[^A-Za-z0-9]/g,'_');
+        const input = document.getElementById(key_id);
+        if(!input) return;
         const val = parseInt(input.value);
-        if(isNaN(val) || val < 0){ showToast('Valor inválido para margem de segurança.','erro'); return; }
-        SEGURANCA_L = val;
-        localStorage.setItem('raizen_seguranca_l', String(val));
+        if(isNaN(val) || val < 0){ showToast('Valor inválido.','erro'); return; }
+        const storKey = 'raizen_margem_' + produto.replace(/[^A-Za-z0-9]/g,'_');
+        MARGENS[produto] = val;
+        localStorage.setItem(storKey, String(val));
         input.style.borderColor = '#86efac';
-        setTimeout(()=>{ input.style.borderColor='#fed7aa'; },1500);
-        showToast(`✅ Margem de segurança atualizada: ${Number(val).toLocaleString('pt-BR')} L`,'ok');
+        setTimeout(()=>{ input.style.borderColor='#fed7aa'; }, 1500);
+        showToast(`✅ Margem de ${produto}: ${Number(val).toLocaleString('pt-BR')} L`,'ok');
         carregarTanques().then(()=>renderSupervisor());
     }
 
     function inicializarCampoMargem(){
-        const input = document.getElementById('input-margem-seguranca');
-        if(input) input.value = SEGURANCA_L;
+        MARGENS = carregarMargens();
+        renderMargensPorProduto();
     }
 
-    let SEGURANCA_L = parseInt(localStorage.getItem('raizen_seguranca_l') || '120000');
+    function renderMargensPorProduto(){
+        const grid = document.getElementById('margem-por-produto-grid');
+        if(!grid) return;
+        grid.innerHTML = PRODUTOS_MARGEM.map(p=>{
+            const cor = corProduto(p);
+            const id = 'margem-input-' + p.replace(/[^A-Za-z0-9]/g,'_');
+            const val = MARGENS[p] ?? 120000;
+            return `<div style="background:white;border:2px solid #fed7aa;border-radius:16px;padding:16px 18px;">
+                <div style="font-size:11px;font-weight:900;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
+                    <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${cor};"></span>${p}
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <input type="number" id="${id}" value="${val}" min="0" step="1000"
+                        style="flex:1;padding:10px 12px;border:2px solid #fed7aa;border-radius:10px;font-size:16px;font-weight:900;color:#92400e;background:#fffbeb;outline:none;text-align:center;"
+                        onfocus="this.style.borderColor='#f59e0b'" onblur="this.style.borderColor='#fed7aa'">
+                    <span style="font-size:12px;font-weight:700;color:#92400e;">L</span>
+                    <button onclick="salvarMargemProduto('${p}')"
+                        style="background:#f59e0b;color:white;border:none;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:900;cursor:pointer;white-space:nowrap;">
+                        <i class="fa-solid fa-check"></i>
+                    </button>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // Função legada mantida por compatibilidade
+    function salvarMargemSeguranca(){ inicializarCampoMargem(); }
+
+
 
     const MAPA_PRODUTO_COLETA = {
         'hidratado':   'ETANOL HIDRATADO',
@@ -788,7 +830,7 @@
     const fmtL           = n  => n != null ? Number(n).toLocaleString('pt-BR') + ' L' : '---';
     const horaAtual = () => { const n=new Date(); return n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0'); };
     const agora          = () => new Date().toLocaleString('pt-BR');
-    const espacoOperador = t  => Math.max(0, (t.disponivel || 0) - SEGURANCA_L);
+    const espacoOperador = t  => Math.max(0, (t.disponivel || 0) - getMargemProduto(t.produto));
     const espacoLivre    = t  => espacoOperador(t);
     const pctLivre       = t  => { const l=espacoOperador(t), b=Math.max(t.disponivel||1,1); return Math.min(100,Math.round(l/b*100)); };
     const corBarra       = p  => p>=60?'#10b981':p>=25?'#f59e0b':p>0?'#ef4444':'#7c3aed';
@@ -1444,7 +1486,7 @@
         const livre=espacoOperador(t);
         if(volume>livre){showToast(`Espaço insuficiente! Volume: ${fmtL(volume)} / Disponível: ${fmtL(livre)}`,'erro');return;}
         const novoDisp=Math.max(0,t.disponivel-volume);
-        if(!confirm(`CONFIRMAR SAÍDA?\n\nPlaca: ${placa}\nProduto: ${produto}\nVolume: ${fmtL(volume)}\nTanque ${t.ativo_tanque}\n\nEspaço após descarga: ${fmtL(Math.max(0,novoDisp-SEGURANCA_L))}`)) return;
+        if(!confirm(`CONFIRMAR SAÍDA?\n\nPlaca: ${placa}\nProduto: ${produto}\nVolume: ${fmtL(volume)}\nTanque ${t.ativo_tanque}\n\nEspaço após descarga: ${fmtL(Math.max(0,novoDisp-getMargemProduto(produto)))}`)) return;
         executarSaida(id,placa,produto,volume,t,novoDisp);
     }
 
@@ -1670,7 +1712,7 @@
             const alturaM=parseNum(nums[1]);
             const tempC=parseNum(nums[2]);
             const espacoL=Math.round(espacoM3*1000);
-            const disponivelL=Math.max(0,espacoL-SEGURANCA_L);
+            const disponivelL=Math.max(0,espacoL-getMargemProduto(produtoBanco));
             atualizacoes.push({numTanque,produto:produtoBanco,espacoM3,espacoL,disponivelL,altura:alturaM,temperatura:tempC});
         }
 
@@ -1680,7 +1722,7 @@
         atualizacoes.forEach(a=>{
             html+=`<tr style="border-bottom:2px solid #f0fdf4;"><td style="padding:10px;font-weight:900;color:#475569;">${a.numTanque||'—'}</td><td style="padding:10px;font-weight:700;">${a.produto}</td><td style="padding:10px;text-align:right;color:#64748b;">${a.espacoM3.toLocaleString('pt-BR')} m³</td><td style="padding:10px;text-align:right;color:#475569;">${a.altura?a.altura.toLocaleString('pt-BR')+' mm':'—'}</td><td style="padding:10px;text-align:right;color:#475569;">${a.temperatura?a.temperatura.toLocaleString('pt-BR')+' °C':'—'}</td><td style="padding:10px;text-align:right;font-weight:900;color:#059669;">${a.disponivelL.toLocaleString('pt-BR')} L</td></tr>`;
         });
-        html+=`</tbody></table><div style="margin-top:14px;background:#fff7ed;border-radius:12px;padding:12px 16px;font-size:12px;font-weight:700;color:#92400e;">🔒 Desconto de 120.000 L de segurança já aplicado na coluna "Disponível p/ Operador"</div><button onclick="confirmarImportacao()" style="margin-top:16px;background:#16a34a;color:white;border:none;border-radius:14px;padding:16px 32px;font-size:15px;font-weight:900;cursor:pointer;width:100%;text-transform:uppercase;"><i class="fa-solid fa-check"></i> CONFIRMAR E SALVAR NO BANCO</button></div>`;
+        html+=`</tbody></table><div style="margin-top:14px;background:#fff7ed;border-radius:12px;padding:12px 16px;font-size:12px;font-weight:700;color:#92400e;">🔒 Margem de segurança por produto já aplicada na coluna "Disponível p/ Operador"</div><button onclick="confirmarImportacao()" style="margin-top:16px;background:#16a34a;color:white;border:none;border-radius:14px;padding:16px 32px;font-size:15px;font-weight:900;cursor:pointer;width:100%;text-transform:uppercase;"><i class="fa-solid fa-check"></i> CONFIRMAR E SALVAR NO BANCO</button></div>`;
         const preview=document.getElementById('preview-importacao');
         preview.innerHTML=html; preview.style.display='block'; preview._atualizacoes=atualizacoes;
         preview.scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -1724,7 +1766,7 @@
             const cor=corProduto(produto);
             const ativo=tanques.find(t=>t.ativo);
             const espBruto=ativo?Math.max(0,ativo.disponivel||0):0;
-            const dispOp=Math.max(0,espBruto-SEGURANCA_L);
+            const dispOp=Math.max(0,espBruto-getMargemProduto(produto));
             html+=`<div style="background:white;border-radius:28px;padding:30px;border:3px solid #e2e8f0;box-shadow:0 4px 20px rgba(0,0,0,0.06);margin-bottom:24px;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;padding-bottom:18px;border-bottom:3px solid #f1f5f9;flex-wrap:wrap;gap:12px;">
                     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
@@ -1735,13 +1777,13 @@
                     <div style="text-align:right;">
                         <div style="font-size:12px;font-weight:700;color:#64748b;">Disponível p/ gate</div>
                         <div style="font-size:26px;font-weight:900;color:${dispOp===0?'#ef4444':'#059669'}">${fmtL(dispOp)}</div>
-                        ${ativo?`<div style="font-size:11px;color:#94a3b8;">${fmtL(espBruto)} bruto − 120.000 L segurança</div>`:''}
+                        ${ativo?`<div style="font-size:11px;color:#94a3b8;">${fmtL(espBruto)} bruto − ${fmtL(getMargemProduto(produto))} margem</div>`:''}
                     </div>
                 </div>
                 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;">
                     ${tanques.map(t=>{
                         const espT=Math.max(0,t.disponivel||0);
-                        const dispT=Math.max(0,espT-SEGURANCA_L);
+                        const dispT=Math.max(0,espT-getMargemProduto(produto));
                         const pctT=espT>0?Math.min(100,Math.round(dispT/espT*100)):0;
                         const cbT=pctT>=60?'#10b981':pctT>=25?'#f59e0b':'#ef4444';
                         return `<div style="background:${t.ativo?'#f0fdf4':'#f8fafc'};border:3px solid ${t.ativo?'#86efac':'#e2e8f0'};border-radius:20px;padding:20px;">
