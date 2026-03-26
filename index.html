@@ -632,7 +632,12 @@
         }
     };
 
-    const SEGURANCA_L = 120000;
+    // Margem de segurança configurável por produto (padrão 120.000 L)
+    const SEGURANCA_KEY = 'raizen_seguranca';
+    function carregarSegurancas(){ try{ return JSON.parse(localStorage.getItem(SEGURANCA_KEY)||'{}'); }catch{ return {}; } }
+    function salvarSegurancas(obj){ localStorage.setItem(SEGURANCA_KEY, JSON.stringify(obj)); }
+    function getSeguranca(produto){ const m=carregarSegurancas(); return m[produto]!=null ? Number(m[produto]) : 120000; }
+    const SEGURANCA_L = 120000; // fallback global
 
     const MAPA_PRODUTO_COLETA = {
         'hidratado':   'ETANOL HIDRATADO',
@@ -748,7 +753,7 @@
     const fmtL           = n  => n != null ? Number(n).toLocaleString('pt-BR') + ' L' : '---';
     const horaAtual = () => { const n=new Date(); return n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0'); };
     const agora          = () => new Date().toLocaleString('pt-BR');
-    const espacoOperador = t  => Math.max(0, (t.disponivel || 0) - SEGURANCA_L);
+    const espacoOperador = (t,prod)  => { const seg=prod?getSeguranca(prod):(t.produto?getSeguranca(t.produto):SEGURANCA_L); return Math.max(0, (t.disponivel || 0) - seg); };
     const espacoLivre    = t  => espacoOperador(t);
     const pctLivre       = t  => { const l=espacoOperador(t), b=Math.max(t.disponivel||1,1); return Math.min(100,Math.round(l/b*100)); };
     const corBarra       = p  => p>=60?'#10b981':p>=25?'#f59e0b':p>0?'#ef4444':'#7c3aed';
@@ -1388,7 +1393,7 @@
         const livre=espacoOperador(t);
         if(volume>livre){showToast(`Espaço insuficiente! Volume: ${fmtL(volume)} / Disponível: ${fmtL(livre)}`,'erro');return;}
         const novoDisp=Math.max(0,t.disponivel-volume);
-        if(!confirm(`CONFIRMAR SAÍDA?\n\nPlaca: ${placa}\nProduto: ${produto}\nVolume: ${fmtL(volume)}\nTanque ${t.ativo_tanque}\n\nEspaço após descarga: ${fmtL(Math.max(0,novoDisp-SEGURANCA_L))}`)) return;
+        if(!confirm(`CONFIRMAR SAÍDA?\n\nPlaca: ${placa}\nProduto: ${produto}\nVolume: ${fmtL(volume)}\nTanque ${t.ativo_tanque}\n\nEspaço após descarga: ${fmtL(Math.max(0,novoDisp-getSeguranca(produto)))}`)) return;
         executarSaida(id,placa,produto,volume,t,novoDisp);
     }
 
@@ -1444,8 +1449,8 @@
 
         const dataDe=document.getElementById('hist-data-de')?.value;
         const dataAte=document.getElementById('hist-data-ate')?.value;
-        if(dataDe){ const de=new Date(dataDe+'T00:00:00'); lista=lista.filter(i=>{const d=parsearDataBR(i.SAIDA);return d&&d>=de;}); }
-        if(dataAte){ const ate=new Date(dataAte+'T23:59:59'); lista=lista.filter(i=>{const d=parsearDataBR(i.SAIDA);return d&&d<=ate;}); }
+        if(dataDe){ const [yde,mde,dde]=dataDe.split("-"); const strDe=dde+"/"+mde+"/"+yde; lista=lista.filter(i=>{ const m=i.SAIDA&&i.SAIDA.match(/(\d{2}\/\d{2}\/\d{4})/); return m&&m[1]>=strDe; }); }
+        if(dataAte){ const [yat,mat,dat]=dataAte.split("-"); const strAte=dat+"/"+mat+"/"+yat; lista=lista.filter(i=>{ const m=i.SAIDA&&i.SAIDA.match(/(\d{2}\/\d{2}\/\d{4})/); return m&&m[1]<=strAte; }); }
 
         const prodFiltro=(document.getElementById('hist-produto-filtro')?.value||'').toUpperCase();
         if(prodFiltro){
@@ -1614,7 +1619,7 @@
             const alturaM=parseNum(nums[1]);
             const tempC=parseNum(nums[2]);
             const espacoL=Math.round(espacoM3*1000);
-            const disponivelL=Math.max(0,espacoL-SEGURANCA_L);
+            const disponivelL=Math.max(0,espacoL-getSeguranca(produtoBanco));
             atualizacoes.push({numTanque,produto:produtoBanco,espacoM3,espacoL,disponivelL,altura:alturaM,temperatura:tempC});
         }
 
@@ -1668,7 +1673,7 @@
             const cor=corProduto(produto);
             const ativo=tanques.find(t=>t.ativo);
             const espBruto=ativo?Math.max(0,ativo.disponivel||0):0;
-            const dispOp=Math.max(0,espBruto-SEGURANCA_L);
+            const segProd=getSeguranca(produto); const dispOp=Math.max(0,espBruto-segProd);
             html+=`<div style="background:white;border-radius:28px;padding:30px;border:3px solid #e2e8f0;box-shadow:0 4px 20px rgba(0,0,0,0.06);margin-bottom:24px;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;padding-bottom:18px;border-bottom:3px solid #f1f5f9;flex-wrap:wrap;gap:12px;">
                     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
@@ -1676,16 +1681,30 @@
                         ${ativo?`<span style="background:#dcfce7;color:#166534;padding:6px 18px;border-radius:12px;font-size:13px;font-weight:900;"><i class="fa-solid fa-circle-check"></i> ATIVO: TANQUE ${ativo.tanque}</span>`:`<span style="background:#fef2f2;color:#ef4444;padding:6px 18px;border-radius:12px;font-size:13px;font-weight:900;"><i class="fa-solid fa-circle-xmark"></i> NENHUM ATIVO</span>`}
                         ${ativo?`<button onclick="abrirModalPlanilha('${produto}')" style="background:#16a34a;color:white;border:none;border-radius:12px;padding:6px 18px;font-size:13px;font-weight:900;cursor:pointer;display:flex;align-items:center;gap:8px;"><i class="fa-solid fa-file-excel"></i> GERAR PLANILHA</button>`:''}
                     </div>
-                    <div style="text-align:right;">
-                        <div style="font-size:12px;font-weight:700;color:#64748b;">Disponível p/ gate</div>
-                        <div style="font-size:26px;font-weight:900;color:${dispOp===0?'#ef4444':'#059669'}">${fmtL(dispOp)}</div>
-                        ${ativo?`<div style="font-size:11px;color:#94a3b8;">${fmtL(espBruto)} bruto − 120.000 L segurança</div>`:''}
+                    <div style="display:flex;gap:24px;align-items:flex-end;flex-wrap:wrap;">
+                        <div style="text-align:right;">
+                            <div style="font-size:12px;font-weight:700;color:#64748b;">Disponível p/ gate</div>
+                            <div style="font-size:26px;font-weight:900;color:${dispOp===0?'#ef4444':'#059669'}">${fmtL(dispOp)}</div>
+                            ${ativo?`<div style="font-size:11px;color:#94a3b8;">${fmtL(espBruto)} bruto − ${Number(segProd).toLocaleString('pt-BR')} L segurança</div>`:''}
+                        </div>
+                        <div style="background:#fff7ed;border:2px solid #fed7aa;border-radius:16px;padding:14px 18px;min-width:220px;">
+                            <div style="font-size:10px;font-weight:900;color:#92400e;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px;"><i class="fa-solid fa-lock"></i> MARGEM DE SEGURANÇA (L)</div>
+                            <div style="display:flex;gap:8px;align-items:center;">
+                                <input type="number" id="seg-${produto.replace(/ /g,'_')}" value="${segProd}" min="0" step="1000"
+                                    style="width:130px;padding:10px 12px;border:3px solid #fed7aa;border-radius:12px;font-size:15px;font-weight:900;color:#92400e;background:white;outline:none;"
+                                    onkeydown="if(event.key==='Enter'){ event.preventDefault(); salvarSegurancaProduto('${produto}'); }">
+                                <button onclick="salvarSegurancaProduto('${produto}')"
+                                    style="background:#f59e0b;color:white;border:none;border-radius:12px;padding:10px 14px;font-size:13px;font-weight:900;cursor:pointer;white-space:nowrap;">
+                                    <i class="fa-solid fa-check"></i> OK
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;">
                     ${tanques.map(t=>{
                         const espT=Math.max(0,t.disponivel||0);
-                        const dispT=Math.max(0,espT-SEGURANCA_L);
+                        const segT=getSeguranca(produto); const dispT=Math.max(0,espT-segT);
                         const pctT=espT>0?Math.min(100,Math.round(dispT/espT*100)):0;
                         const cbT=pctT>=60?'#10b981':pctT>=25?'#f59e0b':'#ef4444';
                         return `<div style="background:${t.ativo?'#f0fdf4':'#f8fafc'};border:3px solid ${t.ativo?'#86efac':'#e2e8f0'};border-radius:20px;padding:20px;">
@@ -1707,6 +1726,20 @@
             </div>`;
         });
         grid.innerHTML=html;
+    }
+
+    function salvarSegurancaProduto(produto){
+        const inputId = 'seg-' + produto.replace(/ /g,'_');
+        const el = document.getElementById(inputId);
+        if(!el) return;
+        const val = parseInt(el.value);
+        if(isNaN(val)||val<0){ alert('Valor inválido. Informe um número maior ou igual a 0.'); return; }
+        if(!confirm('CONFIRMAR MARGEM DE SEGURANÇA\n\nProduto: '+produto+'\nNova margem: '+Number(val).toLocaleString('pt-BR')+' L\n\nDeseja salvar?')) return;
+        const m = carregarSegurancas();
+        m[produto] = val;
+        salvarSegurancas(m);
+        showToast('Margem de segurança de '+produto+' atualizada para '+Number(val).toLocaleString('pt-BR')+' L', 'ok');
+        renderSupervisor();
     }
 
     async function toggleAtivo(numTanque,produto){
