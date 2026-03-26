@@ -2,10 +2,11 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=1200">
-    <title>RAÍZEN - RAÍZEN — GESTÃO OPERACIONAL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>RAÍZEN — REGISTRO DE ENTRADA</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
         :root {
             --verde-raizen: #4d6d5d;
             --verde-vivo: #60903e;
@@ -208,7 +209,6 @@
     </style>
 </head>
 <body>
-<body>
 
 <div id="loader-overlay"><div class="raizen-spinner"></div><h2 style="border:none;margin-top:25px;">SINCRONIZANDO...</h2></div>
 <div id="toast-container"></div>
@@ -220,6 +220,7 @@
     <i class="fa-solid fa-right-from-bracket" style="font-size:12px;opacity:0.7;"></i>
 </div>
 
+<!-- MODAL LOGIN -->
 <div id="modal-login">
     <div class="login-box">
         <h3 id="login-titulo" style="color:var(--roxo-raizen);"><i class="fa-solid fa-lock"></i> ACESSO AO SISTEMA</h3>
@@ -242,52 +243,6 @@
         <input type="password" id="confirma-senha" class="login-input" placeholder="Confirme sua senha" autocomplete="new-password">
         <div id="primeira-senha-erro" style="color:#ef4444;font-weight:900;font-size:13px;text-align:center;margin-bottom:15px;display:none;"></div>
         <button onclick="salvarPrimeiraSenha()" class="login-btn" style="background:var(--verde-vivo);color:white;"><i class="fa-solid fa-check"></i> CRIAR SENHA E ENTRAR</button>
-    </div>
-</div>
-
-<!-- MODAL IMPORTAR AGENDAMENTOS -->
-<div id="modal-agendamentos">
-    <div class="agend-box">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
-            <div style="font-size:20px;font-weight:900;color:var(--roxo-raizen);display:flex;align-items:center;gap:12px;">
-                <i class="fa-solid fa-calendar-check"></i> IMPORTAR AGENDAMENTOS DO COLETA
-            </div>
-            <button onclick="fecharModalAgendamentos()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#94a3b8;">✕</button>
-        </div>
-        <div style="background:#eff6ff;border-radius:16px;padding:16px 20px;margin-bottom:20px;font-size:13px;font-weight:600;color:#1d4ed8;">
-            <i class="fa-solid fa-circle-info"></i> Cole o conteúdo copiado do Excel do Coleta (Ctrl+A → Ctrl+C na planilha). O sistema importa apenas os status <b>Agendado</b> e <b>Agendado Automaticamente</b>.
-        </div>
-        <textarea id="textarea-agendamentos" placeholder="Cole aqui o conteúdo do Excel do Coleta..." style="width:100%;height:180px;padding:16px;border:3px solid #e2e8f0;border-radius:16px;font-size:12px;font-weight:600;font-family:monospace;background:#f8fafc;resize:vertical;color:#1e293b;outline:none;margin-bottom:16px;"></textarea>
-        <div id="preview-agendamentos" style="display:none;margin-bottom:16px;"></div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;">
-            <button onclick="parsearAgendamentos()" style="background:var(--roxo-raizen);color:white;border:none;border-radius:16px;padding:16px 28px;font-size:15px;font-weight:900;cursor:pointer;flex:1;text-transform:uppercase;">
-                <i class="fa-solid fa-magnifying-glass"></i> PROCESSAR
-            </button>
-            <button onclick="document.getElementById('textarea-agendamentos').value='';document.getElementById('preview-agendamentos').style.display='none';" style="background:#f1f5f9;color:#475569;border:none;border-radius:16px;padding:16px 20px;font-size:14px;font-weight:900;cursor:pointer;">
-                <i class="fa-solid fa-trash"></i> LIMPAR
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL DETALHE / REVERTER SAÍDA -->
-<div id="modal-detalhe-saida">
-    <div class="detalhe-saida-box">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
-            <div style="font-size:20px;font-weight:900;color:#0ea5e9;display:flex;align-items:center;gap:12px;">
-                <i class="fa-solid fa-truck-ramp-box"></i> DETALHES DA SAÍDA
-            </div>
-            <button onclick="fecharModalDetalheSaida()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#94a3b8;">✕</button>
-        </div>
-        <div id="detalhe-saida-conteudo"></div>
-        <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;">
-            <button id="btn-reverter-saida" onclick="reverterSaida()" style="background:#dc2626;color:white;border:none;border-radius:16px;padding:16px 28px;font-size:14px;font-weight:900;cursor:pointer;flex:1;text-transform:uppercase;">
-                <i class="fa-solid fa-rotate-left"></i> REVERTER SAÍDA
-            </button>
-            <button onclick="fecharModalDetalheSaida()" style="background:#f1f5f9;color:#475569;border:none;border-radius:16px;padding:16px 20px;font-size:14px;font-weight:900;cursor:pointer;">
-                FECHAR
-            </button>
-        </div>
     </div>
 </div>
 
@@ -380,7 +335,6 @@
         </button>
     </div>
 </div>
-
 
 <script>
     const DB = {
@@ -480,6 +434,24 @@
         if(!usuario) return false;
         usuarioLogado = usuario;
         mostrarBadge();
+        try{
+            if(usuario.perfil === 'GATE' || usuario.perfil === 'OPERADOR'){
+                document.getElementById('secao-entrada').style.display='none';
+                document.getElementById('modulo-operador-full').style.display='block';
+                await pedirPermissaoNotificacao();
+                await carregarDados();
+                setInterval(carregarDados, 30000);
+            } else {
+                document.getElementById('secao-entrada').style.display='none';
+                document.getElementById('modulo-supervisor').style.display='block';
+                await carregarTanques();
+                renderSupervisor();
+                setInterval(async()=>{await carregarTanques();renderSupervisor();}, 30000);
+            }
+        }catch(e){
+            console.error('Erro ao restaurar sessão:', e);
+            localStorage.removeItem(SESSAO_KEY);
+        }
         return true;
     }
 
@@ -605,7 +577,7 @@
             const perfilConfirmado=_usuarioPrimeiroAcesso.perfil;
             _usuarioPrimeiroAcesso=null;
             mostrarBadge();
-            if(perfilConfirmado==='GATE'){
+            if(perfilConfirmado==='GATE'||perfilConfirmado==='OPERADOR'){
                 window.location.href = 'gate.html';
             } else {
                 window.location.href = 'supervisor.html';
@@ -701,12 +673,18 @@
                 body:JSON.stringify({acao,detalhe,quando:agora(),usuario_nome:usuarioLogado.nome,perfil:usuarioLogado.perfil})});
         }catch(e){console.error('Erro log',e);}
     }
-    /* ─── FILTROS / REABERTURA / FORM ─────────────────── */
-    function filtrar(tipo,btn){
-        filtroAtivo=tipo;
-        document.querySelectorAll('#modulo-operador-full .chip-filtro').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active'); renderTabela(); renderPrecheck();
-    }
+
+    // ── Form do motorista ────────────────────────────────
+    mascaraPlaca(document.getElementById('placa'));
+    mascaraPlaca(document.getElementById('re_placa'));
+
+    document.getElementById('whatsapp').oninput=function(e){
+        let v=e.target.value.replace(/\D/g,'').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+        e.target.value=!v[2]?v[1]:'('+v[1]+') '+v[2]+(v[3]?'-'+v[3]:'');
+    };
+
+    document.getElementById('login-senha').addEventListener('keydown',e=>{if(e.key==='Enter')processarLogin();});
+
     function abrirReabertura(){document.getElementById('form-principal-wrapper').style.display='none';document.getElementById('form-reabertura-wrapper').style.display='block';}
     function fecharReabertura(){document.getElementById('form-reabertura-wrapper').style.display='none';document.getElementById('form-principal-wrapper').style.display='block';}
 
@@ -735,49 +713,34 @@
         if(j24) jornadaValor='24 HORAS';
         else if(semJ) jornadaValor='SEM JORNADA - '+horaAtual();
         else jornadaValor=limite;
+        const produto=document.getElementById('produto').value;
+        const tel=document.getElementById('whatsapp').value;
+        if(!produto){ alert('Selecione o produto.'); return; }
+        if(!tel||tel.replace(/\D/g,'').length<10){ alert('Informe o WhatsApp corretamente.'); return; }
         setLoader(true);
         try{
-            const placaSemHifen=placa.replace('-','');
-            const chk=await fetch(`${DB.URL}/rest/v1/registros?PLACA=eq.${placa}&SAIDA=is.null&select=*`,{headers:DB.H});
-            let existentes=await chk.json();
-            if((!existentes||existentes.length===0) && placaSemHifen!==placa){
-                const chk2=await fetch(`${DB.URL}/rest/v1/registros?PLACA=eq.${placaSemHifen}&SAIDA=is.null&select=*`,{headers:DB.H});
-                const existentes2=await chk2.json();
-                if(existentes2&&existentes2.length>0) existentes=existentes2;
-            }
-            if(existentes&&existentes.length>0){
-                const reg=existentes[0];
-                if(reg.PRECHECK===true){
-                    const produtoFinal=reg.PRODUTO||document.getElementById('produto').value;
-                    const patchData={
-                        PLACA:placa, TELEFONE:document.getElementById('whatsapp').value,
-                        JORNADA:jornadaValor, PRECHECK:false, ENTRADA:agora(),
-                        PRODUTO:produtoFinal, AGENDAMENTO:reg.AGENDAMENTO||null,
-                        VOLUME:reg.VOLUME||null, FRETE:reg.FRETE||'FOB'
-                    };
-                    await new Promise(r=>setTimeout(r,500));
-                    await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${reg.ID}`,{method:'PATCH',headers:DB.H,body:JSON.stringify(patchData)});
-                    // ── NOTIFICAÇÃO REAL: motorista confirmou entrada (saiu do precheck) ──
-                    dispararNotificacao(placa, produtoFinal);
-                    const volMsg=reg.VOLUME?`\nVolume: ${Number(reg.VOLUME).toLocaleString('pt-BR')} L`:'';
-                    const agMsg=reg.AGENDAMENTO?`\nAgendamento: ${String(reg.AGENDAMENTO).slice(0,16).replace('T',' ')}`:'';
-                    alert(`✅ ENTRADA CONFIRMADA!\n\nPlaca: ${placa}\nProduto: ${produtoFinal}${agMsg}${volMsg}`);
-                    location.reload();
-                } else {
-                    alert(`🚫 PLACA JÁ REGISTRADA!\n\nPlaca: ${reg.PLACA}\nProduto: ${reg.PRODUTO}\nEntrada: ${reg.ENTRADA}`);
-                }
-                setLoader(false); return;
-            }
-            const data={
-                PLACA:placa, PRODUTO:document.getElementById('produto').value,
-                TELEFONE:document.getElementById('whatsapp').value,
-                JORNADA:jornadaValor, ENTRADA:agora(), PRECHECK:false
-            };
-            const r=await fetch(`${DB.URL}/rest/v1/registros`,{method:'POST',headers:DB.H,body:JSON.stringify(data)});
-            if(r.ok){ alert('REGISTRADO!'); location.reload(); }
-        }finally{setLoader(false);}
+            const chk=await fetch(`${DB.URL}/rest/v1/registros?PLACA=eq.${placa}&SAIDA=is.null`,{headers:DB.H});
+            const ex=await chk.json();
+            if(ex.length>0){ alert('⚠️ Esta placa já tem um registro ativo no sistema!\n\nPlaca: '+placa); setLoader(false); return; }
+            const entrada=new Date().toLocaleString('pt-BR');
+            const body={PLACA:placa,PRODUTO:produto,TELEFONE:tel,JORNADA:jornadaValor,ENTRADA:entrada,SAIDA:null,VOLUME:null,AGENDAMENTO:null,FRETE:'FOB'};
+            const r=await fetch(`${DB.URL}/rest/v1/registros`,{method:'POST',headers:{...DB.H,'Prefer':'return=representation'},body:JSON.stringify(body)});
+            if(r.ok||r.status===201){
+                showToast('✅ Registro de '+placa+' realizado com sucesso!','ok');
+                document.getElementById('formMaster').reset();
+                document.getElementById('jornada24').checked=false;
+                document.getElementById('semjornada').checked=false;
+                document.getElementById('opcao-livre-master').classList.remove('marcado');
+                document.getElementById('opcao-semj-master').classList.remove('marcado');
+                document.getElementById('tag-horario-master').classList.remove('visivel');
+                document.getElementById('area-tempo').style.opacity='1';
+                document.getElementById('limite').disabled=false;
+            } else { const err=await r.text(); alert('ERRO AO REGISTRAR:\n'+err); }
+        }catch(e){ alert('Erro de conexão: '+e.message); }
+        finally{ setLoader(false); }
     };
 
+    // ── Ao carregar: verificar sessão e redirecionar ──────
     window.addEventListener('load', async()=>{
         setLoader(true);
         try{
@@ -785,14 +748,15 @@
             if(usuario){
                 if(usuario.perfil === 'GATE' || usuario.perfil === 'OPERADOR'){
                     window.location.href = 'gate.html';
+                    return;
                 } else if(usuario.perfil === 'SUPERVISOR'){
                     window.location.href = 'supervisor.html';
+                    return;
                 }
             }
         }catch(e){ console.error(e); }
         finally{ setLoader(false); }
     });
-
 </script>
 </body>
 </html>
