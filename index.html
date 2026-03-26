@@ -171,6 +171,11 @@
         .card-status-badge.convocado { background: #f0fdf4; color: #166534; border: 2px solid #86efac; }
         .card-status-badge.aguardando { background: #fef9c3; color: #854d0e; border: 2px solid #fde68a; }
 
+        /* CARD MOTORISTA INDISPONÍVEL */
+        .fila-card.indisponivel { background: #fef2f2 !important; border: 3px solid #ef4444 !important; }
+        .fila-card.indisponivel .fila-placa { color: #dc2626 !important; }
+        .btn-icon-indisp { background: #fee2e2; color: #dc2626; border: 2px solid #fca5a5 !important; }
+        .btn-icon-indisp.ativo { background: #dc2626 !important; color: white !important; border: 2px solid #b91c1c !important; }
         /* CARD PRECHECK */
         .fila-card.precheck { background: #fff7ed; border: 3px solid var(--laranja-raizen); }
         .secao-precheck-titulo { display:flex; align-items:center; gap:14px; background:#fff7ed; border:3px solid var(--laranja-raizen); border-radius:18px; padding:18px 24px; margin:32px 0 18px; font-size:16px; font-weight:900; color:#92400e; }
@@ -416,6 +421,10 @@
         <button class="chip-filtro" onclick="filtrar('DIESEL',this)">DIESEL S10</button>
     </div>
     <div class="moldura-tabela">
+        <div id="secao-pateo-titulo" style="display:none;align-items:center;gap:14px;background:#eff6ff;border:3px solid #bfdbfe;border-radius:18px;padding:18px 24px;margin-bottom:18px;">
+            <div id="qtd-pateo" style="background:#1d4ed8;color:white;border-radius:50%;width:32px;height:32px;min-width:32px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;">0</div>
+            <div style="font-size:16px;font-weight:900;color:#1d4ed8;"><i class="fa-solid fa-circle-check"></i> 🚛 EM PÁTIO — AGUARDANDO DESCARGA</div>
+        </div>
         <div class="fila-grid" id="listaFila"></div>
     </div>
     
@@ -1178,7 +1187,11 @@
     /* ─── STATUS BADGE DO CARD ────────────────────────── */
     function getCardStatusBadge(item, t, livre){
         const vol=item.VOLUME||0;
-        // Sem tanque ou sem espaço
+        if(item.INDISPONIVEL){
+            return `<div class="card-status-badge" style="background:#fef2f2;color:#dc2626;border-color:#fca5a5;">
+                <i class="fa-solid fa-user-xmark"></i> MOTORISTA INDISPONÍVEL
+            </div>`;
+        }
         if(!t||!t.ativo_tanque||livre<=0){
             return `<div class="card-status-badge" style="background:#fef2f2;color:#dc2626;border-color:#fca5a5;">
                 <i class="fa-solid fa-ban"></i> 🚛 EM PÁTIO — TANQUE SEM ESPAÇO
@@ -1189,9 +1202,7 @@
                 <i class="fa-solid fa-triangle-exclamation"></i> 🚛 EM PÁTIO — VOLUME EXCEDE ESPAÇO
             </div>`;
         }
-        return `<div class="card-status-badge pateo">
-            <i class="fa-solid fa-circle-check"></i> 🚛 EM PÁTIO — AGUARDANDO DESCARGA
-        </div>`;
+        return ``;
     }
 
     /* ─── CARDS OPERADOR ─────────────────────────────── */
@@ -1219,8 +1230,13 @@
                 ?`<i class="fa-solid fa-magnifying-glass" style="font-size:50px;display:block;margin-bottom:15px;opacity:.3;"></i>Nenhum veículo encontrado para "<b>${busca}</b>".`
                 :`<i class="fa-solid fa-truck" style="font-size:50px;display:block;margin-bottom:15px;opacity:.3;"></i>Nenhum veículo no pátio.`;
             corpo.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:60px;color:#94a3b8;font-weight:900;font-size:18px;">${msg}</div>`;
+            const tEl=document.getElementById('secao-pateo-titulo'); if(tEl) tEl.style.display='none';
             return;
         }
+        const tEl=document.getElementById('secao-pateo-titulo');
+        const qEl=document.getElementById('qtd-pateo');
+        if(tEl) tEl.style.display='flex';
+        if(qEl) qEl.textContent=lista.length;
         lista.forEach(item=>{
             const id=item.ID;
             const cor=corProduto(item.PRODUTO);
@@ -1228,6 +1244,7 @@
             const livre=t?espacoOperador(t):0;
             const temAtivo=t&&t.ativo_tanque;
             const vol=item.VOLUME||0;
+            const indisp=!!item.INDISPONIVEL;
 
             // Badge de status no topo do card
             const statusBadge=getCardStatusBadge(item, t, livre);
@@ -1249,7 +1266,7 @@
             }
 
             const card=document.createElement('div');
-            card.className='fila-card';
+            card.className='fila-card'+(indisp?' indisponivel':'');
             card.innerHTML=`
                 ${statusBadge}
                 <div class="fila-card-top">
@@ -1275,10 +1292,7 @@
                 </div>
                 <div>
                     <div class="fila-label">Telefone</div>
-                    <div style="display:flex;gap:6px;">
-                        <input type="text" id="tel-${id}" value="${item.TELEFONE}" class="input-edit-table" style="flex:1;">
-                        <input type="text" id="tel-${id}"value="${item.TELEFONE}"class="input-edit-table"style="flex:1;"onkeydown="if(event.key==='Enter'){ event.preventDefault(); salvarCampo(${id},'TELEFONE'); }">
-                    </div>
+                    <input type="text" id="tel-${id}"value="${item.TELEFONE}"class="input-edit-table"onkeydown="if(event.key==='Enter'){ event.preventDefault(); salvarCampo(${id},'TELEFONE'); }">
                 </div>
                 <div class="fila-card-bot">
                     <button class="${waBtn}" ${waDisabled} style="flex:1;max-width:80px;" title="${waTitle}">
@@ -1288,6 +1302,11 @@
                         onclick="abrirModalSaida(${id},'${item.PLACA}','${item.PRODUTO}',${item.VOLUME||0})"
                         title="Registrar saída">
                         <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                    <button class="btn-icon-indisp btn-icon-action${indisp?' ativo':''}" style="flex:1;max-width:80px;"
+                        onclick="toggleIndisponivel(${id},'${item.PLACA}',${indisp})"
+                        title="${indisp?'Clique para marcar como disponível':'Marcar motorista como indisponível'}">
+                        <i class="fa-solid fa-user-${indisp?'xmark':'slash'}"></i>
                     </button>
                     <button class="btn-icon-del btn-icon-action" style="flex:1;max-width:80px;"
                         onclick="excluirRegistro(${id},'${item.PLACA}')"
@@ -1317,6 +1336,26 @@
     }
 
     // ── SALVAR VOLUME COM CONFIRMAÇÃO (Enter ou botão) ──
+    async function toggleIndisponivel(id, placa, atual){
+        const novoEstado = !atual;
+        const msg = novoEstado
+            ? `⚠️ Marcar motorista como INDISPONÍVEL?\n\nPlaca: ${placa}\n\nO card ficará vermelho.`
+            : `✅ Reverter para DISPONÍVEL?\n\nPlaca: ${placa}`;
+        if(!confirm(msg)) return;
+        setLoader(true);
+        try{
+            const r=await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${id}`,{method:'PATCH',headers:DB.H,body:JSON.stringify({INDISPONIVEL:novoEstado})});
+            if(r.ok){
+                await registrarLog('STATUS MOTORISTA',`Placa: ${placa} — ${novoEstado?'INDISPONÍVEL':'DISPONÍVEL novamente'}`);
+                showToast(novoEstado?`🔴 ${placa} marcado como INDISPONÍVEL`:`✅ ${placa} disponível novamente`, novoEstado?'erro':'ok');
+                carregarDados();
+            } else {
+                showToast('ERRO AO ATUALIZAR STATUS','erro');
+            }
+        }catch(e){ showToast('ERRO AO ATUALIZAR STATUS','erro'); }
+        finally{setLoader(false);}
+    }
+
     async function confirmarSalvarVolume(id){
         const volInput = document.getElementById(`vol-${id}`);
         const valor = parseFloat(volInput.value) || null;
@@ -1901,13 +1940,12 @@
 
         const placasImportadas=new Set(agendados.map(a=>a.placa));
 
-        // Busca todos os registros ativos com dados necessários
         let registrosAtivos=[];
         try{ const r=await fetch(`${DB.URL}/rest/v1/registros?SAIDA=is.null&select=ID,PLACA,PRECHECK,TELEFONE,JORNADA`,{headers:DB.H}); if(r.ok) registrosAtivos=await r.json(); }catch(e){}
 
         const placasExistentes=new Set(registrosAtivos.map(d=>d.PLACA));
 
-        // ── 1. REMOVER precheck que não estão na importação atual ──
+        // ── 1. REMOVER precheck ausentes da importação ──
         const precheckParaRemover=registrosAtivos.filter(r=>
             r.PRECHECK===true &&
             (!r.TELEFONE||r.TELEFONE.trim()==='') &&
@@ -1922,7 +1960,7 @@
             }catch(e){}
         }
 
-        // ── 2. INSERIR novos agendamentos que ainda não existem ──
+        // ── 2. INSERIR novos ──
         let inseridos=0,ignorados=0,erros=0;
         for(const a of agendados){
             if(placasExistentes.has(a.placa)){ignorados++;continue;}
