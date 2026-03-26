@@ -173,6 +173,11 @@
 
         /* CARD PRECHECK */
         .fila-card.precheck { background: #fff7ed; border: 3px solid var(--laranja-raizen); }
+        /* CARD MOTORISTA INDISPONÍVEL */
+        .fila-card.indisponivel { background: #fef2f2; border: 3px solid #ef4444; }
+        .fila-card.indisponivel .fila-placa { color: #dc2626; }
+        .btn-icon-indisponivel { background: #fee2e2; color: #dc2626; border: 2px solid #fca5a5 !important; }
+        .btn-icon-indisponivel.ativo { background: #dc2626; color: white; border: 2px solid #b91c1c !important; }
         .secao-precheck-titulo { display:flex; align-items:center; gap:14px; background:#fff7ed; border:3px solid var(--laranja-raizen); border-radius:18px; padding:18px 24px; margin:32px 0 18px; font-size:16px; font-weight:900; color:#92400e; }
         .secao-precheck-titulo .qtd-badge { background:var(--laranja-raizen); color:white; border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:900; flex-shrink:0; }
         #modal-agendamentos { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; }
@@ -1178,20 +1183,24 @@
     /* ─── STATUS BADGE DO CARD ────────────────────────── */
     function getCardStatusBadge(item, t, livre){
         const vol=item.VOLUME||0;
+        // Motorista indisponível
+        if(item.INDISPONIVEL){
+            return `<div class="card-status-badge" style="background:#fef2f2;color:#dc2626;border-color:#fca5a5;">
+                <i class="fa-solid fa-user-xmark"></i> MOTORISTA INDISPONÍVEL
+            </div>`;
+        }
         // Sem tanque ou sem espaço
         if(!t||!t.ativo_tanque||livre<=0){
             return `<div class="card-status-badge" style="background:#fef2f2;color:#dc2626;border-color:#fca5a5;">
-                <i class="fa-solid fa-ban"></i> 🚛 EM PÁTIO — TANQUE SEM ESPAÇO
+                <i class="fa-solid fa-ban"></i> 🚛 TANQUE SEM ESPAÇO
             </div>`;
         }
         if(vol>0&&vol>livre){
             return `<div class="card-status-badge" style="background:#fff7ed;color:#c2410c;border-color:#fed7aa;">
-                <i class="fa-solid fa-triangle-exclamation"></i> 🚛 EM PÁTIO — VOLUME EXCEDE ESPAÇO
+                <i class="fa-solid fa-triangle-exclamation"></i> 🚛 VOLUME EXCEDE ESPAÇO
             </div>`;
         }
-        return `<div class="card-status-badge pateo">
-            <i class="fa-solid fa-circle-check"></i> 🚛 EM PÁTIO — AGUARDANDO DESCARGA
-        </div>`;
+        return ``;
     }
 
     /* ─── CARDS OPERADOR ─────────────────────────────── */
@@ -1249,7 +1258,7 @@
             }
 
             const card=document.createElement('div');
-            card.className='fila-card';
+            card.className='fila-card'+(item.INDISPONIVEL?' indisponivel':'');
             card.innerHTML=`
                 ${statusBadge}
                 <div class="fila-card-top">
@@ -1287,6 +1296,11 @@
                         onclick="abrirModalSaida(${id},'${item.PLACA}','${item.PRODUTO}',${item.VOLUME||0})"
                         title="Registrar saída">
                         <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                    <button class="btn-icon-indisponivel btn-icon-action${item.INDISPONIVEL?' ativo':''}" style="flex:1;max-width:80px;"
+                        onclick="toggleIndisponivel(${id},'${item.PLACA}',${item.INDISPONIVEL?'true':'false'})"
+                        title="${item.INDISPONIVEL?'Motorista indisponível — clique para reverter':'Marcar motorista como indisponível'}">
+                        <i class="fa-solid fa-user-${item.INDISPONIVEL?'xmark':'slash'}"></i>
                     </button>
                     <button class="btn-icon-del btn-icon-action" style="flex:1;max-width:80px;"
                         onclick="excluirRegistro(${id},'${item.PLACA}')"
@@ -1344,6 +1358,24 @@
                 carregarDados();
             } else throw new Error();
         }catch{ showToast('ERRO AO SALVAR', 'erro'); }
+        finally{setLoader(false);}
+    }
+
+    async function toggleIndisponivel(id, placa, atual){
+        const novoEstado = !atual;
+        const msg = novoEstado
+            ? `⚠️ Marcar motorista como INDISPONÍVEL?\n\nPlaca: ${placa}\n\nO card ficará vermelho.`
+            : `✅ Reverter para DISPONÍVEL?\n\nPlaca: ${placa}`;
+        if(!confirm(msg)) return;
+        setLoader(true);
+        try{
+            const r=await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${id}`,{method:'PATCH',headers:DB.H,body:JSON.stringify({INDISPONIVEL:novoEstado})});
+            if(r.ok){
+                await registrarLog('STATUS MOTORISTA', `Placa: ${placa} — ${novoEstado?'INDISPONÍVEL':'DISPONÍVEL novamente'}`);
+                showToast(novoEstado?`🔴 ${placa} marcado como INDISPONÍVEL`:`✅ ${placa} disponível novamente`, novoEstado?'erro':'ok');
+                carregarDados();
+            } else throw new Error();
+        }catch{ showToast('ERRO AO ATUALIZAR STATUS','erro'); }
         finally{setLoader(false);}
     }
 
