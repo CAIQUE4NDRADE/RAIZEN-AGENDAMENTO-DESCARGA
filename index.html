@@ -641,25 +641,35 @@
     PRODUTOS_MARGEM.forEach(p => MARGENS[p] = 120000); // defaults
 
     async function carregarMargens(){
+        // 1. Carrega do localStorage primeiro (funciona sempre)
+        PRODUTOS_MARGEM.forEach(p => {
+            const lsKey = 'raizen_margem_' + p.replace(/[^A-Za-z0-9]/g,'_');
+            const lsVal = localStorage.getItem(lsKey);
+            if(lsVal) MARGENS[p] = parseInt(lsVal) || 120000;
+        });
+        // 2. Tenta sobrescrever com valores do banco
         try{
-            const r = await fetch(`${DB.URL}/rest/v1/configuracoes?chave=like.margem_%&select=chave,valor`, {headers:DB.H});
-            console.log('[MARGENS] status fetch:', r.status);
+            const ctrl = new AbortController();
+            const timer = setTimeout(() => ctrl.abort(), 4000);
+            const r = await fetch(`${DB.URL}/rest/v1/configuracoes?chave=like.margem_%&select=chave,valor`, {headers:DB.H, signal:ctrl.signal});
+            clearTimeout(timer);
             if(r.ok){
                 const rows = await r.json();
-                console.log('[MARGENS] linhas retornadas:', rows);
                 rows.forEach(row=>{
                     const prod = PRODUTOS_MARGEM.find(p =>
                         'margem_'+p.replace(/[^A-Za-z0-9]/g,'_') === row.chave
                     );
-                    console.log('[MARGENS] chave:', row.chave, '-> produto:', prod, '-> valor:', row.valor);
-                    if(prod) MARGENS[prod] = parseInt(row.valor) || 120000;
+                    if(prod){
+                        MARGENS[prod] = parseInt(row.valor) || 120000;
+                        // Salva também no localStorage como cache
+                        localStorage.setItem('raizen_margem_' + prod.replace(/[^A-Za-z0-9]/g,'_'), String(MARGENS[prod]));
+                    }
                 });
-                console.log('[MARGENS] final:', JSON.stringify(MARGENS));
-            } else {
-                const txt = await r.text();
-                console.error('[MARGENS] erro fetch:', r.status, txt);
+                console.log('[MARGENS] carregado do banco:', JSON.stringify(MARGENS));
             }
-        }catch(e){ console.error('[MARGENS] Erro ao carregar margens',e); }
+        }catch(e){
+            console.warn('[MARGENS] banco indisponível, usando localStorage:', JSON.stringify(MARGENS));
+        }
     }
 
     const getMargemProduto = p => {
@@ -707,6 +717,8 @@
                 return;
             }
             MARGENS[produto] = val;
+            // Salva sempre no localStorage (fallback offline)
+            localStorage.setItem('raizen_margem_' + produto.replace(/[^A-Za-z0-9]/g,'_'), String(val));
             input.style.borderColor = '#86efac';
             setTimeout(()=>{ input.style.borderColor='#fed7aa'; }, 1500);
             showToast(`✅ Margem de ${produto}: ${Number(val).toLocaleString('pt-BR')} L salva!`,'ok');
