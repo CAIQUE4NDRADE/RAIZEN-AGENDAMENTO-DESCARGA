@@ -669,23 +669,41 @@
         if(isNaN(val) || val < 0){ showToast('Valor inválido.','erro'); return; }
         const chave = 'margem_' + produto.replace(/[^A-Za-z0-9]/g,'_');
         try{
-            const r = await fetch(`${DB.URL}/rest/v1/configuracoes`, {
-                method: 'POST',
-                headers: {...DB.H, 'Prefer': 'resolution=merge-duplicates,return=minimal'},
-                body: JSON.stringify({chave, valor: String(val)})
+            // Tenta PATCH (update) primeiro
+            const rPatch = await fetch(`${DB.URL}/rest/v1/configuracoes?chave=eq.${encodeURIComponent(chave)}`, {
+                method: 'PATCH',
+                headers: DB.H,
+                body: JSON.stringify({valor: String(val)})
             });
-            if(r.ok || r.status===201 || r.status===204){
-                MARGENS[produto] = val;
-                input.style.borderColor = '#86efac';
-                setTimeout(()=>{ input.style.borderColor='#fed7aa'; }, 1500);
-                showToast(`✅ Margem de ${produto}: ${Number(val).toLocaleString('pt-BR')} L salva!`,'ok');
-                await registrarLog('MARGEM ALTERADA',`${produto}: ${Number(val).toLocaleString('pt-BR')} L`);
-                await carregarTanques();
-                renderSupervisor();
-                renderMargensPorProduto();
-            } else {
-                showToast('Erro ao salvar. Verifique se a tabela "configuracoes" existe no Supabase.','erro');
+            // Se não atualizou nada (não existia), faz INSERT
+            const updated = rPatch.headers.get('content-range');
+            const nenhum = !updated || updated.startsWith('*/') || updated === '0-0/0' || updated.includes('/0');
+            if(rPatch.ok && nenhum){
+                const rPost = await fetch(`${DB.URL}/rest/v1/configuracoes`, {
+                    method: 'POST',
+                    headers: DB.H,
+                    body: JSON.stringify({chave, valor: String(val)})
+                });
+                if(!rPost.ok && rPost.status !== 409){
+                    const err = await rPost.text();
+                    console.error('Erro INSERT margem:', err);
+                    showToast('Erro ao salvar margem. Veja o console.','erro');
+                    return;
+                }
+            } else if(!rPatch.ok){
+                const err = await rPatch.text();
+                console.error('Erro PATCH margem:', err);
+                showToast('Erro ao salvar margem. Veja o console.','erro');
+                return;
             }
+            MARGENS[produto] = val;
+            input.style.borderColor = '#86efac';
+            setTimeout(()=>{ input.style.borderColor='#fed7aa'; }, 1500);
+            showToast(`✅ Margem de ${produto}: ${Number(val).toLocaleString('pt-BR')} L salva!`,'ok');
+            await registrarLog('MARGEM ALTERADA',`${produto}: ${Number(val).toLocaleString('pt-BR')} L`);
+            await carregarTanques();
+            renderSupervisor();
+            renderMargensPorProduto();
         }catch(e){ showToast('Erro de conexão ao salvar margem.','erro'); console.error(e); }
     }
 
