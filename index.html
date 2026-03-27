@@ -643,22 +643,32 @@
     async function carregarMargens(){
         try{
             const r = await fetch(`${DB.URL}/rest/v1/configuracoes?chave=like.margem_%&select=chave,valor`, {headers:DB.H});
+            console.log('[MARGENS] status fetch:', r.status);
             if(r.ok){
                 const rows = await r.json();
+                console.log('[MARGENS] linhas retornadas:', rows);
                 rows.forEach(row=>{
                     const prod = PRODUTOS_MARGEM.find(p =>
                         'margem_'+p.replace(/[^A-Za-z0-9]/g,'_') === row.chave
                     );
+                    console.log('[MARGENS] chave:', row.chave, '-> produto:', prod, '-> valor:', row.valor);
                     if(prod) MARGENS[prod] = parseInt(row.valor) || 120000;
                 });
+                console.log('[MARGENS] final:', JSON.stringify(MARGENS));
+            } else {
+                const txt = await r.text();
+                console.error('[MARGENS] erro fetch:', r.status, txt);
             }
-        }catch(e){ console.error('Erro ao carregar margens',e); }
+        }catch(e){ console.error('[MARGENS] Erro ao carregar margens',e); }
     }
 
     const getMargemProduto = p => {
-        const found = PRODUTOS_MARGEM.find(x => (p||'').toUpperCase().includes(x.toUpperCase().split(' ')[0])) ||
-                      PRODUTOS_MARGEM.find(x => x === p);
-        return MARGENS[found] ?? 120000;
+        if(!p) return 120000;
+        const pu = p.toUpperCase().trim();
+        let found = PRODUTOS_MARGEM.find(x => x.toUpperCase() === pu);
+        if(!found) found = PRODUTOS_MARGEM.find(x => pu.includes(x.toUpperCase()));
+        if(!found) found = PRODUTOS_MARGEM.find(x => x.toUpperCase().includes(pu));
+        return found ? (MARGENS[found] ?? 120000) : 120000;
     };
 
     async function salvarMargemProduto(produto){
