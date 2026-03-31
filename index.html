@@ -1397,10 +1397,14 @@
                         <input type="datetime-local" id="ag-${id}"value="${item.AGENDAMENTO?item.AGENDAMENTO.replace(' ','T').slice(0,16):''}"class="input-edit-table"onkeydown="if(event.key==='Enter'){ event.preventDefault(); salvarCampo(${id},'AGENDAMENTO'); }">
                     </div>
                     <div>
+                        <div>
                         <div class="fila-label">Volume (L)</div>
-                        <input type="number" id="vol-${id}"value="${item.VOLUME||''}"placeholder="Ex: 30000"class="input-edit-table"onkeydown="if(event.key==='Enter'){ event.preventDefault(); confirmarSalvarVolume(${id}); }">
-                    </div>
-                </div>
+                        <div style="display:flex;gap:5px;align-items:center;">
+                            <input type="number" id="vol-${id}" value="${item.VOLUME||''}" placeholder="Ex: 30000" class="input-edit-table" style="flex:1;" onkeydown="if(event.key==='Enter'){ event.preventDefault(); confirmarSalvarVolume(${id}); }">
+                            <button onclick="confirmarSalvarVolume(${id})" title="Salvar volume" style="padding:8px 10px;background:var(--roxo-raizen);color:white;border:none;border-radius:8px;cursor:pointer;font-size:15px;flex-shrink:0;">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                            </button>
+                        </div>
                 <div>
                     <div class="fila-label">Telefone</div>
                     <div style="display:flex;gap:6px;">
