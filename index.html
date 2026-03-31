@@ -2009,29 +2009,62 @@
         const preview=document.getElementById('preview-agendamentos');
         const agendados=preview._agendados;
         if(!agendados||!agendados.length) return;
-        if(!confirm(`Lançar ${agendados.length} agendamentos no sistema?`)) return;
+        if(!confirm(`Lançar ${agendados.length} agendamentos no sistema?\n\n⚠️ Registros de PRECHECK que não estiverem nesta nova lista serão removidos automaticamente.`)) return;
         setLoader(true);
-        let placasExistentes=new Set();
-        try{ const r=await fetch(`${DB.URL}/rest/v1/registros?SAIDA=is.null&select=PLACA`,{headers:DB.H}); if(r.ok){const data=await r.json();data.forEach(d=>placasExistentes.add(d.PLACA));} }catch(e){}
-        let inseridos=0,ignorados=0,erros=0;
-        for(const a of agendados){
-            if(placasExistentes.has(a.placa)){ignorados++;continue;}
+
+        // Placas da nova importação (normalizadas com hífen)
+        const placasNovaImportacao = new Set(agendados.map(a => {
+            const p = a.placa.length===7&&!a.placa.includes('-') ? a.placa.slice(0,3)+'-'+a.placa.slice(3) : a.placa;
+            return p.toUpperCase();
+        }));
+
+        // Busca todos registros ativos
+        let registrosAtivos = [];
+        try{
+            const r = await fetch(`${DB.URL}/rest/v1/registros?SAIDA=is.null&select=ID,PLACA,PRECHECK,TELEFONE,JORNADA`,{headers:DB.H});
+            if(r.ok) registrosAtivos = await r.json();
+        }catch(e){}
+
+        // Placas já no sistema (qualquer status)
+        const placasExistentes = new Set(registrosAtivos.map(d => (d.PLACA||'').toUpperCase()));
+
+        // Exclui precheck antigos que não estão na nova lista do Coleta
+        // (apenas os que ainda não deram entrada: TELEFONE e JORNADA vazios)
+        const precheckAntigos = registrosAtivos.filter(r =>
+            r.PRECHECK === true &&
+            (!r.TELEFONE || r.TELEFONE.trim() === '') &&
+            (!r.JORNADA  || r.JORNADA.trim()  === '') &&
+            !placasNovaImportacao.has((r.PLACA||'').toUpperCase())
+        );
+        let excluidos = 0;
+        for(const reg of precheckAntigos){
             try{
-                const placaFormatada=a.placa.length===7&&!a.placa.includes('-')?a.placa.slice(0,3)+'-'+a.placa.slice(3):a.placa;
+                const rd = await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${reg.ID}`,{method:'DELETE',headers:DB.H});
+                if(rd.ok) excluidos++;
+            }catch(e){}
+        }
+
+        // Insere novos agendamentos (ignora placas já no sistema)
+        let inseridos=0, ignorados=0, erros=0;
+        for(const a of agendados){
+            const placaFormatada = a.placa.length===7&&!a.placa.includes('-') ? a.placa.slice(0,3)+'-'+a.placa.slice(3) : a.placa;
+            if(placasExistentes.has(placaFormatada.toUpperCase())){ignorados++;continue;}
+            try{
                 const data={PLACA:placaFormatada,PRODUTO:a.produto||'',TELEFONE:'',JORNADA:'',ENTRADA:agora(),AGENDAMENTO:a.agendamento||null,VOLUME:a.volume||null,PRECHECK:true,FRETE:a.frete||'FOB'};
                 const r=await fetch(`${DB.URL}/rest/v1/registros`,{method:'POST',headers:DB.H,body:JSON.stringify(data)});
                 if(r.ok) inseridos++; else erros++;
             }catch{erros++;}
         }
-        // ── Recarregar sem disparar notificações para precheck ──
+
         await carregarDados();
         setLoader(false); fecharModalAgendamentos();
         document.getElementById('textarea-agendamentos').value=''; preview.style.display='none';
         let msg=`✅ ${inseridos} agendamento(s) lançados!`;
+        if(excluidos>0) msg+=`\n🗑️ ${excluidos} precheck(s) antigo(s) removido(s) (não estavam na nova lista).`;
         if(ignorados>0) msg+=`\n⚠️ ${ignorados} já estavam cadastrados (ignorados).`;
         if(erros>0) msg+=`\n❌ ${erros} com erro.`;
         alert(msg);
-        await registrarLog('AGENDAMENTOS IMPORTADOS',`${inseridos} agendamentos do Coleta lançados`);
+        await registrarLog('AGENDAMENTOS IMPORTADOS',`${inseridos} lançados, ${excluidos} precheck antigos removidos`);
     }
 
     /* ─── RENDER PRECHECK ───────────────────────────── */
