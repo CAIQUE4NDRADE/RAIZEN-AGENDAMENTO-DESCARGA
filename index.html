@@ -864,10 +864,12 @@
     }
 
     window.addEventListener('load', async()=>{
-        setLoader(true);
+        const sessao = localStorage.getItem(SESSAO_KEY);
+        if(sessao) setLoader(true); // só mostra sincronizando se tem sessão salva
+        const timeout = setTimeout(()=>{ setLoader(false); }, 6000); // failsafe: 6s máximo
         try{ await restaurarSessao(); }
         catch(e){ console.error(e); }
-        finally{ setLoader(false); }
+        finally{ clearTimeout(timeout); setLoader(false); }
     });
 
     const setLoader      = v  => document.getElementById('loader-overlay').style.display = v ? 'flex' : 'none';
