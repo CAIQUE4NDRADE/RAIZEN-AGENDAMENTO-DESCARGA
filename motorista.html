@@ -305,21 +305,26 @@
                 const reg = existentes[0];
                 // Se está no precheck: atualiza mantendo agendamento e volume já importados
                 if(reg.PRECHECK === true) {
+                    // Mantém produto do precheck se já definido; usa o selecionado pelo motorista como fallback
+                    const produtoFinal = (reg.PRODUTO && reg.PRODUTO.trim() !== '') ? reg.PRODUTO : produto;
+                    // Preserva volume: usa o valor numérico original (0 é válido, null fica null)
+                    const volumeFinal = (reg.VOLUME !== null && reg.VOLUME !== undefined) ? reg.VOLUME : null;
                     const r = await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${reg.ID}`, {
                         method: 'PATCH', headers: DB.H,
                         body: JSON.stringify({
                             PLACA:       placa,
-                            PRODUTO:     produto,
+                            PRODUTO:     produtoFinal,
                             TELEFONE:    tel,
                             JORNADA:     jornadaValor,
                             PRECHECK:    false,
                             ENTRADA:     agora(),
                             AGENDAMENTO: reg.AGENDAMENTO || null,
-                            VOLUME:      reg.VOLUME      || null
+                            VOLUME:      volumeFinal,
+                            FRETE:       reg.FRETE || 'FOB'
                         })
                     });
                     if(r.ok) {
-                        mostrarSucesso(placa, `Entrada registrada com sucesso!\nProduto: ${produto}\nAguarde a convocação do gate.`, 'Entrada Confirmada!');
+                        mostrarSucesso(placa, `Entrada registrada com sucesso!\nProduto: ${produtoFinal}\nAguarde a convocação do gate.`, 'Entrada Confirmada!');
                     } else {
                         mostrarErro('entrada', 'Erro ao registrar. Tente novamente.');
                     }
@@ -404,9 +409,7 @@
     }
 
     if('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js', { scope: './' }).catch(() => {});
-        });
+        window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
     }
 </script>
 </body>
