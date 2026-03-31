@@ -1263,20 +1263,24 @@
                     <span style="font-size:12px;color:#64748b;font-weight:700;">JORNADA</span>
                     <span style="font-size:13px;">${verificarJornada(item.JORNADA)}</span>
                 </div>
-                <div class="fila-card-mid">
+                <div style="display:flex;justify-content:space-between;align-items:center;background:#f8fafc;border-radius:12px;padding:8px 12px;">
                     <div>
                         <div class="fila-label">Agendamento</div>
-                        <input type="datetime-local" id="ag-${id}" value="${item.AGENDAMENTO?item.AGENDAMENTO.replace(' ','T').slice(0,16):''}" class="input-edit-table" onkeydown="if(event.key==='Enter'){ event.preventDefault(); salvarCampo(${id},'AGENDAMENTO'); }">
+                        <div style="font-size:12px;font-weight:700;color:#475569;">${item.AGENDAMENTO?item.AGENDAMENTO.replace('T',' ').slice(0,16):'—'}</div>
                     </div>
-                    <div>
+                    <input type="datetime-local" id="ag-${id}" value="${item.AGENDAMENTO?item.AGENDAMENTO.replace(' ','T').slice(0,16):''}" style="opacity:0;position:absolute;width:1px;height:1px;pointer-events:none;" onkeydown="if(event.key==='Enter'){ event.preventDefault(); salvarCampo(${id},'AGENDAMENTO'); }">
+                    <button onclick="document.getElementById('ag-${id}').style.cssText='opacity:1;position:static;width:auto;height:auto;pointer-events:auto;';document.getElementById('ag-${id}').focus();" title="Editar agendamento" style="background:none;border:2px solid #e2e8f0;border-radius:8px;padding:5px 8px;cursor:pointer;color:#94a3b8;font-size:12px;">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                </div>
+                <div style="display:flex;gap:8px;align-items:flex-end;">
+                    <div style="flex:1;">
                         <div class="fila-label">Volume (L)</div>
-                        <div style="display:flex;gap:5px;align-items:center;">
-                            <input type="number" id="vol-${id}" value="${item.VOLUME||''}" placeholder="Ex: 30000" class="input-edit-table" style="flex:1;min-width:0;" onkeydown="if(event.key==='Enter'){ event.preventDefault(); confirmarSalvarVolume(${id}); }">
-                            <button onclick="confirmarSalvarVolume(${id})" title="Salvar volume" style="padding:8px 10px;background:var(--roxo-raizen);color:white;border:none;border-radius:8px;cursor:pointer;font-size:15px;flex-shrink:0;height:38px;">
-                                <i class="fa-solid fa-floppy-disk"></i>
-                            </button>
-                        </div>
+                        <input type="number" id="vol-${id}" value="${item.VOLUME||''}" placeholder="Ex: 30000" class="input-edit-table" style="width:100%;" onkeydown="if(event.key==='Enter'){ event.preventDefault(); confirmarSalvarVolume(${id}); }">
                     </div>
+                    <button onclick="confirmarSalvarVolume(${id})" title="Salvar volume" style="padding:9px 12px;background:var(--roxo-raizen);color:white;border:none;border-radius:8px;cursor:pointer;font-size:16px;flex-shrink:0;margin-bottom:1px;">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                    </button>
                 </div>
                 <div>
                     <div class="fila-label">Telefone</div>
