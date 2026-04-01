@@ -1102,7 +1102,7 @@
                 i.PRECHECK===true &&
                 (!i.TELEFONE||i.TELEFONE.trim()==='') &&
                 (!i.JORNADA||i.JORNADA.trim()==='')
-            )).map(i=>({...i, STATUS_LOCAL: _statusLocal[i.ID]||null}));
+            )).map(i=>({...i, STATUS_LOCAL: i.STATUS_GATE||null}));
             await carregarTanques();
             renderTabela(); renderPrecheck(); renderResumoTanques(); renderBannersAviso();
         }catch(e){console.error('Falha sync',e);}
@@ -1346,38 +1346,48 @@
         finally{setLoader(false);}
     }
 
-    // ── STATUS LOCAL (ausente / tanque cheio) — armazenado só em memória ──
-    const _statusLocal = {}; // { [id]: 'AUSENTE' | 'TANQUE_CHEIO' | null }
+    // ── STATUS GATE (ausente / tanque cheio) — salvo no banco ──
+    async function _salvarStatusGate(id, placa, novoStatus){
+        try{
+            await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${id}`,{
+                method:'PATCH', headers:DB.H,
+                body:JSON.stringify({STATUS_GATE: novoStatus})
+            });
+            // Atualiza memória local imediatamente sem esperar sync completo
+            memoriaFila = memoriaFila.map(i => i.ID===id ? {...i, STATUS_LOCAL: novoStatus} : i);
+            renderTabela();
+        }catch(e){
+            showToast('Erro ao salvar status.','erro');
+            console.error(e);
+        }
+    }
 
-    function marcarAusente(id, placa){
-        const atual = _statusLocal[id];
+    async function marcarAusente(id, placa){
+        const item = memoriaFila.find(i=>i.ID===id);
+        const atual = item?.STATUS_LOCAL;
         if(atual === 'AUSENTE'){
-            delete _statusLocal[id];
+            await _salvarStatusGate(id, placa, null);
             showToast(`${placa} — Ausência removida.`, 'info');
+            registrarLog('AUSENTE REMOVIDO', `Placa: ${placa}`);
         } else {
-            if(atual === 'TANQUE_CHEIO') delete _statusLocal[id];
-            _statusLocal[id] = 'AUSENTE';
+            await _salvarStatusGate(id, placa, 'AUSENTE');
             showToast(`${placa} — Marcado como AUSENTE.`, 'info');
             registrarLog('MOTORISTA AUSENTE', `Placa: ${placa} — marcado como ausente pelo gate`);
         }
-        // Injeta o status_local na memória e re-renderiza sem buscar o banco
-        memoriaFila = memoriaFila.map(i => i.ID===id ? {...i, STATUS_LOCAL: _statusLocal[id]||null} : i);
-        renderTabela();
     }
 
-    function marcarTanqueCheioBloqueio(id, placa){
-        const atual = _statusLocal[id];
+    async function marcarTanqueCheioBloqueio(id, placa){
+        const item = memoriaFila.find(i=>i.ID===id);
+        const atual = item?.STATUS_LOCAL;
         if(atual === 'TANQUE_CHEIO'){
-            delete _statusLocal[id];
+            await _salvarStatusGate(id, placa, null);
             showToast(`${placa} — Bloqueio por tanque cheio removido.`, 'info');
+            registrarLog('TANQUE CHEIO REMOVIDO', `Placa: ${placa}`);
         } else {
-            if(atual === 'AUSENTE') delete _statusLocal[id];
-            _statusLocal[id] = 'TANQUE_CHEIO';
+            await _salvarStatusGate(id, placa, 'TANQUE_CHEIO');
             showToast(`${placa} — Bloqueado: TANQUE CHEIO.`, 'info');
             registrarLog('BLOQUEADO TANQUE CHEIO', `Placa: ${placa} — marcado como indisponível (tanque cheio)`);
         }
-        memoriaFila = memoriaFila.map(i => i.ID===id ? {...i, STATUS_LOCAL: _statusLocal[id]||null} : i);
-        renderTabela();
     }
 
     // ── SALVAR VOLUME COM CONFIRMAÇÃO (Enter ou botão) ──
@@ -1446,7 +1456,7 @@
         setLoader(true);
         try{
             const saida=agora();
-            await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${id}`,{method:'PATCH',headers:DB.H,body:JSON.stringify({SAIDA:saida})});
+            await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${id}`,{method:'PATCH',headers:DB.H,body:JSON.stringify({SAIDA:saida, STATUS_GATE:null})});
             await fetch(`${DB.URL}/rest/v1/tanques_individuais?tanque=eq.${t.ativo_tanque}`,{method:'PATCH',headers:DB.H,body:JSON.stringify({disponivel:novoDisp})});
             await registrarLog('SAIDA REGISTRADA',`Placa: ${placa} — ${produto} — Volume: ${fmtL(volume)} — Tanque ${t.ativo_tanque} — Disponível após: ${fmtL(novoDisp)}`);
             await carregarDados();
