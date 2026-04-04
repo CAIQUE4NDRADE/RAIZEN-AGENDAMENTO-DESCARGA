@@ -98,16 +98,6 @@
         .btn-icon-saida { background: #3b82f6; color: white; }
         .btn-icon-del  { background: #fff0f0; color: var(--cor-erro); border: 2px solid #fca5a5 !important; }
         .btn-icon-wa.vol-excede { background: #fff7ed; color: #c2410c; border: 2px solid #fed7aa; cursor: not-allowed; }
-        .btn-icon-ausente { background: #fef3c7; color: #d97706; border: 2px solid #fde68a !important; }
-        .btn-icon-ausente.ativo { background: #d97706; color: white; border: 2px solid #b45309 !important; }
-        .btn-icon-tanque-bloq { background: #f1f5f9; color: #64748b; border: 2px solid #e2e8f0 !important; }
-        .btn-icon-tanque-bloq.ativo { background: #dc2626; color: white; border: 2px solid #b91c1c !important; }
-        /* Card ausente */
-        .fila-card.ausente { background: #fffbeb; border-color: #fde68a; }
-        .fila-card.ausente .fila-placa { color: #d97706; }
-        /* Card tanque cheio bloqueado */
-        .fila-card.tanque-bloqueado { background: #fef2f2; border-color: #fca5a5; }
-        .fila-card.tanque-bloqueado .fila-placa { color: #dc2626; }
 
         .btn-master { width: 100%; padding: 35px; background: var(--roxo-raizen); color: white; border: none; border-radius: 30px; font-size: 26px; font-weight: 900; cursor: pointer; text-transform: uppercase; box-shadow: 0 15px 0 var(--roxo-sombra); margin-bottom: 25px; display: flex; justify-content: center; align-items: center; gap: 20px; }
         .btn-master:active { transform: translateY(10px); box-shadow: 0 5px 0 var(--roxo-sombra); }
@@ -1102,7 +1092,7 @@
                 i.PRECHECK===true &&
                 (!i.TELEFONE||i.TELEFONE.trim()==='') &&
                 (!i.JORNADA||i.JORNADA.trim()==='')
-            )).map(i=>({...i, STATUS_LOCAL: i.STATUS_GATE||null}));
+            ));
             await carregarTanques();
             renderTabela(); renderPrecheck(); renderResumoTanques(); renderBannersAviso();
         }catch(e){console.error('Falha sync',e);}
@@ -1258,28 +1248,15 @@
                 waDisabled=`onclick="chamarWhatsApp('${item.TELEFONE}')" title="Convocar via WhatsApp"`;
             }
 
-            const isAusente = item.STATUS_LOCAL === 'AUSENTE';
-            const isBloqueado = item.STATUS_LOCAL === 'TANQUE_CHEIO';
-
             const card=document.createElement('div');
-            let cardClass = 'fila-card';
-            if(isAusente) cardClass += ' ausente';
-            if(isBloqueado) cardClass += ' tanque-bloqueado';
-            card.className = cardClass;
-
-            // Badge extra se ausente ou bloqueado
-            let badgeExtra = '';
-            if(isAusente) badgeExtra = `<div style="background:#fef3c7;border:2px solid #fde68a;border-radius:12px;padding:8px 14px;font-size:11px;font-weight:900;color:#d97706;display:flex;align-items:center;gap:6px;margin-bottom:2px;"><i class="fa-solid fa-user-slash"></i> MOTORISTA AUSENTE</div>`;
-            if(isBloqueado) badgeExtra = `<div style="background:#fef2f2;border:2px solid #fca5a5;border-radius:12px;padding:8px 14px;font-size:11px;font-weight:900;color:#dc2626;display:flex;align-items:center;gap:6px;margin-bottom:2px;"><i class="fa-solid fa-gas-pump"></i> TANQUE CHEIO — INDISPONÍVEL</div>`;
-
+            card.className='fila-card';
             card.innerHTML=`
-                ${badgeExtra}
                 ${statusBadge}
                 <div class="fila-card-top">
                     <span class="fila-placa" onclick="alert('🕐 Hora de entrada:\\n${item.PLACA} — ${item.ENTRADA}')">${item.PLACA}</span>
                     <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
                         <span style="background:${cor};color:white;padding:6px 14px;border-radius:12px;font-size:12px;font-weight:900;">${item.PRODUTO}</span>
-                        ${item.FRETE?`<span style="background:${item.FRETE==='CIF'?'#dbeafe':'#dcfce7'};color:${item.FRETE==='CIF'?'#1d4ed8':'#166634'};padding:4px 10px;border-radius:10px;font-size:11px;font-weight:900;border:2px solid ${item.FRETE==='CIF'?'#93c5fd':'#86efac'};">${item.FRETE}</span>`:''}
+                        ${item.FRETE?`<span style="background:${item.FRETE==='CIF'?'#dbeafe':'#dcfce7'};color:${item.FRETE==='CIF'?'#1d4ed8':'#166534'};padding:4px 10px;border-radius:10px;font-size:11px;font-weight:900;border:2px solid ${item.FRETE==='CIF'?'#93c5fd':'#86efac'};">${item.FRETE}</span>`:''}
                     </div>
                 </div>
                 <div style="display:flex;justify-content:space-between;align-items:center;background:#f8fafc;border-radius:12px;padding:10px 14px;">
@@ -1298,28 +1275,21 @@
                 </div>
                 <div>
                     <div class="fila-label">Telefone</div>
-                    <input type="text" id="tel-${id}"value="${item.TELEFONE}"class="input-edit-table"style="width:100%;"onkeydown="if(event.key==='Enter'){ event.preventDefault(); salvarCampo(${id},'TELEFONE'); }">
+                    <div style="display:flex;gap:6px;">
+                        <input type="text" id="tel-${id}" value="${item.TELEFONE}" class="input-edit-table" style="flex:1;">
+                        <input type="text" id="tel-${id}"value="${item.TELEFONE}"class="input-edit-table"style="flex:1;"onkeydown="if(event.key==='Enter'){ event.preventDefault(); salvarCampo(${id},'TELEFONE'); }">
+                    </div>
                 </div>
                 <div class="fila-card-bot">
-                    <button class="${waBtn}" ${waDisabled} style="flex:1;" title="${waTitle}">
+                    <button class="${waBtn}" ${waDisabled} style="flex:1;max-width:80px;" title="${waTitle}">
                         <i class="fa-brands fa-whatsapp"></i>
                     </button>
-                    <button class="btn-icon-saida btn-icon-action" style="flex:1;"
+                    <button class="btn-icon-saida btn-icon-action" style="flex:1;max-width:80px;"
                         onclick="abrirModalSaida(${id},'${item.PLACA}','${item.PRODUTO}',${item.VOLUME||0})"
                         title="Registrar saída">
                         <i class="fa-solid fa-right-from-bracket"></i>
                     </button>
-                    <button class="btn-icon-ausente btn-icon-action${isAusente?' ativo':''}" style="flex:1;"
-                        onclick="marcarAusente(${id},'${item.PLACA}')"
-                        title="${isAusente?'Motorista marcado como ausente — clique para desfazer':'Marcar motorista como ausente'}">
-                        <i class="fa-solid fa-user-slash"></i>
-                    </button>
-                    <button class="btn-icon-tanque-bloq btn-icon-action${isBloqueado?' ativo':''}" style="flex:1;"
-                        onclick="marcarTanqueCheioBloqueio(${id},'${item.PLACA}')"
-                        title="${isBloqueado?'Bloqueado por tanque cheio — clique para desfazer':'Bloquear: tanque cheio / produto indisponível'}">
-                        <i class="fa-solid fa-gas-pump"></i>
-                    </button>
-                    <button class="btn-icon-del btn-icon-action" style="flex:1;"
+                    <button class="btn-icon-del btn-icon-action" style="flex:1;max-width:80px;"
                         onclick="excluirRegistro(${id},'${item.PLACA}')"
                         title="Excluir registro">
                         <i class="fa-solid fa-trash"></i>
@@ -1344,50 +1314,6 @@
             } else throw new Error();
         }catch{showToast('ERRO AO EXCLUIR. Tente novamente.','erro');}
         finally{setLoader(false);}
-    }
-
-    // ── STATUS GATE (ausente / tanque cheio) — salvo no banco ──
-    async function _salvarStatusGate(id, placa, novoStatus){
-        try{
-            await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${id}`,{
-                method:'PATCH', headers:DB.H,
-                body:JSON.stringify({STATUS_GATE: novoStatus})
-            });
-            // Atualiza memória local imediatamente sem esperar sync completo
-            memoriaFila = memoriaFila.map(i => i.ID===id ? {...i, STATUS_LOCAL: novoStatus} : i);
-            renderTabela();
-        }catch(e){
-            showToast('Erro ao salvar status.','erro');
-            console.error(e);
-        }
-    }
-
-    async function marcarAusente(id, placa){
-        const item = memoriaFila.find(i=>i.ID===id);
-        const atual = item?.STATUS_LOCAL;
-        if(atual === 'AUSENTE'){
-            await _salvarStatusGate(id, placa, null);
-            showToast(`${placa} — Ausência removida.`, 'info');
-            registrarLog('AUSENTE REMOVIDO', `Placa: ${placa}`);
-        } else {
-            await _salvarStatusGate(id, placa, 'AUSENTE');
-            showToast(`${placa} — Marcado como AUSENTE.`, 'info');
-            registrarLog('MOTORISTA AUSENTE', `Placa: ${placa} — marcado como ausente pelo gate`);
-        }
-    }
-
-    async function marcarTanqueCheioBloqueio(id, placa){
-        const item = memoriaFila.find(i=>i.ID===id);
-        const atual = item?.STATUS_LOCAL;
-        if(atual === 'TANQUE_CHEIO'){
-            await _salvarStatusGate(id, placa, null);
-            showToast(`${placa} — Bloqueio por tanque cheio removido.`, 'info');
-            registrarLog('TANQUE CHEIO REMOVIDO', `Placa: ${placa}`);
-        } else {
-            await _salvarStatusGate(id, placa, 'TANQUE_CHEIO');
-            showToast(`${placa} — Bloqueado: TANQUE CHEIO.`, 'info');
-            registrarLog('BLOQUEADO TANQUE CHEIO', `Placa: ${placa} — marcado como indisponível (tanque cheio)`);
-        }
     }
 
     // ── SALVAR VOLUME COM CONFIRMAÇÃO (Enter ou botão) ──
@@ -1456,7 +1382,7 @@
         setLoader(true);
         try{
             const saida=agora();
-            await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${id}`,{method:'PATCH',headers:DB.H,body:JSON.stringify({SAIDA:saida, STATUS_GATE:null})});
+            await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${id}`,{method:'PATCH',headers:DB.H,body:JSON.stringify({SAIDA:saida})});
             await fetch(`${DB.URL}/rest/v1/tanques_individuais?tanque=eq.${t.ativo_tanque}`,{method:'PATCH',headers:DB.H,body:JSON.stringify({disponivel:novoDisp})});
             await registrarLog('SAIDA REGISTRADA',`Placa: ${placa} — ${produto} — Volume: ${fmtL(volume)} — Tanque ${t.ativo_tanque} — Disponível após: ${fmtL(novoDisp)}`);
             await carregarDados();
@@ -1973,7 +1899,23 @@
         if(!confirm(`Lançar ${agendados.length} agendamentos no sistema?`)) return;
         setLoader(true);
         let placasExistentes=new Set();
-        try{ const r=await fetch(`${DB.URL}/rest/v1/registros?SAIDA=is.null&select=PLACA`,{headers:DB.H}); if(r.ok){const data=await r.json();data.forEach(d=>placasExistentes.add(d.PLACA));} }catch(e){}
+        let registrosAtuais=[];
+        try{ const r=await fetch(`${DB.URL}/rest/v1/registros?SAIDA=is.null&select=ID,PLACA,PRECHECK,TELEFONE,JORNADA`,{headers:DB.H}); if(r.ok){registrosAtuais=await r.json();registrosAtuais.forEach(d=>placasExistentes.add(d.PLACA));} }catch(e){}
+
+        // ── Excluir precheck stale (não estão no novo relatório) ──
+        const placasNoImport=new Set(agendados.map(a=>a.placa));
+        let excluidos=0;
+        for(const reg of registrosAtuais){
+            if(reg.PRECHECK!==true) continue; // só precheck
+            if((reg.TELEFONE&&reg.TELEFONE.trim())||(reg.JORNADA&&reg.JORNADA.trim())) continue; // motorista já deu entrada, não remover
+            if(!placasNoImport.has(reg.PLACA)) {
+                try{
+                    const rd=await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${reg.ID}`,{method:'DELETE',headers:DB.H});
+                    if(rd.ok){ excluidos++; placasExistentes.delete(reg.PLACA); }
+                }catch(e){}
+            }
+        }
+
         let inseridos=0,ignorados=0,erros=0;
         for(const a of agendados){
             if(placasExistentes.has(a.placa)){ignorados++;continue;}
@@ -1989,6 +1931,7 @@
         setLoader(false); fecharModalAgendamentos();
         document.getElementById('textarea-agendamentos').value=''; preview.style.display='none';
         let msg=`✅ ${inseridos} agendamento(s) lançados!`;
+        if(excluidos>0) msg+=`\n🗑️ ${excluidos} precheck(s) removido(s) (não estavam no relatório).`;
         if(ignorados>0) msg+=`\n⚠️ ${ignorados} já estavam cadastrados (ignorados).`;
         if(erros>0) msg+=`\n❌ ${erros} com erro.`;
         alert(msg);
