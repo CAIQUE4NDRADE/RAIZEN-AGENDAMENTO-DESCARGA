@@ -813,8 +813,9 @@
                 document.getElementById('secao-entrada').style.display='none';
                 document.getElementById('modulo-operador-full').style.display='block';
                 await pedirPermissaoNotificacao();
+                await carregarMargens();
                 await carregarDados();
-                setInterval(carregarDados, 30000);
+                setInterval(async()=>{ await carregarMargens(); await carregarDados(); }, 30000);
             } else {
                 document.getElementById('secao-entrada').style.display='none';
                 document.getElementById('modulo-supervisor').style.display='block';
@@ -960,8 +961,9 @@
                 document.getElementById('secao-entrada').style.display='none';
                 document.getElementById('modulo-operador-full').style.display='block';
                 await pedirPermissaoNotificacao();
+                await carregarMargens();
                 await carregarDados();
-                setInterval(carregarDados,30000);
+                setInterval(async()=>{ await carregarMargens(); await carregarDados(); },30000);
             } else {
                 document.getElementById('secao-entrada').style.display='none';
                 document.getElementById('modulo-supervisor').style.display='block';
@@ -1042,8 +1044,9 @@
                 document.getElementById('secao-entrada').style.display='none';
                 document.getElementById('modulo-operador-full').style.display='block';
                 await pedirPermissaoNotificacao();
+                await carregarMargens();
                 await carregarDados();
-                setInterval(carregarDados,30000);
+                setInterval(async()=>{ await carregarMargens(); await carregarDados(); },30000);
             } else {
                 document.getElementById('secao-entrada').style.display='none';
                 document.getElementById('modulo-supervisor').style.display='block';
