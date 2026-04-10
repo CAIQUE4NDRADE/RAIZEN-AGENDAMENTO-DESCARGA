@@ -2059,11 +2059,39 @@
         const preview=document.getElementById('preview-agendamentos');
         const agendados=preview._agendados;
         if(!agendados||!agendados.length) return;
-        if(!confirm(`Lançar ${agendados.length} agendamentos no sistema?`)) return;
+        if(!confirm(`Lançar ${agendados.length} agendamentos no sistema?\n\nAtenção: placas no PRECHECK que NÃO estiverem nesta importação serão removidas automaticamente (desde que o motorista ainda não tenha dado entrada).`)) return;
         setLoader(true);
-        let placasExistentes=new Set();
-        try{ const r=await fetch(`${DB.URL}/rest/v1/registros?SAIDA=is.null&select=PLACA`,{headers:DB.H}); if(r.ok){const data=await r.json();data.forEach(d=>placasExistentes.add(d.PLACA));} }catch(e){}
-        let inseridos=0,ignorados=0,erros=0;
+
+        // Placas da importação atual
+        const placasNoImport = new Set(agendados.map(a => a.placa));
+
+        // Busca todos os registros ativos com detalhes necessários
+        let registrosAtuais = [];
+        let placasExistentes = new Set();
+        try{
+            const r = await fetch(`${DB.URL}/rest/v1/registros?SAIDA=is.null&select=ID,PLACA,PRECHECK,TELEFONE,JORNADA`, {headers:DB.H});
+            if(r.ok){
+                registrosAtuais = await r.json();
+                registrosAtuais.forEach(d => placasExistentes.add(d.PLACA));
+            }
+        }catch(e){}
+
+        // ── 1. REMOVER precheck stale (não estão no novo relatório E motorista ainda não deu entrada) ──
+        let excluidos = 0;
+        for(const reg of registrosAtuais){
+            if(reg.PRECHECK !== true) continue;
+            // Segurança: não remove se motorista já deu entrada (tem telefone ou jornada)
+            if((reg.TELEFONE && reg.TELEFONE.trim()) || (reg.JORNADA && reg.JORNADA.trim())) continue;
+            if(!placasNoImport.has(reg.PLACA)){
+                try{
+                    const rd = await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${reg.ID}`, {method:'DELETE', headers:DB.H});
+                    if(rd.ok){ excluidos++; placasExistentes.delete(reg.PLACA); }
+                }catch(e){}
+            }
+        }
+
+        // ── 2. INSERIR novos agendamentos que ainda não existem ──
+        let inseridos=0, ignorados=0, erros=0;
         for(const a of agendados){
             if(placasExistentes.has(a.placa)){ignorados++;continue;}
             try{
@@ -2073,15 +2101,17 @@
                 if(r.ok) inseridos++; else erros++;
             }catch{erros++;}
         }
+
         // ── Recarregar sem disparar notificações para precheck ──
         await carregarDados();
         setLoader(false); fecharModalAgendamentos();
         document.getElementById('textarea-agendamentos').value=''; preview.style.display='none';
         let msg=`✅ ${inseridos} agendamento(s) lançados!`;
+        if(excluidos>0) msg+=`\n🗑️ ${excluidos} precheck(s) removido(s) (não estavam no relatório).`;
         if(ignorados>0) msg+=`\n⚠️ ${ignorados} já estavam cadastrados (ignorados).`;
         if(erros>0) msg+=`\n❌ ${erros} com erro.`;
         alert(msg);
-        await registrarLog('AGENDAMENTOS IMPORTADOS',`${inseridos} agendamentos do Coleta lançados`);
+        await registrarLog('AGENDAMENTOS IMPORTADOS',`${inseridos} lançados, ${excluidos} removidos do precheck`);
     }
 
     /* ─── RENDER PRECHECK ───────────────────────────── */
