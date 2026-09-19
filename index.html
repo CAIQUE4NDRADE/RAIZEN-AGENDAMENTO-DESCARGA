@@ -1349,7 +1349,7 @@
             } else {
                 waBtn=`btn-icon-wa btn-icon-action`;
                 waTitle='Convocar motorista via WhatsApp';
-                waDisabled=`onclick="chamarWhatsApp('${item.TELEFONE}')" title="Convocar via WhatsApp"`;
+                waDisabled=`onclick="chamarWhatsApp('${item.TELEFONE}','${item.PLACA}')" title="Convocar via WhatsApp"`;
             }
 
             const isAusente = item.STATUS_LOCAL === 'AUSENTE';
@@ -1514,7 +1514,7 @@
         finally{setLoader(false);}
     }
 
-    function chamarWhatsApp(tel){
+    function chamarWhatsApp(tel,placa){
         const baiaStr = prompt('Informe o número da BAIA (209 a 214):');
         if(!baiaStr) return;
         const baia = parseInt(baiaStr.trim());
@@ -1525,7 +1525,8 @@
         const AREA = {209:'Área 02',210:'Área 02',211:'Área 02',212:'Área 02',213:'Área 02',214:'Área 02'};
         const area = AREA[baia] || '';
         const msg = encodeURIComponent(
-            'Olá Motorista vamos descarregar?\n\n' +
+            'Olá! Motorista da placa ' + (placa||'') + ', baia ' + baia + '.\n\n' +
+            'Vamos descarregar?\n\n' +
             'Baia ' + baia + ' - ' + area + '\n\n' +
             'Obrigado!\n\n' +
             'Obs: aguarde a instrução do operador para entrar na baia!'
