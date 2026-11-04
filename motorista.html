@@ -201,6 +201,16 @@
         }
     };
 
+    // Página pública: grava só pelas funções do servidor (que validam os campos)
+    async function rpc(nome, params={}){
+        const h = {...DB.H}; delete h.Prefer;
+        const r = await fetch(`${DB.URL}/rest/v1/rpc/${nome}`,{method:'POST',headers:h,body:JSON.stringify(params)});
+        if(!r.ok) throw new Error('RPC '+nome+' '+r.status);
+        const txt = await r.text();
+        return txt ? JSON.parse(txt) : null;
+    }
+    const NOMES_CAMPO = {placa:'a placa', produto:'o produto', telefone:'o WhatsApp', jornada:'o horário da jornada', entrada:'a data'};
+
     const agora = () => new Date().toLocaleString('pt-BR');
     const horaAtual = () => {
         const now = new Date();
@@ -292,61 +302,16 @@
 
         setLoader(true);
         try {
-            // Busca com hífen e sem hífen (precheck importado do Coleta vem sem hífen)
-            const placaSemHifen = placa.replace('-','');
-            const chk = await fetch(`${DB.URL}/rest/v1/registros?PLACA=eq.${placa}&SAIDA=is.null&select=*`, { headers: DB.H });
-            let existentes = await chk.json();
-            if((!existentes||existentes.length===0) && placaSemHifen!==placa){
-                const chk2 = await fetch(`${DB.URL}/rest/v1/registros?PLACA=eq.${placaSemHifen}&SAIDA=is.null&select=*`, { headers: DB.H });
-                existentes = await chk2.json();
-            }
-
-            if(existentes && existentes.length > 0) {
-                const reg = existentes[0];
-                // Se está no precheck: atualiza mantendo agendamento e volume já importados
-                if(reg.PRECHECK === true) {
-                    // Mantém produto do precheck se já definido; usa o selecionado pelo motorista como fallback
-                    const produtoFinal = (reg.PRODUTO && reg.PRODUTO.trim() !== '') ? reg.PRODUTO : produto;
-                    // Preserva volume: usa o valor numérico original (0 é válido, null fica null)
-                    const volumeFinal = (reg.VOLUME !== null && reg.VOLUME !== undefined) ? reg.VOLUME : null;
-                    const r = await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${reg.ID}`, {
-                        method: 'PATCH', headers: DB.H,
-                        body: JSON.stringify({
-                            PLACA:       placa,
-                            PRODUTO:     produtoFinal,
-                            TELEFONE:    tel,
-                            JORNADA:     jornadaValor,
-                            PRECHECK:    false,
-                            ENTRADA:     agora(),
-                            AGENDAMENTO: reg.AGENDAMENTO || null,
-                            VOLUME:      volumeFinal,
-                            FRETE:       reg.FRETE || 'FOB'
-                        })
-                    });
-                    if(r.ok) {
-                        mostrarSucesso(placa, `Entrada registrada com sucesso!\nProduto: ${produtoFinal}\nAguarde a convocação do gate.`, 'Entrada Confirmada!');
-                    } else {
-                        mostrarErro('entrada', 'Erro ao registrar. Tente novamente.');
-                    }
-                    return;
-                }
-                // Já registrado normalmente
-                mostrarErro('entrada', `Placa ${placa} já está registrada no pátio desde ${reg.ENTRADA}. Aguarde a liberação ou reabra a jornada.`);
-                setLoader(false);
-                return;
-            }
-
-            // Registro novo
-            const r = await fetch(`${DB.URL}/rest/v1/registros`, {
-                method: 'POST', headers: DB.H,
-                body: JSON.stringify({
-                    PLACA: placa, PRODUTO: produto,
-                    TELEFONE: tel, JORNADA: jornadaValor,
-                    ENTRADA: agora(), PRECHECK: false
-                })
+            const res = await rpc('fn_motorista_registrar', {
+                p_placa: placa, p_produto: produto, p_telefone: tel,
+                p_jornada: jornadaValor, p_entrada: agora()
             });
-            if(r.ok) {
-                mostrarSucesso(placa, `Entrada registrada com sucesso!\nProduto: ${produto}\nAguarde a convocação do gate.`, 'Entrada Confirmada!');
+            if(res && (res.status === 'NOVO' || res.status === 'PRECHECK')) {
+                mostrarSucesso(res.placa, `Entrada registrada com sucesso!\nProduto: ${res.produto}\nAguarde a convocação do gate.`, 'Entrada Confirmada!');
+            } else if(res && res.status === 'JA_REGISTRADO') {
+                mostrarErro('entrada', `Placa ${res.placa} já está registrada no pátio desde ${res.entrada}. Aguarde a liberação ou reabra a jornada.`);
+            } else if(res && res.status === 'INVALIDO') {
+                mostrarErro('entrada', `Verifique ${NOMES_CAMPO[res.campo] || 'os dados'} e tente novamente.`);
             } else {
                 mostrarErro('entrada', 'Erro ao registrar. Tente novamente.');
             }
@@ -364,17 +329,11 @@
         if(!hora)  { mostrarErro('jornada','Informe a nova hora limite.'); return; }
         setLoader(true);
         try {
-            const r = await fetch(`${DB.URL}/rest/v1/registros?PLACA=eq.${placa}&SAIDA=is.null&select=*`, { headers: DB.H });
-            const data = await r.json();
-            if(!data || data.length === 0) { mostrarErro('jornada',`Placa ${placa} não encontrada no pátio.`); setLoader(false); return; }
-            const upd = await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${data[0].ID}`, {
-                method: 'PATCH', headers: DB.H,
-                body: JSON.stringify({ JORNADA: hora })
-            });
-            if(upd.ok) {
+            const ok = await rpc('fn_motorista_reabrir', { p_placa: placa, p_hora: hora });
+            if(ok) {
                 mostrarSucesso(placa, `Jornada reaberta com sucesso!\nNovo limite: ${hora}\nAguarde a convocação do gate.`, 'Jornada Reaberta!');
             } else {
-                mostrarErro('jornada', 'Erro ao reabrir jornada. Tente novamente.');
+                mostrarErro('jornada', `Placa ${placa} não encontrada no pátio.`);
             }
         } catch(e) {
             mostrarErro('jornada', 'Erro de conexão. Verifique sua internet.');
