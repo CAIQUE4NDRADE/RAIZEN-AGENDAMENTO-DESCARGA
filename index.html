@@ -2462,7 +2462,7 @@
     body.tm-logado #tm-side { display: flex; flex-direction: column; }
     body.tm-logado { padding-left: 240px !important; }
     #tm-side .tm-marca { padding: 30px 20px 22px; text-align: center; border-bottom: 1px solid rgba(255,255,255,.12); }
-    #tm-side .tm-logo { font-size: 40px; font-weight: 800; letter-spacing: -1px; text-transform: lowercase; }
+    #tm-side .tm-logo { font-size: 40px; font-weight: 800; letter-spacing: -1px; }
     #tm-side .tm-versao { font-size: 14px; font-weight: 700; margin-top: 8px; opacity: .95; }
     #tm-side nav { display: flex; flex-direction: column; gap: 4px; padding: 16px 12px; }
     #tm-side nav button { display: flex; align-items: center; gap: 14px; width: 100%; padding: 13px 16px; border: none; border-radius: 10px;
@@ -2598,7 +2598,7 @@
     const side = document.createElement('aside');
     side.id = 'tm-side';
     side.setAttribute('aria-label', 'Menu');
-    side.innerHTML = `<div class="tm-marca"><div class="tm-logo">raízen</div><div class="tm-versao">Gestão Operacional<br>V30.0</div></div>
+    side.innerHTML = `<div class="tm-marca"><div class="tm-logo">Raízen</div><div class="tm-versao">Gestão Operacional<br>V30.0</div></div>
         <nav id="tm-nav"></nav><div class="tm-rodape"><i class="fa-solid fa-leaf" aria-hidden="true"></i> BPA · Paulínia</div>`;
     document.body.insertBefore(side, document.body.firstChild);
 
