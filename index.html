@@ -2529,6 +2529,8 @@
     .tm-tabela tr:hover td { background: #fafcfb; }
     .tm-placa { font-weight: 800; font-size: 16px; letter-spacing: .5px; }
     .tm-chip { display: inline-block; padding: 6px 14px; border-radius: 999px; color: #fff; font-size: 13px; font-weight: 700; white-space: nowrap; }
+    .tm-tel { font-size: 13px; font-weight: 600; color: #128c4b; margin-top: 3px; }
+    .tm-tel span { color: #94a3b8; font-weight: 500; }
     .tm-frete { display: inline-block; margin-left: 6px; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; background: #eef2ef; color: var(--tm-suave); }
     .tm-status { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; white-space: nowrap; }
     .tm-status::before { content: ''; width: 9px; height: 9px; border-radius: 50%; background: currentColor; }
@@ -2540,6 +2542,8 @@
     .tm-acoes button:hover:not(:disabled) { background: #e5ece7; }
     .tm-acoes button:disabled { opacity: .35; cursor: not-allowed; }
     .tm-acoes .tm-wa { color: #128c4b; }
+    .tm-acoes .tm-del { color: #b42318; }
+    .tm-acoes button.tm-on { background: #fde68a; border-color: #d97706; color: #7c2d12; }
     .tm-vazio { text-align: center; padding: 40px; color: #94a3b8; font-weight: 700; }
     .tm-tempo { white-space: nowrap; color: var(--tm-texto); }
 
@@ -2740,13 +2744,13 @@
         const wrap = $('tm-tabela-wrap'); if (!wrap) return;
         const lista = listaFiltrada();
         if (!lista.length) { wrap.innerHTML = `<div class="tm-vazio"><i class="fa-solid fa-truck" aria-hidden="true"></i> Nenhum veículo no pátio.</div>`; return; }
-        wrap.innerHTML = `<table class="tm-tabela"><thead><tr><th>Placa</th><th>Produto</th><th>Agendamento</th><th>Horário limite</th><th>Tempo no pátio</th><th>Volume</th><th>Status</th><th>Ações</th></tr></thead><tbody>` +
+        wrap.innerHTML = `<table class="tm-tabela"><thead><tr><th>Placa / WhatsApp</th><th>Produto</th><th>Agendamento</th><th>Horário limite</th><th>Tempo no pátio</th><th>Volume</th><th>Status</th><th>Ações</th></tr></thead><tbody>` +
             lista.map(item => {
                 const [cls, txt] = statusDe(item);
                 const podeWa = cls === 'ok' || cls === 'aus';
                 const ag = item.AGENDAMENTO ? new Date(item.AGENDAMENTO).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : '—';
                 return `<tr data-id="${esc(item.ID)}">
-                    <td class="tm-placa">${esc(item.PLACA)}</td>
+                    <td><div class="tm-placa">${esc(item.PLACA)}</div><div class="tm-tel">${item.TELEFONE ? `<i class="fa-brands fa-whatsapp" aria-hidden="true"></i> ${esc(item.TELEFONE)}` : '<span>sem telefone</span>'}</div></td>
                     <td><span class="tm-chip" style="background:${corProduto(item.PRODUTO)}">${esc(nomeProd(item.PRODUTO))}</span>${item.FRETE ? `<span class="tm-frete">${esc(item.FRETE)}</span>` : ''}</td>
                     <td>${esc(ag)}</td>
                     <td>${limiteDe(item.JORNADA)}</td>
@@ -2756,8 +2760,10 @@
                     <td><div class="tm-acoes">
                         <button type="button" class="tm-wa" data-a="wa" ${podeWa && item.TELEFONE ? '' : 'disabled'} aria-label="Convocar ${esc(item.PLACA)} no WhatsApp" title="${podeWa ? 'Convocar via WhatsApp' : 'Tanque sem espaço / volume excede'}"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></button>
                         <button type="button" data-a="saida" aria-label="Registrar saída de ${esc(item.PLACA)}" title="Registrar saída"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i></button>
-                        <button type="button" data-a="aus" aria-label="Marcar ${esc(item.PLACA)} como ausente" title="${cls==='aus'?'Desfazer ausente':'Marcar ausente'}"><i class="fa-solid fa-user-slash" aria-hidden="true"></i></button>
+                        <button type="button" data-a="aus" class="${item.STATUS_LOCAL==='AUSENTE'?'tm-on':''}" aria-pressed="${item.STATUS_LOCAL==='AUSENTE'}" aria-label="Marcar ${esc(item.PLACA)} como ausente" title="${cls==='aus'?'Desfazer ausente':'Marcar ausente'}"><i class="fa-solid fa-user-slash" aria-hidden="true"></i></button>
+                        <button type="button" data-a="cheio" class="${item.STATUS_LOCAL==='TANQUE_CHEIO'?'tm-on':''}" aria-pressed="${item.STATUS_LOCAL==='TANQUE_CHEIO'}" aria-label="Bloquear ${esc(item.PLACA)} por tanque cheio" title="${item.STATUS_LOCAL==='TANQUE_CHEIO'?'Bloqueado por tanque cheio — clique para desfazer':'Bloquear: tanque cheio / produto indisponível'}"><i class="fa-solid fa-gas-pump" aria-hidden="true"></i></button>
                         <button type="button" data-a="editar" aria-label="Editar ${esc(item.PLACA)}" title="Editar agendamento, volume e telefone (abre o card)"><i class="fa-solid fa-pen" aria-hidden="true"></i></button>
+                        <button type="button" data-a="excluir" class="tm-del" aria-label="Excluir registro de ${esc(item.PLACA)}" title="Excluir registro"><i class="fa-solid fa-trash" aria-hidden="true"></i></button>
                     </div></td></tr>`;
             }).join('') + `</tbody></table>`;
     }
@@ -2769,6 +2775,8 @@
         if (a === 'wa') chamarWhatsApp(item.TELEFONE, item.PLACA);
         else if (a === 'saida') abrirModalSaida(id, item.PLACA, item.PRODUTO, item.VOLUME || 0);
         else if (a === 'aus') marcarAusente(id, item.PLACA);
+        else if (a === 'cheio') marcarTanqueCheioBloqueio(id, item.PLACA);
+        else if (a === 'excluir') excluirRegistro(id, item.PLACA);
         else if (a === 'editar') {
             vista = 'cards'; aplicarVista();
             const card = $('vol-' + id) && $('vol-' + id).closest('.fila-card');
