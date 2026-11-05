@@ -1,0 +1,85 @@
+/* =====================================================================
+   Página do motorista (descarga) — mesmo padrão escuro da Agenda BPA.
+   Só aparência: não muda nenhuma função.
+   ===================================================================== */
+:root { color-scheme: dark; --roxo: #22c55e; --verde: #9be8b4; --fundo: #07140d; --brilho: #39e26a; }
+* { font-family: "Ubuntu", "Montserrat", sans-serif; }
+.fa-solid, .fa-regular { font-family: "Font Awesome 6 Free" !important; }
+.fa-brands { font-family: "Font Awesome 6 Brands" !important; }
+body { color: #eef6f0;
+  background:
+    radial-gradient(800px 420px at 0% 40%, rgba(34,197,94,.16), transparent 60%),
+    radial-gradient(700px 420px at 100% 90%, rgba(34,197,94,.10), transparent 60%),
+    linear-gradient(180deg, #07140d 0%, #061009 100%);
+  background-attachment: fixed; }
+
+header {
+  background:
+    linear-gradient(90deg, rgba(10,58,33,.95) 0%, rgba(10,58,33,.75) 55%, rgba(10,58,33,.45) 100%),
+    url("topo-terminal.jpg") right center / auto 100% no-repeat, #0a3a21;
+  border-bottom: 3px solid var(--brilho); box-shadow: 0 2px 22px rgba(57,226,106,.4);
+  padding: 30px 20px 52px;
+}
+.logo { font-size: 40px; font-weight: 700; letter-spacing: -1px; text-transform: none; }
+.logo-sub { color: #d6eadc; letter-spacing: 2px; font-weight: 500; }
+
+.card {
+  background: rgba(9, 26, 17, .85); border: 1px solid rgba(57,226,106,.22); border-left: 1px solid rgba(57,226,106,.22);
+  box-shadow: 0 12px 40px rgba(0,0,0,.45); backdrop-filter: blur(6px); color: #eef6f0;
+}
+.card + .card { border-left-color: rgba(57,226,106,.22); }
+.card-titulo { color: #fff; border-bottom-color: rgba(57,226,106,.25); }
+.card-titulo i { color: var(--brilho); }
+.card-titulo.cinza { color: #fff; }
+
+.tabs { border: 1px solid rgba(211,228,216,.18); background: rgba(0,0,0,.25); border-radius: 999px; padding: 4px; gap: 4px; }
+.tab { background: transparent; color: #d7e9dd; border-radius: 999px; font-weight: 700; }
+.tab.active { background: linear-gradient(180deg, #47e27a, #23b955); color: #04140a; box-shadow: 0 0 16px rgba(57,226,106,.5); }
+
+.field label { color: #c9dbcf; }
+.field input, .field select { background: rgba(0,0,0,.3); color: #eef6f0; border: 1px solid rgba(211,228,216,.22); }
+.field input::placeholder { color: #7f978a; }
+.field input:focus, .field select:focus { background: rgba(0,0,0,.35); border-color: transparent; outline: 2px solid var(--brilho); box-shadow: none; }
+.field select option { background: #0f2018; color: #eef6f0; }
+
+.jornada-box { background: rgba(251,191,36,.06); border: 2px dashed rgba(251,191,36,.55); }
+.jornada-box > label.titulo-jornada { color: #fcd34d; }
+.opcao-jornada.livre { background: rgba(192,132,252,.10); border-color: rgba(192,132,252,.5); color: #e2c8ff; }
+.opcao-jornada.livre.marcado { background: rgba(192,132,252,.2); border-color: #c084fc; box-shadow: 0 0 14px rgba(192,132,252,.35); }
+.opcao-jornada.semj { background: rgba(248,113,113,.10); border-color: rgba(248,113,113,.5); color: #fca5a5; }
+.opcao-jornada.semj.marcado { background: rgba(248,113,113,.2); border-color: #f87171; box-shadow: 0 0 14px rgba(248,113,113,.3); }
+.check-custom { background: rgba(0,0,0,.25); }
+.opcao-jornada.marcado .check-custom::after { color: #04140a; }
+.horario-atual-tag { background: rgba(248,113,113,.12); color: #fca5a5; }
+
+.btn-roxo { background: linear-gradient(180deg, #47e27a, #23b955); color: #04140a; box-shadow: 0 0 18px rgba(57,226,106,.4); }
+.btn-roxo:active { box-shadow: 0 0 10px rgba(57,226,106,.4); transform: scale(.98); }
+.btn-cinza { background: rgba(255,255,255,.1); color: #fff; box-shadow: none; border: 1px solid rgba(211,228,216,.22); }
+.btn-cinza:active { box-shadow: none; transform: scale(.98); }
+.btn-outline { color: var(--brilho); border: 2px solid var(--brilho); }
+
+.msg-erro { background: rgba(248,113,113,.12); border-color: rgba(248,113,113,.5); color: #fca5a5; }
+.sucesso-icone { background: rgba(34,197,94,.18); box-shadow: 0 0 22px rgba(57,226,106,.4); }
+.sucesso-titulo { color: #4ade80; }
+.sucesso-sub { color: #c9dbcf; }
+.sucesso-placa { background: rgba(34,197,94,.08); border: 2px solid rgba(57,226,106,.5); }
+.sucesso-placa .label { color: #86efac; }
+.sucesso-placa .valor { color: #fff; }
+#loader { background: rgba(4,14,8,.9); }
+.spinner { border-color: rgba(255,255,255,.1); border-top-color: var(--brilho); }
+.loader-txt { color: var(--brilho); }
+[style*="color:#cbd5e1"], [style*="color: #cbd5e1"], [style*="color:#94a3b8"] { color: #a9bdb0 !important; }
+[style*="color:#64748b"], [style*="color:#475569"] { color: #c9dbcf !important; }
+[style*="background:#f8fafc"], [style*="background:#eff6ff"], [style*="background:#f0f9ff"] { background: rgba(255,255,255,.06) !important; }
+[style*="color:#1d4ed8"], [style*="color:#0369a1"] { color: #93c5fd !important; }
+header { padding-top: 66px; }
+#a11y-barra button { background: rgba(0,0,0,.4); color: #fff; border: 1px solid rgba(255,255,255,.35); box-shadow: none; }
+#a11y-barra button[aria-pressed="true"] { background: var(--brilho); color: #04140a; }
+.card-titulo i, .card-titulo .fa-solid { color: var(--brilho) !important; }
+.jornada-box input, .jornada-box input[type="time"], #limite, #re-hora {
+  background: rgba(0,0,0,.3) !important; color: #eef6f0 !important; border: 1px solid rgba(211,228,216,.22) !important; }
+.jornada-box input:focus { outline: 2px solid var(--brilho) !important; border-color: transparent !important; }
+input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: .8; }
+.card-titulo svg { stroke: var(--brilho) !important; }
+body #a11y-barra button { background: rgba(0,0,0,.45); color: #fff; border: 1px solid rgba(255,255,255,.35); box-shadow: none; }
+body #a11y-barra button[aria-pressed="true"] { background: var(--brilho); color: #04140a; }

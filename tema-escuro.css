@@ -1,0 +1,174 @@
+/* =====================================================================
+   Tema escuro — mesmo padrão da Agenda BPA (checklist / curso OSD).
+   Só aparência: não muda nenhuma função do site.
+   ===================================================================== */
+:root {
+  color-scheme: dark;
+  --fundo-base: #07140d; --branco: #0f2018; --cinza-escuro: #b8cabe; --cinza-claro: #7f978a;
+  --verde-vivo: #22c55e; --verde-raizen: #1c8f43;
+  --tm-verde: #39e26a; --tm-verde-esc: #0f5f33; --tm-lima: #39e26a; --tm-fundo: #07140d;
+  --tm-borda: rgba(211,228,216,.16); --tm-texto: #eef6f0; --tm-suave: #a9bdb0;
+  --vidro: rgba(9, 26, 17, .80); --brilho: #39e26a;
+}
+html body, body { font-family: "Ubuntu", "Montserrat", sans-serif; color: #eef6f0;
+  background:
+    radial-gradient(1000px 500px at 10% 40%, rgba(34,197,94,.14), transparent 60%),
+    radial-gradient(900px 500px at 100% 90%, rgba(34,197,94,.10), transparent 60%),
+    linear-gradient(180deg, #07140d 0%, #061009 100%) !important;
+  background-attachment: fixed !important; }
+* { font-family: inherit; }
+.fa-solid, .fa-regular, .fas, .far { font-family: "Font Awesome 6 Free" !important; }
+.fa-brands, .fab { font-family: "Font Awesome 6 Brands" !important; }
+
+/* ---------- Barra superior ---------- */
+#tm-top {
+  background:
+    linear-gradient(90deg, #0a3a21 0%, #0a3a21 45%, rgba(10,58,33,.6) 65%, rgba(10,58,33,.15) 100%),
+    url("topo-terminal.jpg") right center / auto 100% no-repeat,
+    linear-gradient(110deg, #0b3a22 0%, #082a18 100%) !important;
+  border-bottom: 3px solid var(--brilho) !important; box-shadow: 0 2px 22px rgba(57,226,106,.35) !important;
+}
+#tm-top .tm-acento { background: var(--brilho); box-shadow: 0 0 10px rgba(57,226,106,.7); }
+#tm-top .tm-titulo { color: #fff; }
+#tm-top .tm-sub { color: #d6eadc; }
+.tm-relogio { color: #fff; border-right-color: rgba(255,255,255,.25); }
+.tm-pill-status { background: linear-gradient(180deg, #47e27a, #23b955); color: #04140a; box-shadow: 0 0 14px rgba(57,226,106,.5); }
+.tm-pill-status.off { background: #dc2626; color: #fff; box-shadow: none; }
+body.tm-logado #badge-usuario { background: rgba(0,0,0,.4) !important; color: #fff !important; border-color: rgba(255,255,255,.3) !important; }
+#tm-top #a11y-barra button { background: rgba(0,0,0,.4); color: #fff; border-color: rgba(255,255,255,.35); }
+#tm-top #a11y-barra button[aria-pressed="true"] { background: var(--brilho); color: #04140a; }
+
+/* ---------- Menu lateral ---------- */
+#tm-side { background: linear-gradient(180deg, #0c3a22 0%, #082a18 55%, #061a0f 100%) !important; border-right: 1px solid rgba(57,226,106,.25); }
+#tm-side .tm-logo { font-family: "Ubuntu", sans-serif; font-weight: 700; }
+#tm-side nav button { color: #d7e9dd; font-family: "Ubuntu", sans-serif; font-weight: 500; }
+#tm-side nav button.ativo { background: linear-gradient(180deg, #47e27a 0%, #23b955 100%); color: #04140a; font-weight: 700;
+  box-shadow: 0 0 18px rgba(57,226,106,.55), inset 0 1px 0 rgba(255,255,255,.3); }
+
+/* ---------- Painéis, cartões e indicadores ---------- */
+.tm-painel, .tm-kpi, .card-master, .fila-card, .resumo-tanque-mini, .prev-card, .log-item, .login-box,
+#secao-precheck, #banners-aviso-tanque,
+body.tm-logado #modulo-supervisor, body.tm-logado #modulo-logs, body.tm-logado #modulo-previsao, body.tm-logado #modulo-historico-saidas,
+#modulo-supervisor, #modulo-logs, #modulo-previsao, #modulo-historico-saidas {
+  background: var(--vidro) !important; border-color: rgba(57,226,106,.18) !important; color: #eef6f0;
+  box-shadow: 0 10px 36px rgba(0,0,0,.35) !important; backdrop-filter: blur(6px);
+}
+.tm-head { background: linear-gradient(90deg, #1c8f43 0%, #177a3a 45%, rgba(23,122,58,.3) 100%) !important;
+  border-bottom: 1px solid rgba(57,226,106,.4); font-family: "Ubuntu", sans-serif; }
+.tm-head .tm-tog { background: rgba(0,0,0,.28); }
+.tm-head .tm-tog[aria-pressed="true"] { background: linear-gradient(180deg, #47e27a, #23b955); color: #04140a; }
+.tm-kpi-num { color: #fff; font-family: "Ubuntu", sans-serif; }
+.tm-kpi-txt { color: #a9bdb0; }
+.tm-kpi-barra { background: rgba(255,255,255,.08); }
+.tm-kpi-ico { box-shadow: 0 0 16px rgba(0,0,0,.3); }
+h2, body.tm-logado h2 { color: #fff !important; font-family: "Ubuntu", sans-serif; }
+.card-master h2 { color: #39e26a !important; }
+label, .fila-label, .prev-label { color: #c9dbcf !important; }
+
+/* Tabela de movimentação */
+.tm-tabela th { background: rgba(255,255,255,.06) !important; color: #fff !important; }
+.tm-tabela td { border-top-color: rgba(211,228,216,.1) !important; color: #e7f2ea; }
+.tm-tabela tr:hover td { background: rgba(57,226,106,.06) !important; }
+.tm-placa { color: #fff; }
+.tm-frete { background: rgba(255,255,255,.1); color: #d7e9dd; }
+.tm-tel { color: #4ade80; }
+.tm-tempo { color: #e7f2ea; }
+.tm-st-ok { background: rgba(34,197,94,.16); color: #86efac; }
+.tm-st-esp { background: rgba(248,113,113,.16); color: #fca5a5; }
+.tm-st-vol { background: rgba(251,146,60,.16); color: #fdba74; }
+.tm-st-aus { background: rgba(251,191,36,.16); color: #fcd34d; }
+.tm-st-pre { background: rgba(96,165,250,.16); color: #93c5fd; }
+.tm-acoes button { background: rgba(255,255,255,.06) !important; border-color: rgba(211,228,216,.2) !important; color: #e7f2ea !important; }
+.tm-acoes button:hover:not(:disabled) { background: rgba(255,255,255,.12) !important; }
+.tm-acoes .tm-wa { color: #4ade80 !important; }
+.tm-acoes .tm-del { color: #fca5a5 !important; }
+.tm-acoes button.tm-on { background: rgba(251,191,36,.25) !important; border-color: #fbbf24 !important; color: #fde68a !important; }
+.tm-alerta { border-top-color: rgba(211,228,216,.1); }
+.tm-alerta b { color: #fff; }
+.tm-alerta span, .tm-ultimas li span { color: #a9bdb0; }
+.tm-ultimas li { color: #e7f2ea; }
+.tm-anel { color: #e7f2ea; }
+.tm-anel small { color: #a9bdb0; }
+.tm-anel circle:first-child { stroke: rgba(255,255,255,.1); }
+.tm-anel text, #tm-grafico text { fill: #e7f2ea !important; }
+#tm-grafico line { stroke: rgba(255,255,255,.08) !important; }
+.tm-vazio { color: #7f978a; }
+
+/* Filtros, campos e botões */
+.chip-filtro { background: rgba(255,255,255,.06) !important; color: #d7e9dd !important; border: 1px solid rgba(211,228,216,.16) !important; }
+.chip-filtro.active { background: linear-gradient(180deg, #47e27a, #23b955) !important; color: #04140a !important; box-shadow: 0 0 14px rgba(57,226,106,.45); border-color: transparent !important; }
+input, select, textarea, .login-input, .input-edit-table {
+  background: rgba(0,0,0,.3) !important; color: #eef6f0 !important; border-color: rgba(211,228,216,.2) !important; }
+input::placeholder, textarea::placeholder { color: #7f978a !important; }
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--brilho) !important; border-color: transparent !important; box-shadow: none !important; }
+select option { background: #0f2018; color: #eef6f0; }
+.btn-master, .login-btn { background: linear-gradient(180deg, #47e27a, #23b955) !important; color: #04140a !important; box-shadow: 0 0 18px rgba(57,226,106,.35) !important; }
+.btn-master[style*="background:#475569"], .btn-master[style*="background:var(--cinza-escuro)"] { background: rgba(255,255,255,.1) !important; color: #fff !important; box-shadow: none !important; }
+.tm-toolbar button[style*="background:none"] { color: #e7f2ea !important; border-color: rgba(211,228,216,.25) !important; }
+
+/* Cards da fila */
+.fila-placa { color: #fff !important; }
+.fila-card.ausente { border-color: rgba(251,191,36,.55) !important; }
+.fila-card.tanque-bloqueado { border-color: rgba(248,113,113,.55) !important; }
+.btn-icon-action { background: rgba(255,255,255,.06) !important; border-color: rgba(211,228,216,.2) !important; color: #e7f2ea !important; }
+.btn-icon-wa { color: #4ade80 !important; }
+.btn-icon-del { color: #fca5a5 !important; }
+.btn-icon-ausente.ativo, .btn-icon-tanque-bloq.ativo { background: rgba(251,191,36,.25) !important; color: #fde68a !important; }
+
+/* Opções de jornada (entrada pública) */
+.painel-jornada { background: rgba(251,191,36,.06) !important; border-color: rgba(251,191,36,.45) !important; }
+.painel-jornada-titulo { color: #fcd34d !important; }
+.opcao-jornada-master { background: rgba(255,255,255,.04) !important; }
+.opcao-jornada-master.livre { border-color: rgba(192,132,252,.55) !important; }
+.opcao-jornada-master.semj { border-color: rgba(248,113,113,.55) !important; }
+.opcao-jornada-master.livre.marcado { background: rgba(192,132,252,.14) !important; }
+.opcao-jornada-master.semj.marcado { background: rgba(248,113,113,.14) !important; }
+.opcao-texto-master { color: #fff !important; }
+.opcao-texto-master small { color: #c9dbcf !important; }
+
+/* Modais e janelas */
+#modal-login, [id^="modal-"] { background-color: rgba(0,0,0,.7); }
+[id^="modal-"] > div { background: #0d2117 !important; color: #eef6f0 !important; border: 1px solid rgba(57,226,106,.25); }
+.login-box h3 { color: #fff !important; }
+#loader-overlay { background: rgba(4,14,8,.85) !important; }
+#loader-overlay h2 { color: #39e26a !important; }
+
+/* Banners, logs e previsão */
+.banner-aviso { background: rgba(251,191,36,.08) !important; border-color: rgba(251,191,36,.45) !important; }
+.banner-aviso-texto .titulo { color: #fcd34d !important; }
+.banner-aviso-texto .subtitulo, .banner-aviso-texto .motivo { color: #fde68a !important; }
+.log-acao, .prev-valor, .prev-produto { color: #fff !important; }
+.log-detalhe, .log-meta { color: #a9bdb0 !important; }
+.mini-barra { background: rgba(255,255,255,.1) !important; }
+.toggle-track.off { background: rgba(255,255,255,.2) !important; }
+
+/* ---------- Cores claras escritas direto no HTML ---------- */
+[style*="background:white"], [style*="background: white"], [style*="background:#fff;"], [style*="background: #fff;"],
+[style*="background:var(--branco)"], [style*="background: var(--branco)"] { background: rgba(255,255,255,.04) !important; }
+[style*="background:#f8fafc"], [style*="background: #f8fafc"], [style*="background:#f1f5f9"], [style*="background: #f1f5f9"],
+[style*="background:#e2e8f0"], [style*="background: #e2e8f0"], [style*="background:#eef2ef"] { background: rgba(255,255,255,.06) !important; }
+[style*="background:#fef2f2"], [style*="background: #fef2f2"], [style*="background:#fce7f3"] { background: rgba(248,113,113,.14) !important; }
+[style*="background:#dcfce7"], [style*="background: #dcfce7"], [style*="background:#f0fdf4"], [style*="background: #f0fdf4"] { background: rgba(34,197,94,.14) !important; }
+[style*="background:#fffbeb"], [style*="background: #fffbeb"], [style*="background:#fff7ed"], [style*="background: #fff7ed"],
+[style*="background:#fef9c3"], [style*="background: #fef9c3"], [style*="background:#fef3c7"], [style*="background: #ffedd5"] { background: rgba(251,191,36,.12) !important; }
+[style*="background: #fde68a"], [style*="background:#fde68a"] { background: rgba(251,191,36,.25) !important; }
+[style*="background:#f0f9ff"], [style*="background: #f0f9ff"], [style*="background:#eff6ff"], [style*="background: #eff6ff"], [style*="background:#dbeafe"] { background: rgba(96,165,250,.14) !important; }
+[style*="border:3px solid #e2e8f0"], [style*="border: 3px solid #e2e8f0"], [style*="border:2px solid #e2e8f0"], [style*="border:1px solid #e2e8f0"] { border-color: rgba(211,228,216,.2) !important; }
+[style*="color:#1e293b"], [style*="color: #1e293b"], [style*="color:#334155"], [style*="color:#0f172a"] { color: #fff !important; }
+[style*="color:#475569"], [style*="color: #475569"], [style*="color:#64748b"], [style*="color: #64748b"] { color: #c9dbcf !important; }
+[style*="color:#94a3b8"], [style*="color: #94a3b8"], [style*="color:#ccc"], [style*="color:#cbd5e1"] { color: #8ea597 !important; }
+[style*="color:#166534"], [style*="color: #166534"], [style*="color:#059669"], [style*="color:#15803d"] { color: #86efac !important; }
+[style*="color:#92400e"], [style*="color: #92400e"], [style*="color:#b45309"], [style*="color:#854d0e"], [style*="color:#d97706"] { color: #fcd34d !important; }
+[style*="color:#1d4ed8"], [style*="color: #1d4ed8"], [style*="color:#0369a1"], [style*="color:#1e40af"] { color: #93c5fd !important; }
+[style*="color:#dc2626"], [style*="color: #dc2626"], [style*="color:#9d174d"], [style*="color:#991b1b"] { color: #fca5a5 !important; }
+[style*="color:var(--cinza-escuro)"] { color: #c9dbcf !important; }
+.card-status-badge { filter: saturate(1.1); }
+.card-status-badge[style*="background:#fef2f2"], .card-status-badge.pateo { background: rgba(34,197,94,.14) !important; color: #86efac !important; }
+
+@media print {
+  :root { color-scheme: light; }
+  body { background: #fff !important; color: #000 !important; }
+}
+[style*="color:var(--roxo-raizen)"], [style*="color: var(--roxo-raizen)"] { color: #d8b4fe !important; }
+h2 .fa-truck, h2 .fa-truck-fast { color: #39e26a !important; }
+svg[stroke="#84207d"] { stroke: #39e26a !important; }
