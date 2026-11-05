@@ -1,0 +1,34 @@
+/* =====================================================================
+   Tema CLARO do painel de descarga. No claro o tema-escuro.css é desligado
+   e vale o visual claro original do painel; aqui só o topo fica igual ao
+   dos outros sites (foto do terminal e linha verde) e entra a fonte Ubuntu.
+   ===================================================================== */
+.btn-tema {
+  display: inline-flex; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap;
+  min-height: 38px; padding: 7px 14px; border-radius: 999px; font: 700 13px "Ubuntu", "Montserrat", sans-serif;
+  background: rgba(0,0,0,.4); color: #fff; border: 1px solid rgba(255,255,255,.4); box-shadow: none;
+}
+.btn-tema:hover { background: rgba(0,0,0,.55); }
+
+html[data-tema="claro"] body { font-family: "Ubuntu", "Montserrat", sans-serif; }
+html[data-tema="claro"] body * { font-family: inherit; }
+html[data-tema="claro"] .fa-solid, html[data-tema="claro"] .fa-regular { font-family: "Font Awesome 6 Free" !important; }
+html[data-tema="claro"] .fa-brands { font-family: "Font Awesome 6 Brands" !important; }
+html[data-tema="claro"] #tm-top {
+  background:
+    linear-gradient(90deg, #0a3a21 0%, #0a3a21 45%, rgba(10,58,33,.6) 65%, rgba(10,58,33,.15) 100%),
+    url("topo-terminal.jpg") right center / auto 100% no-repeat,
+    linear-gradient(110deg, #0b3a22 0%, #082a18 100%);
+  border-bottom: 3px solid #22c55e; box-shadow: 0 2px 18px rgba(34,197,94,.3);
+}
+html[data-tema="claro"] #tm-top .tm-acento { background: #39e26a; }
+html[data-tema="claro"] #tm-top .tm-titulo { color: #fff; }
+html[data-tema="claro"] #tm-top .tm-sub { color: #d6eadc; }
+html[data-tema="claro"] .tm-relogio { color: #fff; border-right-color: rgba(255,255,255,.25); }
+html[data-tema="claro"] body.tm-logado #badge-usuario { background: rgba(0,0,0,.4) !important; color: #fff !important; border-color: rgba(255,255,255,.3) !important; }
+html[data-tema="claro"] #tm-top #a11y-barra button { background: rgba(0,0,0,.4); color: #fff; border-color: rgba(255,255,255,.35); }
+html[data-tema="claro"] #tm-top #a11y-barra button[aria-pressed="true"] { background: #39e26a; color: #04140a; }
+html[data-tema="claro"] #tm-side nav button.ativo { background: linear-gradient(180deg, #22c55e, #15803d); box-shadow: 0 0 16px rgba(34,197,94,.45); }
+html[data-tema="claro"] .tm-head { background: linear-gradient(90deg, #15803d 0%, #166534 50%, #14532d 100%); }
+@media (max-width: 700px) { .btn-tema { font-size: 0; gap: 0; padding: 6px 9px; } .btn-tema span { font-size: 16px; } }
+@media print { .btn-tema { display: none !important; } }

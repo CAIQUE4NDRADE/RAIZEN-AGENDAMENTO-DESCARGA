@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+<script>try{document.documentElement.setAttribute("data-tema",localStorage.getItem("tema_bpa")==="claro"?"claro":"escuro")}catch(e){}</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=1200">
     <title>RAÍZEN - GESTÃO OPERACIONAL V30.0</title>
@@ -2903,6 +2904,9 @@
 })();
 </script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="tema-escuro.css">
+<link id="css-escuro" rel="stylesheet" href="tema-escuro.css">
+<link rel="stylesheet" href="tema-claro.css">
+<script>(function(){if(document.documentElement.getAttribute("data-tema")==="claro"){var e=document.getElementById("css-escuro");if(e)e.disabled=true;}})();</script>
+<script src="tema.js"></script>
 </body>
 </html>

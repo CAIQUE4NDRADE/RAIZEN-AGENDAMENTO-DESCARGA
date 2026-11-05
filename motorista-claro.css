@@ -1,0 +1,39 @@
+/* =====================================================================
+   Tema CLARO da página do motorista (descarga). No claro o
+   motorista-escuro.css é desligado; aqui o visual claro original ganha
+   o verde e o topo dos outros sites no lugar do roxo antigo.
+   ===================================================================== */
+.btn-tema {
+  display: inline-flex; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap;
+  min-height: 36px; padding: 6px 12px; border-radius: 999px; font: 700 13px "Ubuntu", "Montserrat", sans-serif;
+  background: rgba(0,0,0,.45); color: #fff; border: 1px solid rgba(255,255,255,.4); box-shadow: none;
+}
+.btn-tema-topo { position: absolute; top: 12px; right: 12px; z-index: 5; }
+header { position: relative; }
+
+html[data-tema="claro"] { --roxo: #15803d; --verde: #14532d; --fundo: #eef5f0; }
+html[data-tema="claro"] * { font-family: "Ubuntu", "Montserrat", sans-serif; }
+html[data-tema="claro"] .fa-solid, html[data-tema="claro"] .fa-regular { font-family: "Font Awesome 6 Free" !important; }
+html[data-tema="claro"] .fa-brands { font-family: "Font Awesome 6 Brands" !important; }
+html[data-tema="claro"] body { background: linear-gradient(180deg, #f3f8f4 0%, #e8f1eb 100%); }
+html[data-tema="claro"] header {
+  background:
+    linear-gradient(90deg, rgba(10,58,33,.95) 0%, rgba(10,58,33,.75) 55%, rgba(10,58,33,.45) 100%),
+    url("topo-terminal.jpg") right center / auto 100% no-repeat, #0a3a21;
+  border-bottom: 3px solid #22c55e; padding-top: 66px;
+}
+html[data-tema="claro"] .logo { font-weight: 700; letter-spacing: -1px; text-transform: none; }
+html[data-tema="claro"] .card { border-left-color: #22c55e; box-shadow: 0 12px 30px rgba(15,60,30,.12); }
+html[data-tema="claro"] .card-titulo { color: #14532d; }
+html[data-tema="claro"] .card-titulo svg { stroke: #16a34a; }
+html[data-tema="claro"] .tab.active { background: linear-gradient(180deg, #22c55e, #15803d); color: #fff; }
+html[data-tema="claro"] .field input:focus, html[data-tema="claro"] .field select:focus { border-color: #22c55e; box-shadow: 0 0 0 5px rgba(34,197,94,.12); }
+html[data-tema="claro"] .btn-roxo { background: linear-gradient(180deg, #22c55e, #15803d); box-shadow: 0 8px 0 #0f5f33; }
+html[data-tema="claro"] .btn-roxo:active { box-shadow: 0 3px 0 #0f5f33; }
+html[data-tema="claro"] .btn-outline { color: #15803d; border-color: #15803d; }
+html[data-tema="claro"] .spinner { border-top-color: #22c55e; }
+html[data-tema="claro"] .loader-txt { color: #15803d; }
+html[data-tema="claro"] body #a11y-barra button { background: rgba(0,0,0,.45); color: #fff; border: 1px solid rgba(255,255,255,.35); box-shadow: none; }
+@media print { .btn-tema { display: none !important; } }
+html[data-tema="claro"] .opcao-jornada.livre { color: #7e22ce; }
+html[data-tema="claro"] .opcao-jornada.livre.marcado { border-color: #7e22ce; box-shadow: 0 0 0 4px rgba(126,34,206,.12); }
