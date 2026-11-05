@@ -4,6 +4,11 @@
 <script>try{document.documentElement.setAttribute("data-tema",localStorage.getItem("tema_bpa")==="claro"?"claro":"escuro")}catch(e){}</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=1200">
+    <script>
+    // Celular: abre no tamanho do celular para o Chamador (a não ser que a pessoa tenha escolhido o painel completo)
+    (function(){try{var cel=window.screen&&Math.min(screen.width,screen.height)<820&&matchMedia("(pointer: coarse)").matches;
+      if(cel&&localStorage.getItem("raizen_vista_cel")!=="painel"){document.querySelector('meta[name="viewport"]').setAttribute("content","width=device-width, initial-scale=1");document.documentElement.classList.add("vista-chamador");}}catch(e){}})();
+    </script>
     <title>RAÍZEN - GESTÃO OPERACIONAL V30.0</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -1541,8 +1546,9 @@
         finally{setLoader(false);}
     }
 
-    function chamarWhatsApp(tel,placa){
-        const baiaStr = prompt('Informe o número da BAIA (209 a 214):');
+    function chamarWhatsApp(tel,placa,baiaEscolhida){
+        // baiaEscolhida vem do Chamador (botões); sem ela, pergunta como sempre
+        const baiaStr = baiaEscolhida ? String(baiaEscolhida) : prompt('Informe o número da BAIA (209 a 214):');
         if(!baiaStr) return;
         const baia = parseInt(baiaStr.trim());
         if(isNaN(baia) || baia < 209 || baia > 214){
@@ -2609,6 +2615,7 @@
         GATE: [
             ['inicio','fa-house','Início', () => { if (visivel('modulo-historico-saidas')) voltarDoHistorico(); window.scrollTo({top:0,behavior:'smooth'}); }],
             ['patio','fa-truck','Pátio', () => { if (visivel('modulo-historico-saidas')) voltarDoHistorico(); $('tm-mov').scrollIntoView({behavior:'smooth'}); }],
+            ['chamador','fa-mobile-screen-button','Chamador', () => window.Chamador && window.Chamador.abrir()],
             ['agend','fa-calendar-check','Agendamentos', () => abrirModalAgendamentos()],
             ['pre','fa-hourglass-half','Pré-check', () => { if (visivel('modulo-historico-saidas')) voltarDoHistorico(); const p=$('secao-precheck'); (getComputedStyle(p).display!=='none'?p:$('tm-mov')).scrollIntoView({behavior:'smooth'}); }],
             ['hist','fa-clock-rotate-left','Histórico', () => abrirHistoricoSaidas()],
@@ -2908,5 +2915,7 @@
 <link rel="stylesheet" href="tema-claro.css">
 <script>(function(){if(document.documentElement.getAttribute("data-tema")==="claro"){var e=document.getElementById("css-escuro");if(e)e.disabled=true;}})();</script>
 <script src="tema.js"></script>
+<link rel="stylesheet" href="chamador.css">
+<script src="chamador.js"></script>
 </body>
 </html>
