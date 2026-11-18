@@ -172,3 +172,4 @@ select option { background: #0f2018; color: #eef6f0; }
 [style*="color:var(--roxo-raizen)"], [style*="color: var(--roxo-raizen)"] { color: #d8b4fe !important; }
 h2 .fa-truck, h2 .fa-truck-fast { color: #39e26a !important; }
 svg[stroke="#84207d"] { stroke: #39e26a !important; }
+.tm-vol { background: rgba(255,255,255,.06) !important; color: #e7f2ea !important; border-color: rgba(211,228,216,.25) !important; }

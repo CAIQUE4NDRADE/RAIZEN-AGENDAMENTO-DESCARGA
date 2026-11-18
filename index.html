@@ -1446,7 +1446,7 @@
                     </div>
                     <div>
                         <div class="fila-label">Volume (L)</div>
-                        <input type="number" id="vol-${id}" value="${item.VOLUME||''}" placeholder="Ex: 30000" class="input-edit-table" onkeydown="if(event.key==='Enter'){ event.preventDefault(); confirmarSalvarVolume(${id}); }">
+                        <input type="number" id="vol-${id}" value="${Number(item.VOLUME)>1?item.VOLUME:''}" placeholder="Ex: 30000" class="input-edit-table" onkeydown="if(event.key==='Enter'){ event.preventDefault(); confirmarSalvarVolume(${id}); }">
                     </div>
                 </div>
                 <div>
@@ -1545,7 +1545,7 @@
     // ── SALVAR VOLUME COM CONFIRMAÇÃO (Enter ou botão) ──
     async function confirmarSalvarVolume(id){
         const volInput = document.getElementById(`vol-${id}`);
-        const valor = parseFloat(volInput.value) || null;
+        const _n = parseFloat(volInput.value); const valor = isNaN(_n) ? 1 : _n;
         const item = memoriaFila.find(i=>i.ID===id);
         const placa = item ? item.PLACA : `ID ${id}`;
         const volFormatado = valor ? Number(valor).toLocaleString('pt-BR') + ' L' : 'sem volume';
@@ -1558,7 +1558,7 @@
         let valor;
         if(campo==='AGENDAMENTO'){valor=document.getElementById(`ag-${id}`).value;valor=valor?valor.replace('T',' '):null;}
         else if(campo==='TELEFONE'){valor=document.getElementById(`tel-${id}`).value;}
-        else if(campo==='VOLUME'){valor=parseFloat(document.getElementById(`vol-${id}`).value)||null;}
+        else if(campo==='VOLUME'){const n=parseFloat(document.getElementById(`vol-${id}`).value);valor=isNaN(n)?1:n;}
         setLoader(true);
         try{
             const r=await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${id}`,{method:'PATCH',headers:DB.H,body:JSON.stringify({[campo]:valor})});
@@ -2141,7 +2141,7 @@
             if(placasExistentes.has(a.placa)){ignorados++;continue;}
             try{
                 const placaFormatada=a.placa.length===7&&!a.placa.includes('-')?a.placa.slice(0,3)+'-'+a.placa.slice(3):a.placa;
-                const data={PLACA:placaFormatada,PRODUTO:a.produto||'',TELEFONE:'',JORNADA:'',ENTRADA:agora(),AGENDAMENTO:a.agendamento||null,VOLUME:a.volume||null,PRECHECK:true,FRETE:a.frete||'FOB'};
+                const data={PLACA:placaFormatada,PRODUTO:a.produto||'',TELEFONE:'',JORNADA:'',ENTRADA:agora(),AGENDAMENTO:a.agendamento||null,VOLUME:a.volume||1,PRECHECK:true,FRETE:a.frete||'FOB'};
                 const r=await fetch(`${DB.URL}/rest/v1/registros`,{method:'POST',headers:DB.H,body:JSON.stringify(data)});
                 if(r.ok) inseridos++; else erros++;
             }catch{erros++;}
@@ -2581,6 +2581,9 @@
     .tm-acoes button.tm-on { background: #fde68a; border-color: #d97706; color: #7c2d12; }
     .tm-vazio { text-align: center; padding: 40px; color: #94a3b8; font-weight: 700; }
     .tm-tempo { white-space: nowrap; color: var(--tm-texto); }
+    .tm-vol { width: 104px; padding: 6px 8px; border: 1px solid #cfd8d2; border-radius: 8px; font: inherit; font-weight: 700; background: #fff; color: #1b2a21; }
+    .tm-vol:focus { outline: 2px solid #22c55e; border-color: #22c55e; }
+    .tm-vol::placeholder { color: #9aa8a0; font-weight: 600; }
 
     /* Alertas */
     .tm-alerta { display: flex; gap: 14px; align-items: flex-start; padding: 14px 4px; border-top: 1px solid #edf1ee; }
@@ -2778,6 +2781,8 @@
 
     function renderTmTabela(){
         const wrap = $('tm-tabela-wrap'); if (!wrap) return;
+        const ae = document.activeElement;
+        if (ae && ae.classList && ae.classList.contains('tm-vol') && wrap.contains(ae) && ae.value !== ae.dataset.orig) return; // digitando: não apaga o que está sendo escrito
         const lista = listaFiltrada();
         if (!lista.length) { wrap.innerHTML = `<div class="tm-vazio"><i class="fa-solid fa-truck" aria-hidden="true"></i> Nenhum veículo no pátio.</div>`; return; }
         wrap.innerHTML = `<table class="tm-tabela"><thead><tr><th>Placa / WhatsApp</th><th>Produto</th><th>Agendamento</th><th>Horário limite</th><th>Tempo no pátio</th><th>Volume</th><th>Status</th><th>Ações</th></tr></thead><tbody>` +
@@ -2791,7 +2796,7 @@
                     <td>${esc(ag)}</td>
                     <td>${limiteDe(item.JORNADA)}</td>
                     <td class="tm-tempo"><i class="fa-regular fa-clock" aria-hidden="true"></i> ${tempoDesde(item.ENTRADA)}</td>
-                    <td>${item.VOLUME ? esc(fmtL(item.VOLUME)) : '—'}</td>
+                    <td><input type="number" class="tm-vol" data-id="${esc(item.ID)}" data-orig="${Number(item.VOLUME) > 1 ? Number(item.VOLUME) : ''}" value="${Number(item.VOLUME) > 1 ? Number(item.VOLUME) : ''}" placeholder="padrão 1" min="0" step="1" inputmode="numeric" aria-label="Volume de ${esc(item.PLACA)} em litros (Enter para salvar)" title="Digite o volume em litros e tecle Enter"></td>
                     <td><span class="tm-status tm-st-${cls}">${txt}</span></td>
                     <td><div class="tm-acoes">
                         <button type="button" class="tm-wa" data-a="wa" ${podeWa && item.TELEFONE ? '' : 'disabled'} aria-label="Convocar ${esc(item.PLACA)} no WhatsApp" title="${podeWa ? 'Convocar via WhatsApp' : 'Tanque sem espaço / volume excede'}"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></button>
@@ -2803,6 +2808,26 @@
                     </div></td></tr>`;
             }).join('') + `</tbody></table>`;
     }
+    $('tm-tabela-wrap').addEventListener('keydown', async e => {
+        const inp = e.target.closest && e.target.closest('input.tm-vol'); if (!inp) return;
+        if (e.key === 'Escape') { inp.value = inp.dataset.orig; inp.blur(); return; }
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        const id = Number(inp.dataset.id);
+        const item = memoriaFila.find(i => i.ID === id); if (!item) return;
+        const n = parseFloat(inp.value);
+        const valor = isNaN(n) ? 1 : n; // vazio = volume padrão 1
+        if (!confirm(`CONFIRMAR ALTERAÇÃO DE VOLUME\n\nPlaca: ${item.PLACA}\nNovo volume: ${valor > 1 ? Number(valor).toLocaleString('pt-BR') + ' L' : 'sem volume (padrão 1)'}\n\nConfirmar?`)) return;
+        inp.disabled = true;
+        try {
+            const r = await fetch(`${DB.URL}/rest/v1/registros?ID=eq.${id}`, {method:'PATCH', headers:DB.H, body:JSON.stringify({VOLUME: valor})});
+            if (!r.ok) throw new Error();
+            await registrarLog('VOLUME ALTERADO', `Placa: ${item.PLACA} — Novo volume: ${fmtL(valor)}`);
+            inp.dataset.orig = inp.value; inp.disabled = false; inp.blur();
+            showToast('Volume atualizado!', 'ok');
+            await carregarDados();
+        } catch { inp.disabled = false; showToast('ERRO AO SALVAR', 'erro'); }
+    });
     $('tm-tabela-wrap').addEventListener('click', e => {
         const b = e.target.closest('button[data-a]'); if (!b || b.disabled) return;
         const id = Number(b.closest('tr').dataset.id);
