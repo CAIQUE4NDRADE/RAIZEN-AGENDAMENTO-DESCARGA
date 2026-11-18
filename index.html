@@ -672,6 +672,34 @@
     let MARGENS = {};
     PRODUTOS_MARGEM.forEach(p => MARGENS[p] = 120000);
 
+    /* ─── POLLING CONTROLADO (evita timers empilhados e consumo de IO do Supabase) ─── */
+    let _timerPolling=null, _ultimaCargaMargens=0;
+    const MARGENS_INTERVALO_MS=300000; // margens quase não mudam: recarrega a cada 5 min
+    function pararPolling(){ if(_timerPolling){ clearInterval(_timerPolling); _timerPolling=null; } }
+    async function recarregarMargensSeVelho(){
+        if(Date.now()-_ultimaCargaMargens<MARGENS_INTERVALO_MS) return;
+        _ultimaCargaMargens=Date.now();
+        await carregarMargens();
+    }
+    function iniciarPollingOperador(){
+        pararPolling(); _ultimaCargaMargens=Date.now();
+        // operador não pausa em segundo plano: precisa receber o aviso de novo caminhão
+        _timerPolling=setInterval(async()=>{ await recarregarMargensSeVelho(); await carregarDados(); },30000);
+    }
+    function iniciarPollingSupervisor(){
+        pararPolling(); _ultimaCargaMargens=Date.now();
+        _timerPolling=setInterval(async()=>{
+            if(document.hidden) return; // supervisor com aba escondida não consulta o banco
+            await recarregarMargensSeVelho();
+            await carregarTanques();renderSupervisor();renderMargensPorProduto();
+        },30000);
+    }
+    document.addEventListener('visibilitychange',()=>{
+        if(!document.hidden && _timerPolling && typeof usuarioLogado!=='undefined' && usuarioLogado && usuarioLogado.perfil!=='GATE' && usuarioLogado.perfil!=='OPERADOR'){
+            carregarTanques().then(()=>{renderSupervisor();renderMargensPorProduto();});
+        }
+    });
+
     async function carregarMargens(){
         // 1. Carrega localStorage primeiro (fallback offline)
         PRODUTOS_MARGEM.forEach(p => {
@@ -847,7 +875,7 @@
                 await pedirPermissaoNotificacao();
                 await carregarMargens();
                 await carregarDados();
-                setInterval(async()=>{ await carregarMargens(); await carregarDados(); }, 30000);
+                iniciarPollingOperador();
             } else {
                 document.getElementById('secao-entrada').style.display='none';
                 document.getElementById('modulo-supervisor').style.display='block';
@@ -855,7 +883,7 @@
                 await carregarTanques();
                 renderSupervisor();
                 renderMargensPorProduto();
-                setInterval(async()=>{await carregarTanques();renderSupervisor();renderMargensPorProduto();}, 30000);
+                iniciarPollingSupervisor();
             }
         }catch(e){
             console.error('Erro ao restaurar sessão:', e);
@@ -996,7 +1024,7 @@
                 await pedirPermissaoNotificacao();
                 await carregarMargens();
                 await carregarDados();
-                setInterval(async()=>{ await carregarMargens(); await carregarDados(); },30000);
+                iniciarPollingOperador();
             } else {
                 document.getElementById('secao-entrada').style.display='none';
                 document.getElementById('modulo-supervisor').style.display='block';
@@ -1004,7 +1032,7 @@
                 await carregarTanques();
                 renderSupervisor();
                 renderMargensPorProduto();
-                setInterval(async()=>{await carregarTanques();renderSupervisor();renderMargensPorProduto();},30000);
+                iniciarPollingSupervisor();
             }
         }catch(e){ erroEl.textContent='Erro ao salvar senha. Tente novamente.'; erroEl.style.display='block'; }
         finally{ setLoader(false); }
@@ -1078,7 +1106,7 @@
                 await pedirPermissaoNotificacao();
                 await carregarMargens();
                 await carregarDados();
-                setInterval(async()=>{ await carregarMargens(); await carregarDados(); },30000);
+                iniciarPollingOperador();
             } else {
                 document.getElementById('secao-entrada').style.display='none';
                 document.getElementById('modulo-supervisor').style.display='block';
@@ -1086,7 +1114,7 @@
                 await carregarTanques();
                 renderSupervisor();
                 renderMargensPorProduto();
-                setInterval(async()=>{await carregarTanques();renderSupervisor();renderMargensPorProduto();},30000);
+                iniciarPollingSupervisor();
             }
         }catch(e){document.getElementById('login-erro').style.display='block';console.error(e);}
         finally{setLoader(false);}
