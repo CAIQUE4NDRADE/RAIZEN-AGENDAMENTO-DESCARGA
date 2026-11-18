@@ -675,6 +675,22 @@
     /* ─── POLLING CONTROLADO (evita timers empilhados e consumo de IO do Supabase) ─── */
     let _timerPolling=null, _ultimaCargaMargens=0;
     const MARGENS_INTERVALO_MS=300000; // margens quase não mudam: recarrega a cada 5 min
+    // Madrugada (22h–8h, horário do aparelho): tela parada não consulta o banco.
+    // Se alguém mexer na tela, volta a atualizar normalmente por 5 min após a última interação.
+    let _ultimaInteracao=Date.now();
+    function emSilencioMadrugada(){
+        const h=new Date().getHours();
+        return (h>=22||h<8) && (Date.now()-_ultimaInteracao>300000);
+    }
+    ['pointerdown','keydown','touchstart'].forEach(ev=>document.addEventListener(ev,()=>{
+        const estavaParado=emSilencioMadrugada();
+        _ultimaInteracao=Date.now();
+        if(estavaParado && typeof usuarioLogado!=='undefined' && usuarioLogado && _timerPolling){
+            // primeira interação depois do silêncio: atualiza na hora
+            if(usuarioLogado.perfil==='GATE'||usuarioLogado.perfil==='OPERADOR') carregarDados();
+            else carregarTanques().then(()=>{renderSupervisor();renderMargensPorProduto();});
+        }
+    },{passive:true,capture:true}));
     function pararPolling(){ if(_timerPolling){ clearInterval(_timerPolling); _timerPolling=null; } }
     async function recarregarMargensSeVelho(){
         if(Date.now()-_ultimaCargaMargens<MARGENS_INTERVALO_MS) return;
@@ -684,12 +700,12 @@
     function iniciarPollingOperador(){
         pararPolling(); _ultimaCargaMargens=Date.now();
         // operador não pausa em segundo plano: precisa receber o aviso de novo caminhão
-        _timerPolling=setInterval(async()=>{ await recarregarMargensSeVelho(); await carregarDados(); },30000);
+        _timerPolling=setInterval(async()=>{ if(emSilencioMadrugada()) return; await recarregarMargensSeVelho(); await carregarDados(); },30000);
     }
     function iniciarPollingSupervisor(){
         pararPolling(); _ultimaCargaMargens=Date.now();
         _timerPolling=setInterval(async()=>{
-            if(document.hidden) return; // supervisor com aba escondida não consulta o banco
+            if(document.hidden||emSilencioMadrugada()) return; // aba escondida ou madrugada parada: não consulta o banco
             await recarregarMargensSeVelho();
             await carregarTanques();renderSupervisor();renderMargensPorProduto();
         },30000);
